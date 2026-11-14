@@ -1697,7 +1697,21 @@ async function loadVisit(){
 // Lists each consumable taken for the current student, with the time and stock left, to check a disputed count.
 // Cleared on sign-out, when the student changes, or when the app is restarted.
 let visitOpen = false;
+// Takes picked with Pay, paid together with one button. Cleared when the student changes or after paying.
+let paySelected = new Set(), paySelectedNo = null;
 function toggleVisit(){ visitOpen = !visitOpen; renderVisit(); }
+
+// Picks or un-picks a take with its Pay button. Nothing is paid until Pay is pressed.
+function togglePay(row){
+  if (paySelected.has(row)) paySelected.delete(row); else paySelected.add(row);
+  renderVisit();
+}
+
+// Pays every picked take in one go.
+function payNow(){
+  const rows = (S.owing && S.owing.items ? S.owing.items : []).filter(t => paySelected.has(t.row)).map(t => t.row);
+  if (rows.length) markPaidRows(rows);
+}
 
 // Marks Log rows as paid for the current student, then reloads the visit card.
 async function markPaidRows(rows){
@@ -1706,6 +1720,7 @@ async function markPaidRows(rows){
   try {
     await api({ api: 'markpaid', token: token, no: no, rows: rows.join(',') });
     if (S.token !== token || !S.student) return;
+    rows.forEach(r => paySelected.delete(r));
     status('Marked as paid.');
     await loadVisit();
   } catch (e) {
@@ -1718,6 +1733,8 @@ function renderVisit(){
   if (!card) return;
   const takes = S.visitTakes || [];
   const owing = S.owing || { total: 0, items: [] };
+  const noNow = S.student ? S.student.no : null;
+  if (paySelectedNo !== noNow) { paySelected.clear(); paySelectedNo = noNow; }
   const show = !!S.student && (takes.length > 0 || owing.items.length > 0) && !$('app').classList.contains('hidden');
   card.classList.toggle('hidden', !show);
   if (!show) return;
@@ -1730,9 +1747,10 @@ function renderVisit(){
   // A Pay button per take. Once paid it greys out and says Paid.
   const payBtn = (row, paid) => {
     if (row == null) return '';
-    return paid
-      ? '<button type="button" class="ghost" disabled style="opacity:.45">Paid</button>'
-      : '<button type="button" class="ghost" onclick="markPaidRows([' + row + '])">Pay</button>';
+    if (paid) return '<button type="button" class="ghost" disabled style="opacity:.45">Paid</button>';
+    const on = paySelected.has(row);
+    return '<button type="button" class="ghost" onclick="togglePay(' + row + ')"' +
+      (on ? ' style="background:var(--teal);color:#fff"' : '') + '>' + (on ? 'Selected' : 'Pay') + '</button>';
   };
   // One line per take: details on the left, the Pay / Paid button on the right, like the student's tool list.
   const payRow = (details, button) =>
@@ -1753,7 +1771,15 @@ function renderVisit(){
     '<small>' + money(t.unitCost) + ' each = ' + money(t.total) + ' · ' + esc(t.at) +
       (t.stockLeft == null ? '' : ' · ' + t.stockLeft + ' left in stock') + '</small>',
     payBtn(t.row, !!t.paid))).join('');
-  $('visitBody').innerHTML = olderHtml + todayHtml + '<div class="visitLine"><b>Total this visit: ' + money(total) + '</b></div>';
+  // Totals the ticked takes; one button pays them all.
+  const picked = owing.items.filter(t => paySelected.has(t.row));
+  const pickedTotal = Math.round(picked.reduce((n, t) => n + t.total, 0) * 100) / 100;
+  const selBar = owing.items.length
+    ? '<div class="visitLine" style="display:flex;align-items:center;justify-content:space-between;gap:10px">' +
+      '<div><b>' + picked.length + ' selected · ' + money(pickedTotal) + '</b></div>' +
+      '<button type="button" onclick="payNow()"' + (picked.length ? '' : ' disabled') + '>Pay ' + money(pickedTotal) + '</button></div>'
+    : '';
+  $('visitBody').innerHTML = selBar + olderHtml + todayHtml + '<div class="visitLine"><b>Total this visit: ' + money(total) + '</b></div>';
 }
 
 // ---------- Bottom action bar ----------
