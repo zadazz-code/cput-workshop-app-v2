@@ -86,7 +86,8 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 
 /* Tool rows (canvas): raised; overdue rows are inset with a red code and tag */
 .tool{position:relative;display:flex;align-items:center;gap:12px;width:100%;margin:10px 0 0;padding:12px 14px;border:0;border-radius:22px;background:var(--bg);box-shadow:var(--raise);color:var(--ink);text-align:left;font:inherit;cursor:pointer}
-.tool.overdue{box-shadow:var(--inset-sm)}
+.tool.overdue{box-shadow:var(--inset-sm);background:#fbe0dc}
+.tool.dueToday .code,.tool.dueToday .meta{color:var(--red)}
 .tool.selected{outline:3px solid var(--teal);outline-offset:2px}
 .code{flex:0 0 52px;height:52px;border-radius:50%;background:var(--bg);box-shadow:var(--inset-xs);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green);text-align:center}
 .tool.overdue .code{color:var(--red)}
@@ -569,7 +570,7 @@ function renderHolding(items, accs){
     '<div class="code">' + esc(t.id) + '</div>' +
     '<div class="body"><div class="name">' + esc(t.name) + '</div>' +
     '<div class="meta">' + 'Return by ' + esc(t.due) + '</div></div>' +
-    (t.overdue ? '<span class="tag error">Overdue</span>' : '<span class="tag success">On loan</span>') +
+    (t.overdue ? '<span class="tag error">Overdue</span>' : t.dueToday ? '<span class="tag error">Due today</span>' : '<span class="tag success">On loan</span>') +
     '</label>').join('');
   // Accessories: one row per item out, each with its own tick box.
   const accHtml = accs.flatMap(a => Array.from({ length: a.qty }, () =>
@@ -889,11 +890,11 @@ function myToolsHtml(r){
       '. Please return ' + (late > 1 ? 'them' : 'it') + ' to the storeroom as soon as possible.</div>'
     : '';
   return head + banner + items.map(t =>
-    '<div class="tool' + (t.overdue ? ' overdue' : '') + '">' +
+    '<div class="tool' + (t.overdue ? ' overdue' : t.dueToday ? ' dueToday' : '') + '">' +
     '<div class="code">' + esc(t.id || '') + '</div>' +
     '<div class="body"><div class="name">' + esc(t.name) + '</div>' +
     '<div class="meta">' + (t.dueToday && !t.overdue ? 'Due back today · ' : '') + 'Return by ' + esc(t.due) + '</div></div>' +
-    (t.overdue ? '<span class="tag error">Overdue</span>' : t.dueToday ? '<span class="tag">Due today</span>' : '<span class="tag success">On loan</span>') +
+    (t.overdue ? '<span class="tag error">Overdue</span>' : t.dueToday ? '<span class="tag error">Due today</span>' : '<span class="tag success">On loan</span>') +
     '</div>').join('') +
     '<p class="small">Overdue tools are listed first.</p>' + accHtml;
 }
