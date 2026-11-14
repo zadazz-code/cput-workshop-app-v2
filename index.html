@@ -1734,21 +1734,25 @@ function renderVisit(){
       ? '<button type="button" class="ghost" disabled style="opacity:.45">Paid</button>'
       : '<button type="button" class="ghost" onclick="markPaidRows([' + row + '])">Pay</button>';
   };
+  // One line per take: details on the left, the Pay / Paid button on the right, like the student's tool list.
+  const payRow = (details, button) =>
+    '<div class="visitLine" style="display:flex;align-items:center;justify-content:space-between;gap:10px">' +
+    '<div style="min-width:0">' + details + '</div><div style="flex:0 0 auto">' + button + '</div></div>';
   // Takes from earlier days that are still unpaid, listed separately.
   const todayRows = new Set(takes.map(t => t.row));
   const older = owing.items.filter(t => !todayRows.has(t.row));
   const olderTotal = Math.round(older.reduce((n, t) => n + t.total, 0) * 100) / 100;
   const olderHtml = older.length
     ? '<div class="visitLine"><b>Earlier · not yet paid · ' + money(olderTotal) + '</b></div>' +
-      older.map(t =>
-        '<div class="visitLine"><div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
-        '<small>' + money(t.total) + ' · ' + esc(t.date) + '</small> ' + payBtn(t.row, false) + '</div>').join('')
+      older.map(t => payRow(
+        '<div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
+        '<small>' + money(t.total) + ' · ' + esc(t.date) + '</small>', payBtn(t.row, false))).join('')
     : '';
-  const todayHtml = takes.map(t =>
-    '<div class="visitLine"><div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
+  const todayHtml = takes.map(t => payRow(
+    '<div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
     '<small>' + money(t.unitCost) + ' each = ' + money(t.total) + ' · ' + esc(t.at) +
-      (t.stockLeft == null ? '' : ' · ' + t.stockLeft + ' left in stock') + '</small> ' +
-      payBtn(t.row, !!t.paid) + '</div>').join('');
+      (t.stockLeft == null ? '' : ' · ' + t.stockLeft + ' left in stock') + '</small>',
+    payBtn(t.row, !!t.paid))).join('');
   $('visitBody').innerHTML = olderHtml + todayHtml + '<div class="visitLine"><b>Total this visit: ' + money(total) + '</b></div>';
 }
 
