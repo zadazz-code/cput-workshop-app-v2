@@ -369,6 +369,13 @@ function status(msg, kind = 'ok', ms = 6000, action = null){
     t.appendChild(b);
   }
   t.className = 'toast ' + kind;
+  // Sit the message just above the Check out / Check in bar, wherever that bar is.
+  const bar = $('actionBar');
+  if (bar && !bar.classList.contains('hidden')) {
+    t.style.bottom = ((parseInt(bar.style.bottom, 10) || 14) + bar.offsetHeight + 10) + 'px';
+  } else {
+    t.style.bottom = '110px';
+  }
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.add('hidden'), ms);
 }
