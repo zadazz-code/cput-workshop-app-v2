@@ -223,8 +223,8 @@ button.x{background:var(--color-surface-raised);color:var(--color-error);border:
     <div id="overdueAlert" class="alert error hidden"></div>
 
     <div class="seg" role="tablist" style="margin-top:14px">
-      <button id="tabCheckout" role="tab" aria-selected="true" type="button" onclick="showTab('checkout')">To check out</button>
-      <button id="tabCheckin" role="tab" aria-selected="false" type="button" class="off" onclick="showTab('checkin')">Out to student</button>
+      <button id="tabCheckin" role="tab" aria-selected="true" type="button" onclick="showTab('checkin')">Out to student</button>
+      <button id="tabCheckout" role="tab" aria-selected="false" type="button" class="off" onclick="showTab('checkout')">To check out</button>
     </div>
 
     <div data-tab="checkout">
@@ -269,7 +269,7 @@ button.x{background:var(--color-surface-raised);color:var(--color-error);border:
         <button id="holdToggle" class="holdToggle" onclick="toggleHold()" aria-expanded="false">
           <span>Out to this student · <b id="nHold">0</b> items</span><span id="holdArrow">Show ▼</span>
         </button>
-        <div id="holdBody" class="hidden">
+        <div id="holdBody">
           <div class="chips" role="group" aria-label="Filter">
             <button class="chip selected" type="button" data-filter="all">All</button>
             <button class="chip" type="button" data-filter="overdue">Overdue</button>
@@ -298,6 +298,7 @@ button.x{background:var(--color-surface-raised);color:var(--color-error);border:
   <div class="barIn">
     <div id="barSum" class="barSum"></div>
     <button id="barBtn" onclick="barAction()" disabled>Check out</button>
+    <button id="barCheckin" class="ghost" type="button" onclick="checkInHolding()" disabled>Check in</button>
   </div>
 </div>
 
@@ -1773,7 +1774,15 @@ new MutationObserver(() => {
   if (n) { a.textContent = '! ' + n + ' overdue tool' + (n > 1 ? 's' : '') + '. Please return ' + (n > 1 ? 'them' : 'it') + ' to the storeroom.'; a.classList.remove('hidden'); }
   else a.classList.add('hidden');
 }).observe($('listHold'), { childList: true, subtree: true });
-showTab('checkout');
+showTab('checkin');
+// Keep the bar's Check in button in step with the hidden holdings check-in button.
+function syncBarCheckin(){
+  const src = $('btnHoldIn'), dst = $('barCheckin');
+  dst.disabled = src.disabled;
+  dst.textContent = src.textContent && src.textContent.indexOf('(') > -1 ? src.textContent : 'Check in';
+}
+new MutationObserver(syncBarCheckin).observe($('btnHoldIn'), { attributes: true, childList: true, subtree: true, characterData: true, attributeFilter: ['disabled'] });
+syncBarCheckin();
 </script>
 </body>
 </html>
