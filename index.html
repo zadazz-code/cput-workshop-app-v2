@@ -195,7 +195,10 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
     <div class="card">
       <label for="myNo">Student number</label>
       <div class="field"><input id="myNo" inputmode="numeric" autocomplete="off" placeholder="Your student number"></div>
-      <button class="secondary" type="button" onclick="scanMyNumber()">Scan student card</button>
+      <div style="display:flex;gap:10px">
+        <button class="secondary" type="button" onclick="scanMyNumber()" style="flex:1;margin-top:12px">Scan QR</button>
+        <button type="button" onclick="showMyTools(false)" style="flex:1;margin-top:12px">Confirm</button>
+      </div>
       <div id="myReader" class="hidden"></div>
       <p class="small">Scan your card or type your number. Your tools and return dates appear below.</p>
     </div>
@@ -545,8 +548,8 @@ function renderStudent(){
   box.innerHTML =
     '<label for="stuNo">Student number</label>' +
     '<div class="field"><input id="stuNo" inputmode="numeric" autocomplete="off" placeholder="Student number"></div>' +
-    '<button class="secondary" type="button" onclick="scanStudent()">Scan</button>' +
-    '<button type="button" onclick="confirmStudent()">Confirm</button>';
+    '<button class="secondary" type="button" onclick="scanStudent()">Scan student QR</button>' +
+    '<button type="button" onclick="confirmStudent()">Confirm student</button>';
 }
 
 function changeStudent(){
@@ -862,7 +865,7 @@ function onMyCode(text){
   stopCamera();
   feedback(true, 'Student card read');
   $('myNo').value = no;
-  showMyTools(true);
+  status('Card read. Press Confirm to see your tools.');
 }
 
 // Loads a student's tools. Runs by itself after a card scan, or once a typed number is complete.
@@ -886,11 +889,9 @@ async function showMyTools(auto = false){
 // Typing: once the number looks complete, wait briefly and then load the tools.
 let myTimer = null;
 let keepAlive = null; // timer that pings the server while staff are signed in
-$('myNo').addEventListener('input', () => {
-  clearTimeout(myTimer);
-  if (!/^\d{4,15}$/.test($('myNo').value.trim())) { $('myResult').innerHTML = ''; return; }
-  myTimer = setTimeout(() => showMyTools(true), 600);
-});
+// Typing or scanning does not load the tools any more. The student presses Confirm (or Enter).
+$('myNo').addEventListener('input', () => { clearTimeout(myTimer); $('myResult').innerHTML = ''; });
+$('myNo').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); showMyTools(false); } });
 
 // Student view: what they still owe for consumables, under the tools list.
 function owingHtml(r){
