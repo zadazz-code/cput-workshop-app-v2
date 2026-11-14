@@ -172,7 +172,6 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
   <header class="top">
     <div class="brand">
       <img class="logo" src="logo.png" alt="Product and Industrial Design">
-      <div><div class="bt">Workshop Tools</div><div class="bs" id="hdrSub">Storeroom tools</div></div>
     </div>
     <div style="display:flex;gap:8px;align-items:center">
       <button id="staffBtn" type="button" onclick="toggleStaffView()">Staff sign in</button>
@@ -459,7 +458,6 @@ function showApp(){
   $('studentIn').classList.add('hidden');
   $('myResult').innerHTML = '';
   $('app').classList.remove('hidden');
-  $('hdrSub').textContent = 'Staff checkout';
   updateBar();
   $('signout').classList.remove('hidden');
   $('who').textContent = 'Signed in as ' + S.name + '. Signs out after 10 minutes without activity.';
@@ -483,7 +481,6 @@ async function lockOut(msg){
   scanTarget = 'tool';
   setMode('add');
   $('app').classList.add('hidden');
-  $('hdrSub').textContent = 'Storeroom tools';
   updateBar();
   clearInterval(keepAlive);
   showStaffView(false);
