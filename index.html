@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;500&display=swap">
 <title>Workshop Tools</title>
 <style>
-/* Visual system matches revised-mockup-v2-interactive.html: staff palette, neumorphic cards, glass header and bars */
+/* Tokens: structure from the product styleguide, colours from the staff palette */
 :root{
   --color-primary:#00897b;
   --color-primary-hover:#00796b;
@@ -21,6 +21,7 @@
   --color-surface:#f4fbfa;
   --color-surface-raised:#ffffff;
   --color-canvas:#e0f2f1;
+  --color-border:#c9e3e0;
   --color-text:#00302b;
   --color-muted:#2f5a55;
   --color-disabled:#dbe7e5;
@@ -29,167 +30,202 @@
   --color-warning:#8a5300;  --color-warning-soft:#fbe9bf;
   --color-error:#c62828;    --color-error-soft:#fbe0dc;
   --radius-card:20px; --radius-control:16px; --radius-pill:999px;
+  --space-1:8px; --space-2:16px; --space-3:24px; --space-4:32px;
   --elevation-1:3px 3px 8px rgba(0,71,63,.12), -3px -3px 8px rgba(255,255,255,.9);
   --elevation-2:6px 6px 14px rgba(0,71,63,.14), -6px -6px 14px rgba(255,255,255,.9);
   --elevation-3:10px 10px 22px rgba(0,71,63,.16), -10px -10px 22px rgba(255,255,255,.9);
   --inset:inset 4px 4px 9px rgba(0,71,63,.13), inset -4px -4px 9px rgba(255,255,255,.9);
-  --glass:rgba(255,255,255,.6); --glass-edge:rgba(255,255,255,.9);
-  --blur:blur(16px) saturate(140%);
+  --type-display:28px; --type-headline:22px; --type-title:18px; --type-body:17px; --type-caption:13px;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:linear-gradient(-45deg,#e0f2f1,#b2dfdb,#d7f3ef,#e0f2f1) fixed;font-family:Ubuntu,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;color:var(--color-text);font-weight:400}
-@media (prefers-reduced-motion:reduce){html,body{background-attachment:scroll}}
-.hidden{display:none !important}
+html,body{margin:0;background:var(--color-canvas);font-family:Ubuntu,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--color-text)}
+body{display:flex;justify-content:center;padding:24px 0}
+.phone{width:390px;min-height:844px;position:relative;padding:var(--space-2) var(--space-2) 170px;background:linear-gradient(-45deg,#e0f2f1,#b2dfdb,#d7f3ef,#e0f2f1);border-radius:32px;overflow:hidden}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--color-focus);outline-offset:3px}
 
 /* Header */
-header{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;margin:10px 12px 0;border-radius:var(--radius-card);background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-edge)}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}
-.logo{height:38px;width:auto;background:#fff;border-radius:10px;padding:4px 8px;box-shadow:var(--elevation-1);display:block}
-.brand > span:last-child{font-size:18px;font-weight:700;color:var(--color-primary-strong)}
-#signout,#staffBtn{width:auto;min-height:40px;margin:0 0 0 auto;padding:10px 14px;font-size:14px;font-weight:700;border-radius:var(--radius-control);background:var(--color-surface-raised);color:var(--color-primary-strong);box-shadow:var(--elevation-1)}
+.top{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:var(--radius-card);background:rgba(255,255,255,.6);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border:1px solid rgba(255,255,255,.9)}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{height:38px;width:auto;background:#fff;border-radius:10px;padding:4px 8px;box-shadow:var(--elevation-1)}
+.brand strong{font-size:var(--type-title);color:var(--color-primary-strong)}
+.btn-ghost{border:0;border-radius:var(--radius-control);padding:10px 14px;background:var(--color-surface-raised);color:var(--color-primary-strong);font-size:14px;font-weight:700;box-shadow:var(--elevation-1)}
 
-main{max-width:560px;margin:0 auto;padding:12px 14px 170px}
-.headline{font-size:22px;font-weight:700;color:var(--color-primary-strong);margin:24px 4px 8px}
-h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--color-primary-strong);margin:26px 4px 10px}
-#app h2{font-size:13px}
+/* Headline + search pill (styleguide input) */
+.headline{font-size:var(--type-headline);font-weight:700;color:var(--color-primary-strong);margin:var(--space-3) 4px var(--space-1)}
+.search{display:flex;align-items:center;gap:10px;height:56px;padding:0 18px;border-radius:var(--radius-pill);background:var(--color-surface);box-shadow:var(--inset)}
+.search input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:var(--type-body);color:var(--color-text);outline:none}
+.search .hint{font-size:var(--type-caption);color:var(--color-success);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.search:focus-within{box-shadow:var(--inset),0 0 0 3px var(--color-focus)}
+
+/* Alerts (styleguide: success, warning, error) */
+.alert{display:flex;align-items:center;gap:10px;margin-top:var(--space-2);padding:12px 16px;border-radius:var(--radius-control);font-size:15px;font-weight:600}
+.alert.success{background:var(--color-success-soft);color:var(--color-success)}
+.alert.error{background:var(--color-error-soft);color:var(--color-error)}
+.alert.warning{background:var(--color-warning-soft);color:var(--color-warning)}
+.alert i{font-style:normal;font-weight:800}
+
+/* Chips (styleguide: filter, selected, disabled) */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:var(--space-2)}
+.chip{border:0;border-radius:var(--radius-pill);padding:8px 14px;background:var(--color-surface-raised);color:var(--color-primary-strong);font-size:14px;font-weight:600;box-shadow:var(--elevation-1)}
+.chip.selected{background:var(--color-primary-soft);color:var(--color-primary-strong);box-shadow:var(--inset)}
+.chip:disabled{background:var(--color-disabled);color:var(--color-disabled-text);box-shadow:none;cursor:not-allowed}
+
+/* Tabs (styleguide: segmented control) */
+.segmented{margin-top:var(--space-3);display:flex;padding:4px;border-radius:var(--radius-pill);background:var(--color-surface);box-shadow:var(--inset)}
+.segmented button{flex:1;border:0;border-radius:var(--radius-pill);padding:10px 8px;background:transparent;color:var(--color-muted);font-size:15px;font-weight:600}
+.segmented button[aria-selected="true"]{background:var(--color-primary);color:#fff;box-shadow:var(--elevation-1)}
+
+/* Cards (styleguide: stacked card with title and tag) */
+.section{display:flex;justify-content:space-between;align-items:baseline;margin:var(--space-3) 4px 0;font-size:var(--type-caption);text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--color-primary-strong)}
+.section span:last-child{text-transform:none;letter-spacing:0;font-weight:400;color:var(--color-muted);font-size:14px}
+.stack{position:relative;margin-top:var(--space-2);padding-bottom:6px}
+.stack::before{content:"";position:absolute;left:10px;right:10px;bottom:0;height:14px;border-radius:0 0 var(--radius-card) var(--radius-card);background:var(--color-surface);box-shadow:var(--elevation-1)}
+.tool{position:relative;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--radius-card);background:var(--color-surface-raised);box-shadow:var(--elevation-2)}
+.tool + .tool{margin-top:12px}
+.tool.overdue{background:var(--color-error-soft)}
+.code{flex:0 0 52px;height:52px;border-radius:50%;background:var(--color-surface);box-shadow:var(--inset);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--color-muted)}
+.overdue .code{color:var(--color-error)}
+.body{flex:1;min-width:0}
+.name{font-size:var(--type-title);font-weight:700}
+.meta{font-size:var(--type-caption);color:var(--color-muted);margin-top:3px}
+.overdue .meta{color:var(--color-error);font-weight:700}
+.tag{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:var(--radius-pill);white-space:nowrap}
+.tag.error{background:var(--color-error);color:#fff}
+.tag.success{background:var(--color-surface);color:var(--color-success);box-shadow:var(--elevation-1)}
+
+/* Bottom bar (styleguide: default, hover, disabled buttons) */
+.bar{position:fixed;left:0;right:0;bottom:0;max-width:390px;margin:0 auto;padding:12px 14px 18px;display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.9)}
+.btn{min-height:52px;border-radius:var(--radius-control);font-size:17px;font-weight:700;padding:0 18px}
+.btn.primary{flex:1;border:0;background:var(--color-primary);color:#fff;box-shadow:var(--elevation-1)}
+.btn.primary:hover{background:var(--color-primary-hover)}
+.btn.outline{border:2px solid var(--color-primary);background:transparent;color:var(--color-primary-strong)}
+.btn.outline:disabled{border-color:var(--color-disabled);color:var(--color-disabled-text);background:transparent;cursor:not-allowed}
+.note{margin-top:var(--space-3);font-size:var(--type-caption);color:var(--color-muted);text-align:center}
+
+/* Interactive additions */
+.tool{width:100%;border:0;text-align:left;font:inherit;color:inherit;cursor:pointer;display:flex}
+.tool:hover{box-shadow:var(--elevation-3)}
+.tool.selected{outline:3px solid var(--color-primary);outline-offset:2px}
+.tool.overdue{background:var(--color-error-soft)}
+.empty{margin-top:var(--space-2);padding:18px;text-align:center;border-radius:var(--radius-card);background:var(--color-surface);color:var(--color-muted);font-size:15px}
+.scan-btn{margin-top:var(--space-2);width:100%;border:2px dashed var(--color-primary);background:transparent;border-radius:var(--radius-control);min-height:48px;color:var(--color-primary-strong);font-weight:700;font-size:15px}
+.scan-btn:hover{background:var(--color-primary-soft)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:110px;width:min(92vw,360px);padding:12px 16px;border-radius:var(--radius-control);background:var(--color-primary-strong);color:#fff;font-size:15px;font-weight:600;box-shadow:var(--elevation-3);opacity:0;transition:opacity .2s;pointer-events:none;text-align:center;z-index:9}
+.toast.show{opacity:1}
+.btn.primary:disabled{background:var(--color-disabled);color:var(--color-disabled-text);box-shadow:none;cursor:not-allowed}
+.btn.outline:hover:not(:disabled){background:var(--color-primary-soft)}
+.btn.primary:active:not(:disabled),.btn.outline:active:not(:disabled){transform:translateY(1px)}
+.hidden{display:none !important}
+#no{width:100%}
+
+/* Live app: the same tokens and components, for controls the mockup does not show */
+.hidden{display:none !important}
+@media (max-width:430px){.phone{width:100%}}
 label{display:block;font-size:14px;font-weight:700;color:var(--color-primary-strong);margin:14px 4px 8px}
-.small{font-size:13px;line-height:1.4;color:var(--color-muted);margin:8px 0 0}
 a{color:var(--color-primary-strong);font-weight:700}
-
-/* Inputs: inset pills */
-input,select{width:100%;min-width:0;height:56px;padding:0 20px;border:0;border-radius:var(--radius-pill);background:var(--color-surface);box-shadow:var(--inset);color:var(--color-text);font:inherit;font-size:17px;outline:none;margin-top:4px}
-input:focus-visible,select:focus-visible{box-shadow:var(--inset),0 0 0 3px var(--color-focus)}
-input::placeholder{color:var(--color-disabled-text)}
-input[type=date]{-webkit-appearance:none;appearance:none;display:block;height:52px;padding:0 20px;text-align:left}
-input[type=range]{height:auto;padding:0;border:0;box-shadow:none;background:transparent;accent-color:var(--color-primary)}
-input[type=hidden]{display:none}
-
-/* Buttons */
-button{display:block;width:100%;min-height:52px;margin-top:14px;padding:12px 16px;border:0;border-radius:var(--radius-control);background:var(--color-primary);color:#fff;font:inherit;font-size:17px;font-weight:700;box-shadow:var(--elevation-1);cursor:pointer}
+.card{background:var(--color-surface-raised);border-radius:var(--radius-card);box-shadow:var(--elevation-2);padding:18px;margin:14px 0;min-width:0}
+.small{font-size:13px;line-height:1.4;color:var(--color-muted);margin:8px 0 0}
+.search .name{flex:1;min-width:0;font-weight:700;color:var(--color-text)}
+.search .hint{white-space:nowrap}
+button{display:block;width:100%;min-height:52px;margin-top:12px;padding:12px 16px;border:0;border-radius:var(--radius-control);background:var(--color-primary);color:#fff;font:inherit;font-size:17px;font-weight:700;box-shadow:var(--elevation-1);cursor:pointer}
 button:hover:not(:disabled){background:var(--color-primary-hover)}
 button:active:not(:disabled){box-shadow:var(--inset)}
 button:focus-visible{outline:3px solid var(--color-focus);outline-offset:3px}
 button:disabled{background:var(--color-disabled);color:var(--color-disabled-text);box-shadow:none;cursor:not-allowed}
-button.secondary{background:var(--color-primary-strong)}
+.btn{display:block;width:100%;margin-top:12px}
+.btn.primary{background:var(--color-primary);color:#fff;border:0;box-shadow:var(--elevation-1)}
+.btn.outline{background:transparent;color:var(--color-primary-strong);border:2px solid var(--color-primary);box-shadow:none}
+.btn.outline:hover:not(:disabled){background:var(--color-primary-soft)}
+.btn.outline:disabled{border-color:var(--color-disabled);color:var(--color-disabled-text);background:transparent}
+.btn-ghost,.chip,.segmented button,.stepper button,.toast button,button.x{width:auto;margin:0}
+.btn-ghost,.chip{min-height:0}
+.segmented button{flex:1;min-height:40px;font-size:15px;box-shadow:none}
 button.ghost{background:transparent;color:var(--color-primary-strong);border:2px solid var(--color-primary);box-shadow:none}
 button.ghost:hover:not(:disabled){background:var(--color-primary-soft)}
-button.x{width:auto;min-height:40px;margin:0;padding:6px 14px;font-size:15px;background:var(--color-surface-raised);color:var(--color-error);border:2px solid var(--color-error);box-shadow:none}
-
-/* Cards */
-.card{background:var(--color-surface-raised);border-radius:var(--radius-card);box-shadow:var(--elevation-2);padding:18px;margin:14px 0;min-width:0;overflow:hidden}
+button.secondary{background:var(--color-primary-strong)}
+button.x{min-height:36px;padding:6px 12px;font-size:15px;background:var(--color-surface-raised);color:var(--color-error);border:2px solid var(--color-error);box-shadow:none}
+input,select{width:100%;min-width:0;height:52px;padding:0 20px;border:0;border-radius:var(--radius-pill);background:var(--color-surface);box-shadow:var(--inset);color:var(--color-text);font:inherit;font-size:17px;outline:none;margin-top:4px}
+input:focus-visible,select:focus-visible{box-shadow:var(--inset),0 0 0 3px var(--color-focus)}
+input[type=hidden]{display:none}
+input[type=range]{height:auto;padding:0;background:transparent;box-shadow:none;accent-color:var(--color-primary)}
+.search input{height:auto;margin:0;padding:0;background:transparent;box-shadow:none;border-radius:0}
+.stepper input{width:110px;height:48px;text-align:center;flex:none;padding:0 4px}
+.section-toggle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;width:100%;min-height:0;margin:24px 0 0;padding:0 4px;background:none;color:var(--color-primary-strong);box-shadow:none;border-radius:0;font-size:13px;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.section-toggle:hover:not(:disabled){background:none}
+.section-toggle b{font-weight:700}
+#holdSection{scroll-margin-top:90px}
+.tool .id{font-weight:700;font-size:17px;color:var(--color-text)}
+.tool small{display:block;font-size:13px;color:var(--color-muted);margin-top:3px}
+.tool.overdue .name,.tool.overdue .meta,.tool.overdue small,.tool.overdue .id{color:var(--color-error)}
+.tool.overdue{background:var(--color-error-soft)}
+.tool.dueToday{background:#fdeeea}
+.tool.picked{background:#d5f0e4}
+#listHold .tool{cursor:pointer;user-select:none}
+.tool .body{flex:1;min-width:0}
+.tool .tag{flex:0 0 auto}
+.stuBanner{background:var(--color-error-soft);color:var(--color-error);padding:14px 16px;border-radius:var(--radius-control);font-weight:700;margin:12px 0}
 .who{background:var(--color-surface-raised);border-radius:var(--radius-card);box-shadow:var(--elevation-2);padding:16px;margin:14px 0}
 .who.late{background:var(--color-error-soft)}
 .who .big{font-size:20px;font-weight:700;color:var(--color-text)}
 .who.late .big,.who.late .tag{color:var(--color-error)}
-.tag{color:var(--color-error);font-weight:700}
-
-/* Alerts */
-.alert{display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px 16px;border-radius:var(--radius-control);font-size:15px;font-weight:600}
-.alert.success{background:var(--color-success-soft);color:var(--color-success)}
-.alert.error{background:var(--color-error-soft);color:var(--color-error)}
-.alert.warning{background:var(--color-warning-soft);color:var(--color-warning)}
-#overdueAlert{margin-top:8px}
-.stuBanner{background:var(--color-error-soft);color:var(--color-error);padding:14px 16px;border-radius:var(--radius-control);font-weight:700;margin:12px 0}
-
-/* Segmented control (inset track, raised selected) */
-.seg{display:flex;gap:4px;padding:4px;margin:0 0 10px;border-radius:var(--radius-pill);background:var(--color-surface);box-shadow:var(--inset)}
-.seg button{flex:1;margin:0;min-height:40px;border-radius:var(--radius-pill);background:var(--color-primary);color:#fff;box-shadow:var(--elevation-1);font-size:15px}
-.seg button.off{background:transparent;color:var(--color-muted);box-shadow:none}
-
-/* Hold panel */
-#holdSection{scroll-margin-top:90px}
-.holdToggle{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;background:var(--color-primary-strong);color:#fff;margin:20px 0 8px;font-size:15px}
-.holdToggle b{font-weight:700}
-
-/* Tool rows: raised cards, overdue tinted, with a tag */
-.row{position:relative;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;margin:12px 0;border:0;border-radius:var(--radius-card);background:var(--color-surface-raised);box-shadow:var(--elevation-2);color:var(--color-text);font-size:17px;font-weight:400}
-.row .id{font-weight:700;color:var(--color-text)}
-.row small{display:block;margin-top:3px;font-size:13px;color:var(--color-muted)}
-.row.late{background:var(--color-error-soft)}
-.row.late .id,.row.late small{color:var(--color-error)}
-.row.late small{font-weight:700}
-.row.late::after,.row.stuLate::after{content:"Overdue";flex:0 0 auto;padding:6px 10px;border-radius:var(--radius-pill);background:var(--color-error);color:#fff;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
-.row.dueToday{background:#fdeeea}
-.row.stuLate{background:#f5c9c3}
-.row.stuLate .id,.row.stuLate small{color:#7f0000}
-.row.stuLate small{font-weight:700}
-.row.picked{background:#d5f0e4}
-.row.picked .id,.row.picked small{color:#1b5e20}
-.row.hilite{animation:rowFlash 1.2s ease-out}
-@keyframes rowFlash{0%{box-shadow:0 0 0 4px rgba(0,137,123,.55),var(--elevation-2)}100%{box-shadow:var(--elevation-2)}}
-#listHold .row{cursor:pointer;user-select:none}
-
-/* Scanner windows */
 #myReader,#stuReader,#reader{width:100%;border-radius:var(--radius-card);overflow:hidden;background:#000;margin-top:10px;box-shadow:var(--elevation-1);scroll-margin-top:90px}
 #zoomBox{margin-top:10px}
-
-/* Overlays and sheets */
+#barSum,#barSum.hidden{display:none}
+.bar .btn{width:auto;margin:0;min-height:52px}
+.visit{position:fixed;left:0;right:0;bottom:0;max-width:390px;margin:0 auto;z-index:5;background:rgba(255,255,255,.72);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-top:1px solid rgba(255,255,255,.9);overflow:hidden}
+.visitIn{display:flex;flex-direction:column-reverse}
+.visitHead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 16px;background:var(--color-primary-strong);color:#fff;font-weight:600;font-size:15px;cursor:pointer}
+.visitBody{max-height:40vh;overflow:auto;padding:2px 16px 12px}
+.visitLine{padding:9px 0;border-bottom:1px solid var(--color-primary-soft);font-size:15px}
+.visitLine .big{font-weight:700}
+.visitLine small{color:var(--color-muted);font-size:13px}
 .overlay{position:fixed;inset:0;background:rgba(0,48,43,.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;z-index:20}
 .overlay.hidden{display:none !important}
-.sheet{background:rgba(255,255,255,.8);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);width:100%;max-width:560px;border-radius:28px 28px 0 0;padding:20px;max-height:85vh;overflow:auto;border:1px solid var(--glass-edge);box-shadow:0 -10px 40px rgba(0,71,63,.14)}
-.sheet h2{font-size:20px;text-transform:none;letter-spacing:0;margin:0 4px 6px}
+.sheet{background:rgba(255,255,255,.85);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);width:100%;max-width:390px;border-radius:28px 28px 0 0;padding:20px;max-height:85vh;overflow:auto;border:1px solid var(--glass-edge);box-shadow:0 -10px 40px rgba(0,71,63,.14)}
+.sheet h2{font-size:20px;text-transform:none;letter-spacing:0;margin:0 4px 6px;color:var(--color-primary-strong)}
 .sheet button{margin-top:12px}
-
-/* Toast */
-.toast{position:fixed;left:12px;right:12px;bottom:110px;max-width:536px;margin:0 auto;padding:12px 16px;border-radius:var(--radius-control);background:var(--color-primary-strong);color:#fff;font-size:15px;font-weight:600;text-align:center;box-shadow:var(--elevation-3);z-index:9}
-.toast.ok{background:var(--color-primary-strong)}
+.toast{opacity:1;pointer-events:auto;width:min(92vw,360px)}
 .toast.bad{background:var(--color-error)}
-.toast button{display:inline-block;width:auto;min-height:40px;margin:8px 0 0 14px;padding:6px 14px;font-size:15px;background:#fff;color:var(--color-primary-strong);border-radius:12px;box-shadow:none}
-
-/* Scan confirmation flash */
+.toast button{display:inline-block;min-height:40px;margin:8px 0 0 14px;padding:6px 14px;font-size:15px;background:#fff;color:var(--color-primary-strong);border-radius:12px;box-shadow:none}
 .scanFlash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none;opacity:0;z-index:30;transition:opacity .15s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .scanFlash.show{opacity:1}
 .scanFlash.good{background:rgba(0,137,123,.9);color:#fff}
 .scanFlash.bad{background:rgba(198,40,40,.92);color:#fff}
 #scanMark{font-size:120px;line-height:1;font-weight:700}
 #scanLabel{font-size:26px;font-weight:700;text-align:center;padding:0 20px;word-break:break-all}
-
-/* Steppers */
 .stepper{display:flex;align-items:center;gap:10px;margin-top:6px}
-.stepper button{width:auto;min-width:52px;min-height:48px;margin:0;padding:6px 12px;font-size:24px;line-height:1}
-.stepper input{width:110px;height:48px;text-align:center;font-size:18px;padding:0 4px;flex:none}
+.stepper button{min-width:52px;min-height:48px;padding:6px 12px;font-size:24px;line-height:1}
 .stepper.sm button{min-width:40px;min-height:40px;font-size:20px;padding:4px 8px}
 .stepper.sm input{width:64px;height:40px}
 .stepper .qn{min-width:34px;text-align:center;font-weight:700;font-size:18px;color:var(--color-primary-strong)}
-
-/* Accessory / family picker items */
 .famItem{display:block;width:100%;text-align:left;touch-action:manipulation;user-select:none;padding:14px 16px;margin:12px 0;border:0;border-radius:var(--radius-card);background:var(--color-surface-raised);color:var(--color-text);font-size:17px;cursor:pointer;box-shadow:var(--elevation-2);min-height:0}
 .famItem .fName{font-weight:700}
 .famItem .fSub{font-size:13px;margin-top:3px;color:var(--color-muted)}
 .famItem.sel{box-shadow:var(--inset),0 0 0 3px var(--color-focus)}
 .famItem.low{background:var(--color-error-soft)}
 .famItem.none{background:#e9b5ae;color:#5a0d0d;cursor:not-allowed}
-
-/* Visit strip (glass, bottom) */
-.visit{position:fixed;left:0;right:0;bottom:0;max-width:none;margin:0;z-index:5;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-top:1px solid var(--glass-edge);box-shadow:0 -6px 20px rgba(0,71,63,.12);overflow:hidden}
-.visitIn{max-width:560px;margin:0 auto;display:flex;flex-direction:column-reverse}
-.visitHead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 16px;background:var(--color-primary-strong);color:#fff;font-weight:600;font-size:15px;cursor:pointer}
-.visitBody{max-height:40vh;overflow:auto;padding:2px 16px 12px}
-.visitLine{padding:9px 0;border-bottom:1px solid var(--color-primary-soft);font-size:15px}
-.visitLine .big{font-weight:700}
-.visitLine small{color:var(--color-muted);font-size:13px}
-
-/* Bottom action bar (glass, two buttons: primary + outline) */
-.bar{position:fixed;left:0;right:0;bottom:0;padding:12px 14px calc(18px + env(safe-area-inset-bottom));z-index:6;background:rgba(255,255,255,.72);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-top:1px solid var(--glass-edge)}
-.barIn{max-width:560px;margin:0 auto;display:flex;gap:10px;align-items:center}
-#barSum{display:none}
-.barIn button{flex:1 1 0;min-width:0;width:auto;margin:0;min-height:52px;font-size:17px;padding:0 18px}
 </style>
 </head>
 <body>
-<header>
-  <span class="brand"><img class="logo" src="logo.png" alt="Product and Industrial Design"><span>Workshop Tools</span></span>
-  <button id="staffBtn" class="ghost" onclick="toggleStaffView()">Staff sign in</button>
-  <button id="signout" class="ghost hidden" onclick="lockOut('Signed out.')">Sign out</button>
-</header>
+<div class="phone">
+  <header class="top">
+    <div class="brand">
+      <img class="logo" src="logo.png" alt="Product and Industrial Design">
+      <strong>Workshop Tools</strong>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button id="staffBtn" class="btn-ghost" type="button" onclick="toggleStaffView()">Staff sign in</button>
+      <button id="signout" class="btn-ghost hidden" type="button" onclick="lockOut('Signed out.')">Sign out</button>
+    </div>
+  </header>
 
-<main>
   <section id="studentIn">
     <h1 class="headline">Your tools</h1>
     <div class="card">
       <label for="myNo">Student number</label>
-      <input id="myNo" inputmode="numeric" autocomplete="off" placeholder="Your student number">
-      <button class="secondary" onclick="scanMyNumber()">Scan student card</button>
+      <div class="search"><input id="myNo" inputmode="numeric" autocomplete="off" placeholder="Your student number"></div>
+      <button class="scan-btn" type="button" onclick="scanMyNumber()">Scan student card</button>
       <div id="myReader" class="hidden"></div>
       <p class="small">Scan your card or type your number. Your tools and return dates appear below.</p>
     </div>
@@ -200,10 +236,10 @@ button.x{width:auto;min-height:40px;margin:0;padding:6px 14px;font-size:15px;bac
     <h1 class="headline">Staff sign-in</h1>
     <div class="card">
       <label for="pin">Your PIN</label>
-      <input id="pin" type="password" inputmode="numeric" autocomplete="off">
-      <button id="signinBtn" onclick="signIn()">Sign in</button>
-      <button class="ghost" onclick="showStaffView(false)">Cancel</button>
-      <p class="small" style="margin-top:14px">New to this? <a href="guide.html" target="_blank" rel="noopener" style="color:var(--color-primary-strong);font-weight:bold">Read the staff guide</a></p>
+      <div class="search"><input id="pin" type="password" inputmode="numeric" autocomplete="off"></div>
+      <button id="signinBtn" class="btn primary" type="button" onclick="signIn()">Sign in</button>
+      <button class="btn outline" type="button" onclick="showStaffView(false)">Cancel</button>
+      <p class="small" style="margin-top:14px">New to this? <a href="guide.html" target="_blank" rel="noopener">Read the staff guide</a></p>
       <p class="small">Your PIN is used only to sign in. You are signed out after 10 minutes without activity.</p>
     </div>
   </section>
@@ -213,56 +249,71 @@ button.x{width:auto;min-height:40px;margin:0;padding:6px 14px;font-size:15px;bac
     <div id="who" class="alert success"></div>
     <div id="overdueAlert" class="alert error hidden"></div>
 
-    <h2>Student</h2>
+    <div class="section"><span>Student</span><span></span></div>
     <div class="card" id="studentBox"></div>
     <div id="stuReader" class="hidden"></div>
 
-    <div id="holdSection">
-      <button id="holdToggle" class="holdToggle" onclick="toggleHold()" aria-expanded="true">
-        <span>Out to this student · <b id="nHold">0</b> items</span><span id="holdArrow">Hide ▲</span>
-      </button>
-      <div id="holdBody">
-        <div id="listHold"><p class="small">Confirm a student to see what they have out.</p></div>
-        <button id="btnHoldIn" class="secondary hidden" onclick="checkInHolding()" disabled>Check in selected</button>
+    <div class="segmented" role="tablist" aria-label="Sections">
+      <button role="tab" type="button" data-tab="out" aria-selected="true" onclick="showTab('out')">Out to student</button>
+      <button role="tab" type="button" data-tab="check" aria-selected="false" onclick="showTab('check')">To check out</button>
+    </div>
+
+    <div id="panelOut">
+      <div id="holdSection">
+        <button id="holdToggle" class="section-toggle" type="button" onclick="toggleHold()" aria-expanded="true">
+          <span>Out to this student · <b id="nHold">0</b> items</span><span id="holdArrow">Hide ▲</span>
+        </button>
+        <div id="holdBody">
+          <div class="chips" role="group" aria-label="Filter">
+            <button class="chip selected" type="button" data-filter="all">All</button>
+            <button class="chip" type="button" data-filter="overdue">Overdue</button>
+            <button class="chip" type="button" data-filter="today">Due today</button>
+            <button class="chip" type="button" disabled>Accessories</button>
+          </div>
+          <div id="listHold" class="stack"><p class="small">Confirm a student to see what they have out.</p></div>
+          <button id="btnHoldIn" class="btn outline hidden" type="button" onclick="checkInHolding()" disabled>Check in selected</button>
+        </div>
       </div>
     </div>
 
-    <h2>Scan tools</h2>
-    <div class="card">
-      <div class="seg">
-        <button id="modeAdd" onclick="setMode('add')">Add to lists</button>
-        <button id="modeWho" class="off" onclick="setMode('who')">Who has this?</button>
+    <div id="panelCheck" class="hidden">
+      <div class="section"><span>Scan tools</span><span></span></div>
+      <div class="card">
+        <div class="segmented" role="tablist" aria-label="Scan mode">
+          <button id="modeAdd" type="button" aria-selected="true" onclick="setMode('add')">Add to lists</button>
+          <button id="modeWho" type="button" aria-selected="false" onclick="setMode('who')">Who has this?</button>
+        </div>
+        <div id="reader"></div>
+        <button id="camBtn" class="btn outline" type="button" onclick="toggleCamera()">Start camera</button>
+        <div id="zoomBox" class="hidden">
+          <label for="zoom">Zoom in</label>
+          <input id="zoom" type="range" min="1" max="3" step="0.1" value="1">
+          <p class="small" style="margin:4px 0 0">Zoom works on most Android phones. On iPhone, move the camera closer instead.</p>
+        </div>
+        <label for="manual">Or type a number or code</label>
+        <div class="search"><input id="manual" placeholder="e.g. 042, DB or WR-2.5" autocapitalize="characters" autocomplete="off"></div>
+        <button id="manualBtn" class="btn primary" type="button" onclick="addManual()">Add tool</button>
       </div>
-      <div id="reader"></div>
-      <button id="camBtn" class="secondary" onclick="toggleCamera()">Start camera</button>
-      <div id="zoomBox" class="hidden">
-        <label for="zoom">Zoom in</label>
-        <input id="zoom" type="range" min="1" max="3" step="0.1" value="1">
-        <p class="small" style="margin:4px 0 0">Zoom works on most Android phones. On iPhone, move the camera closer instead.</p>
+      <div id="whoResult"></div>
+
+      <div class="section"><span>Return date</span><span></span></div>
+      <div class="card">
+        <label for="retDate">Return by</label>
+        <input id="retDate" type="date">
+        <p class="small">Set to today. Change it if the tool is due back on another day.</p>
       </div>
-      <label for="manual">Or type a number or code</label>
-      <input id="manual" placeholder="e.g. 042, DB or WR-2.5" autocapitalize="characters" autocomplete="off">
-      <button id="manualBtn" class="ghost" onclick="addManual()">Add tool</button>
+
+      <div class="section"><span>To check out</span><span><span id="nOut">0</span></span></div>
+      <div id="listOut" class="stack"></div>
+      <p id="outHint" class="small"></p>
+      <button id="btnOut" class="btn primary hidden" type="button" onclick="checkOut()" disabled>Check out</button>
+
+      <div class="section"><span>To check in</span><span><span id="nIn">0</span></span></div>
+      <div id="listIn" class="stack"></div>
+      <button id="btnIn" class="btn outline hidden" type="button" onclick="checkIn()" disabled>Check in</button>
     </div>
-    <div id="whoResult"></div>
-
-    <h2>Return date</h2>
-    <div class="card">
-      <label for="retDate">Return by</label>
-      <input id="retDate" type="date">
-      <p class="small">Set to today. Change it if the tool is due back on another day.</p>
-    </div>
-
-    <h2>To check out (<span id="nOut">0</span>)</h2>
-    <div id="listOut"></div>
-    <p id="outHint" class="small"></p>
-    <button id="btnOut" class="hidden" onclick="checkOut()" disabled>Check out</button>
-
-    <h2>To check in (<span id="nIn">0</span>)</h2>
-    <div id="listIn"></div>
-    <button id="btnIn" class="secondary hidden" onclick="checkIn()" disabled>Check in</button>
   </section>
-</main>
+</div>
 
 <div id="visitCard" class="visit hidden">
   <div class="visitIn">
@@ -271,13 +322,11 @@ button.x{width:auto;min-height:40px;margin:0;padding:6px 14px;font-size:15px;bac
   </div>
 </div>
 
-<div id="actionBar" class="bar hidden">
-  <div class="barIn">
-    <div id="barSum" class="barSum"></div>
-    <button id="barBtn" onclick="barAction()" disabled>Check out</button>
-    <button id="barCheckin" class="ghost" type="button" onclick="checkInHolding()" disabled>Check in</button>
-  </div>
-</div>
+<nav id="actionBar" class="bar hidden" aria-label="Actions">
+  <div id="barSum" class="hidden"></div>
+  <button id="barBtn" class="btn primary" type="button" onclick="barAction()" disabled>Check out</button>
+  <button id="barCheckin" class="btn outline" type="button" onclick="checkInHolding()" disabled>Check in</button>
+</nav>
 
 <div id="scanFlash" class="scanFlash">
   <div id="scanMark"></div>
@@ -288,8 +337,8 @@ button.x{width:auto;min-height:40px;margin:0;padding:6px 14px;font-size:15px;bac
   <div class="sheet">
     <h2 id="confirmTitle" style="margin-top:0"></h2>
     <div id="confirmBody"></div>
-    <button id="confirmOk">Confirm</button>
-    <button id="confirmNo" class="ghost">Cancel</button>
+    <button id="confirmOk" type="button">Confirm</button>
+    <button id="confirmNo" class="ghost" type="button">Cancel</button>
   </div>
 </div>
 
@@ -299,23 +348,23 @@ button.x{width:auto;min-height:40px;margin:0;padding:6px 14px;font-size:15px;bac
     <label>Choose</label>
     <input type="hidden" id="famSel">
     <div id="famList"></div>
-    <p id="famStock" class="small" style="margin:6px 0 0"></p>
+    <p id="famStock" class="small"></p>
     <div id="famQtyBox">
       <label for="famQty">How many</label>
       <div class="stepper">
-        <button class="ghost" onclick="famStep(-1)">−</button>
+        <button class="ghost" type="button" onclick="famStep(-1)">−</button>
         <input id="famQty" type="number" inputmode="numeric" min="1" value="1" onchange="famQtyFix()">
-        <button class="ghost" onclick="famStep(1)">+</button>
+        <button class="ghost" type="button" onclick="famStep(1)">+</button>
       </div>
     </div>
-    <p id="famTotal" style="font-size:20px;font-weight:bold;margin:8px 0 0"></p>
+    <p id="famTotal" class="small" style="font-size:18px;font-weight:700;color:var(--color-text)"></p>
     <div id="famBasket"></div>
-    <button id="famOk" onclick="addFamilyLine()">Add to check out</button>
-    <button id="famNo" class="ghost" onclick="document.getElementById('famBox').classList.add('hidden'); focusTool();">Cancel</button>
+    <button id="famOk" type="button" onclick="addFamilyLine()">Add to check out</button>
+    <button id="famNo" class="ghost" type="button" onclick="document.getElementById('famBox').classList.add('hidden'); focusTool();">Cancel</button>
   </div>
 </div>
 
-<div id="toast" class="toast hidden"></div>
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
@@ -461,6 +510,7 @@ function showApp(){
   $('studentIn').classList.add('hidden');
   $('myResult').innerHTML = '';
   $('app').classList.remove('hidden');
+  showTab('out');
   updateBar();
   $('signout').classList.remove('hidden');
   $('who').textContent = 'Signed in as ' + S.name + '. Signs out after 10 minutes without activity.';
@@ -519,16 +569,16 @@ function renderStudent(){
   const box = $('studentBox');
   if (S.student) {
     box.innerHTML =
-      '<div style="font-weight:bold">' + esc(S.student.holder) +
-        (S.student.year ? ' <span style="font-weight:normal">· ' + esc(S.student.year) + '</span>' : '') + '</div>' +
-      '<button class="ghost" onclick="changeStudent()">Change student</button>';
+      '<div class="search"><span class="name">' + esc(S.student.holder) +
+        (S.student.year ? ' · ' + esc(S.student.year) : '') + '</span><span class="hint">Confirmed</span></div>' +
+      '<button class="btn outline" type="button" onclick="changeStudent()">Change student</button>';
     return;
   }
   box.innerHTML =
     '<label for="stuNo">Student number</label>' +
-    '<input id="stuNo" inputmode="numeric" autocomplete="off">' +
-    '<button class="secondary" onclick="scanStudent()">Scan student QR</button>' +
-    '<button onclick="confirmStudent()">Confirm student</button>';
+    '<div class="search"><input id="stuNo" inputmode="numeric" autocomplete="off" placeholder="Student number"></div>' +
+    '<button class="scan-btn" type="button" onclick="scanStudent()">Scan student QR</button>' +
+    '<button class="btn primary" type="button" onclick="confirmStudent()">Confirm student</button>';
 }
 
 function changeStudent(){
@@ -569,24 +619,27 @@ function renderHolding(items, accs){
   const accUnits = accs.reduce((n, a) => n + a.qty, 0);
   $('nHold').textContent = items.length + accUnits;
   const toolHtml = items.map(t =>
-    '<label class="row' + (t.overdue ? ' late' : '') + '">' +
+    '<label class="tool' + (t.overdue ? ' overdue' : t.dueToday ? ' dueToday' : '') + '">' +
     '<input type="checkbox" class="hold" value="' + esc(t.id) + '" onchange="pickHold(this)" style="display:none">' +
-    '<div><div class="id">' + esc(t.name) + '</div>' +
-    '<small>' + (t.overdue ? 'OVERDUE · ' : '') + 'Return by ' + esc(t.due) + '</small></div>' +
+    '<div class="code">' + esc(t.id) + '</div>' +
+    '<div class="body"><div class="name">' + esc(t.name) + '</div>' +
+    '<div class="meta">' + (t.overdue ? 'Overdue · ' : '') + 'Return by ' + esc(t.due) + '</div></div>' +
+    (t.overdue ? '<span class="tag error">Overdue</span>' : '<span class="tag success">On loan</span>') +
     '</label>').join('');
   // Accessories: one row per item out, each with its own tick box.
   const accHtml = accs.flatMap(a => Array.from({ length: a.qty }, () =>
-    '<label class="row"><input type="checkbox" class="accHold" data-code="' + esc(a.code) + '" data-label="' + esc(a.label) +
+    '<label class="tool"><input type="checkbox" class="accHold" data-code="' + esc(a.code) + '" data-label="' + esc(a.label) +
     '" onchange="pickHold(this)" style="display:none">' +
-    '<div><div class="id">' + esc(a.label) + '</div>' +
-    '<small>Out to this student · tick to return</small></div></label>')).join('');
+    '<div class="code">' + esc(a.code) + '</div>' +
+    '<div class="body"><div class="name">' + esc(a.label) + '</div>' +
+    '<div class="meta">Out to this student · tick to return</div></div></label>')).join('');
   $('listHold').innerHTML = (toolHtml + accHtml) || '<p class="small">No tools or accessories are out to this student.</p>';
   updateHoldBtn();
 }
 
 // Tapping a tool turns its row green to show it is selected.
 function pickHold(el){
-  el.closest('label').classList.toggle('picked', el.checked);
+  el.closest('label').classList.toggle('selected', el.checked);
   updateHoldBtn();
 }
 
@@ -607,7 +660,7 @@ async function checkInHolding(){
   const token = S.token;
   const items = picked.map(c => ({
     id: c.value,
-    name: c.closest('label').querySelector('.id').textContent
+    name: c.closest('label').querySelector('.name').textContent
   }));
   const total = ids.length + accs.reduce((n, a) => n + a.qty, 0);
   const parts = [];
@@ -880,7 +933,7 @@ function myToolsHtml(r){
   // Accessories: one row per item, with the date it was taken. They have no return date.
   const accHtml = accs.length
     ? '<h2>Accessories you have</h2>' + accs.flatMap(a => Array.from({ length: a.qty }, () =>
-        '<div class="row"><div><div class="id">' + esc(a.label) + '</div>' +
+        '<div class="tool"><div><div class="id">' + esc(a.label) + '</div>' +
         '<small>' + (a.taken ? 'Taken ' + esc(a.taken) : 'Taken') + ' · return to the storeroom when finished</small>' +
         '</div></div>')).join('')
     : '';
@@ -891,7 +944,7 @@ function myToolsHtml(r){
       '. Please return ' + (late > 1 ? 'them' : 'it') + ' to the storeroom as soon as possible.</div>'
     : '';
   return head + banner + items.map(t =>
-    '<div class="row' + (t.overdue ? ' stuLate' : t.dueToday ? ' dueToday' : '') + '"><div>' +
+    '<div class="tool' + (t.overdue ? ' overdue' : t.dueToday ? ' dueToday' : '') + '"><div>' +
     '<div class="id">' + esc(t.name) + '</div>' +
     '<small>' + (t.overdue ? 'OVERDUE · ' : t.dueToday ? 'Due back today · ' : '') + 'Return by ' + esc(t.due) + '</small>' +
     '</div></div>').join('') +
@@ -1059,7 +1112,9 @@ $('zoom').addEventListener('input', e => applyZoom(e.target.value));
 function setMode(m){
   mode = m;
   $('modeAdd').classList.toggle('off', m !== 'add');
+  $('modeAdd').setAttribute('aria-selected', m === 'add' ? 'true' : 'false');
   $('modeWho').classList.toggle('off', m !== 'who');
+  $('modeWho').setAttribute('aria-selected', m === 'who' ? 'true' : 'false');
   $('manualBtn').textContent = m === 'who' ? 'Look up' : 'Add tool';
   $('whoResult').innerHTML = '';
 }
@@ -1183,8 +1238,8 @@ function rowHtml(t){
   const detail = t.pending ? 'Checking…' : t.out
     ? 'Out to ' + esc(t.borrower || t.holder) + (t.due ? ' · back by ' + esc(t.due) : '') + (t.overdue ? ' · OVERDUE' : '')
     : 'Available';
-  return '<div class="row" data-id="' + esc(t.id) + '"><div><div class="id">' + esc(t.name) + '</div>' +
-    '<small>' + detail + '</small></div>' +
+  return '<div class="tool" data-id="' + esc(t.id) + '"><div class="code">' + esc(t.id) + '</div><div class="body"><div class="name">' + esc(t.name) + '</div>' +
+    '<div class="meta">' + detail + '</div></div>' +
     '<button class="x" onclick="removeItem(\'' + esc(t.id) + '\')">Remove</button></div>';
 }
 
@@ -1566,7 +1621,7 @@ function lineHtml(l){
         '<button class="ghost" data-code="' + c + '" onclick="lineStep(this.dataset.code,1)">+</button>' +
       '</div>'
     : '<span class="qn">× ' + l.qty + '</span>';
-  return '<div class="row" data-id="' + c + '"><div style="min-width:0"><div class="id">' + esc(l.label) + '</div>' +
+  return '<div class="tool" data-id="' + c + '"><div style="min-width:0"><div class="id">' + esc(l.label) + '</div>' +
     '<small>' + (used ? 'Used up' : 'Comes back') + ' · ' + l.stock + ' in stock' +
     (used && l.unitCost ? '<br>' + money(l.unitCost) + ' each · total ' + money(l.unitCost * l.qty) : '') + '</small></div>' +
     controls +
@@ -1708,7 +1763,7 @@ function updateBar(){
     btn.textContent = 'Check in ' + ins;
   } else {
     barChoice = null;
-    btn.textContent = outs ? 'Check out' : 'Check in';
+    btn.textContent = 'Check out (' + outs + ')';
   }
   btn.disabled = busy || !barChoice;
   renderVisit();
@@ -1726,17 +1781,15 @@ focusStart();
 <script>
 // v2 layout helpers: tabs, filter chips and the overdue alert. The working script above is unchanged.
 function showTab(name){
-  document.querySelectorAll('[data-tab]').forEach(g => g.classList.toggle('hidden', g.dataset.tab !== name));
-  const co = $('tabCheckout'), ci = $('tabCheckin');
-  co.setAttribute('aria-selected', name === 'checkout' ? 'true' : 'false');
-  ci.setAttribute('aria-selected', name === 'checkin' ? 'true' : 'false');
-  co.classList.toggle('off', name !== 'checkout');
-  ci.classList.toggle('off', name !== 'checkin');
+  document.querySelectorAll('.segmented [data-tab]').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === name ? 'true' : 'false'));
+  $('panelOut').classList.toggle('hidden', name !== 'out');
+  $('panelCheck').classList.toggle('hidden', name !== 'check');
 }
+
 let holdFilter = 'all';
 function applyHoldFilter(){
-  document.querySelectorAll('#listHold .row').forEach(r => {
-    const overdue = r.classList.contains('late') || r.classList.contains('stuLate');
+  document.querySelectorAll('#listHold .tool').forEach(r => {
+    const overdue = r.classList.contains('overdue');
     const today = r.classList.contains('dueToday');
     const show = holdFilter === 'all' || (holdFilter === 'overdue' ? overdue : today);
     r.classList.toggle('hidden', !show);
@@ -1746,7 +1799,7 @@ function applyHoldFilter(){
 document.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => { holdFilter = b.dataset.filter; applyHoldFilter(); }));
 new MutationObserver(() => {
   applyHoldFilter();
-  const n = document.querySelectorAll('#listHold .row.late, #listHold .row.stuLate').length;
+  const n = document.querySelectorAll('#listHold .tool.overdue').length;
   const a = $('overdueAlert');
   if (n) { a.textContent = '! ' + n + ' overdue tool' + (n > 1 ? 's' : '') + '. Please return ' + (n > 1 ? 'them' : 'it') + ' to the storeroom.'; a.classList.remove('hidden'); }
   else a.classList.add('hidden');
