@@ -892,7 +892,22 @@ $('myNo').addEventListener('input', () => {
   myTimer = setTimeout(() => showMyTools(true), 600);
 });
 
+// Student view: what they still owe for consumables, under the tools list.
+function owingHtml(r){
+  const o = r.owing;
+  if (!o || !o.items || !o.items.length) return '';
+  return '<div class="stuBanner">You owe ' + money(o.total) + ' for consumables.</div>' +
+    '<h2>Consumables not yet paid</h2>' + o.items.map(t =>
+      '<div class="tool"><div class="body"><div class="name">' + esc(t.label) + ' × ' + t.qty + '</div>' +
+      '<div class="meta">' + esc(t.date) + ' · ' + money(t.total) + '</div></div>' +
+      '<span class="tag error">Unpaid</span></div>').join('');
+}
+
 function myToolsHtml(r){
+  return myToolsBody(r) + owingHtml(r);
+}
+
+function myToolsBody(r){
   // Overdue tools first, then the rest in order of return date.
   const items = r.items.slice().sort((a, b) => (b.overdue - a.overdue));
   const accs = r.accessories || [];
@@ -1672,6 +1687,7 @@ async function loadVisit(){
     const r = await api({ api: 'visit', token: token, no: no });
     if (S.token !== token || !S.student || S.student.no !== no) return;
     S.visitTakes = r.takes;
+    S.owing = r.owing || { total: 0, items: [] };
     renderVisit();
   } catch (e) {
     handleErr(e);
@@ -1683,18 +1699,43 @@ async function loadVisit(){
 let visitOpen = false;
 function toggleVisit(){ visitOpen = !visitOpen; renderVisit(); }
 
+// Marks Log rows as paid for the current student, then reloads the visit card.
+async function markPaidRows(rows){
+  if (!S.student || !rows.length) return;
+  const token = S.token, no = S.student.no;
+  try {
+    await api({ api: 'markpaid', token: token, no: no, rows: rows.join(',') });
+    if (S.token !== token || !S.student) return;
+    status('Marked as paid.');
+    await loadVisit();
+  } catch (e) {
+    handleErr(e);
+  }
+}
+
 function renderVisit(){
   const card = $('visitCard');
   if (!card) return;
   const takes = S.visitTakes || [];
-  const show = !!S.student && takes.length > 0 && !$('app').classList.contains('hidden');
+  const owing = S.owing || { total: 0, items: [] };
+  const show = !!S.student && (takes.length > 0 || owing.items.length > 0) && !$('app').classList.contains('hidden');
   card.classList.toggle('hidden', !show);
   if (!show) return;
   const total = Math.round(takes.reduce((n, t) => n + t.total, 0) * 100) / 100;
-  $('visitSum').textContent = 'Consumables today · ' + takes.length + ' taken · ' + money(total);
+  let sum = takes.length ? 'Consumables today · ' + takes.length + ' taken · ' + money(total) : 'Consumables';
+  if (owing.items.length) sum += ' · owes ' + money(owing.total);
+  $('visitSum').textContent = sum;
   $('visitArrow').textContent = visitOpen ? '▼' : '▲';
   $('visitBody').classList.toggle('hidden', !visitOpen);
-  $('visitBody').innerHTML = takes.map(t =>
+  const unpaid = owing.items.length
+    ? '<div class="visitLine"><b>Not yet paid · ' + money(owing.total) + '</b>' +
+      ' <button type="button" class="ghost" onclick="markPaidRows([' + owing.items.map(t => t.row).join(',') + '])">Mark all paid</button></div>' +
+      owing.items.map(t =>
+        '<div class="visitLine"><div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
+        '<small>' + money(t.total) + ' · ' + esc(t.date) + '</small> ' +
+        '<button type="button" class="ghost" onclick="markPaidRows([' + t.row + '])">Mark paid</button></div>').join('')
+    : '';
+  $('visitBody').innerHTML = unpaid + takes.map(t =>
     '<div class="visitLine"><div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
     '<small>' + money(t.unitCost) + ' each = ' + money(t.total) + ' · ' + esc(t.at) +
       (t.stockLeft == null ? '' : ' · ' + t.stockLeft + ' left in stock') + '</small></div>'
