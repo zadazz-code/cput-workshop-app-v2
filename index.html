@@ -194,6 +194,8 @@ button.x{background:var(--color-surface-raised);color:var(--color-error);border:
 .visitIn{max-width:560px;margin:0 auto;display:flex;flex-direction:column-reverse}
 .visitHead{padding:11px 16px}
 body:has(#visitCard:not(.hidden)) #actionBar{bottom:var(--visit-h,46px)}
+/* When the visit list is open, lift the Check out / Check in bar above it */
+body:has(#visitBody:not(.hidden)) #actionBar{bottom:calc(46px + 40vh)}
 </style>
 </head>
 <body>
