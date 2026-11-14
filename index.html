@@ -1727,19 +1727,29 @@ function renderVisit(){
   $('visitSum').textContent = sum;
   $('visitArrow').textContent = visitOpen ? '▼' : '▲';
   $('visitBody').classList.toggle('hidden', !visitOpen);
-  const unpaid = owing.items.length
-    ? '<div class="visitLine"><b>Not yet paid · ' + money(owing.total) + '</b>' +
-      ' <button type="button" class="ghost" onclick="markPaidRows([' + owing.items.map(t => t.row).join(',') + '])">Mark all paid</button></div>' +
-      owing.items.map(t =>
+  // A Pay button per take. Once paid it greys out and says Paid.
+  const payBtn = (row, paid) => {
+    if (row == null) return '';
+    return paid
+      ? '<button type="button" class="ghost" disabled style="opacity:.45">Paid</button>'
+      : '<button type="button" class="ghost" onclick="markPaidRows([' + row + '])">Pay</button>';
+  };
+  // Takes from earlier days that are still unpaid, listed separately.
+  const todayRows = new Set(takes.map(t => t.row));
+  const older = owing.items.filter(t => !todayRows.has(t.row));
+  const olderTotal = Math.round(older.reduce((n, t) => n + t.total, 0) * 100) / 100;
+  const olderHtml = older.length
+    ? '<div class="visitLine"><b>Earlier · not yet paid · ' + money(olderTotal) + '</b></div>' +
+      older.map(t =>
         '<div class="visitLine"><div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
-        '<small>' + money(t.total) + ' · ' + esc(t.date) + '</small> ' +
-        '<button type="button" class="ghost" onclick="markPaidRows([' + t.row + '])">Mark paid</button></div>').join('')
+        '<small>' + money(t.total) + ' · ' + esc(t.date) + '</small> ' + payBtn(t.row, false) + '</div>').join('')
     : '';
-  $('visitBody').innerHTML = unpaid + takes.map(t =>
+  const todayHtml = takes.map(t =>
     '<div class="visitLine"><div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
     '<small>' + money(t.unitCost) + ' each = ' + money(t.total) + ' · ' + esc(t.at) +
-      (t.stockLeft == null ? '' : ' · ' + t.stockLeft + ' left in stock') + '</small></div>'
-  ).join('') + '<div class="visitLine"><b>Total this visit: ' + money(total) + '</b></div>';
+      (t.stockLeft == null ? '' : ' · ' + t.stockLeft + ' left in stock') + '</small> ' +
+      payBtn(t.row, !!t.paid) + '</div>').join('');
+  $('visitBody').innerHTML = olderHtml + todayHtml + '<div class="visitLine"><b>Total this visit: ' + money(total) + '</b></div>';
 }
 
 // ---------- Bottom action bar ----------

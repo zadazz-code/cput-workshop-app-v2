@@ -1,6 +1,7 @@
 // ============================================================
 // Workshop Tools - Apps Script (v21)
 // v21: consumable payments. Log column M records when a consumable take was paid (blank = unpaid).
+// Each take in the visit list reports its Log row and whether it is paid (for the Pay / Paid button).
 // Students see what they still owe (apiMyTools). Staff see unpaid takes on the visit card and mark them paid (markpaid).
 // v20: final version. Adds the toollist route (names and status for every tool, for instant names on scan). Stock take import (importStockTake) and Repair status, so a broken unit cannot be checked out.
 // v18: families. Drill bits, sanding paper and similar items, each on its own tab named after the family.
@@ -860,10 +861,12 @@ function apiVisit(token, no) {
     const row = tab.rows.slice(1).find(x => String(x[tab.col.code]).trim().toUpperCase() === code);
     return row ? itemFrom(tab, row).label : code;
   };
-  const takes = log.slice(1)
-    .filter(r => r[2] === 'Used' && String(r[3]).trim() === String(no).trim() && r[0] instanceof Date &&
+  const takes = log.map((r, i) => [r, i + 1]).slice(1)
+    .filter(([r]) => r[2] === 'Used' && String(r[3]).trim() === String(no).trim() && r[0] instanceof Date &&
       Utilities.formatDate(r[0], tz, 'yyyy-MM-dd') === today)
-    .map(r => ({
+    .map(([r, row]) => ({
+      row: row,
+      paid: r[LOG_PAID] !== '' && r[LOG_PAID] !== null,
       label: labelFor(String(r[1]).trim().toUpperCase()),
       qty: Number(r[LOG_QTY]) || 0,
       unitCost: Number(r[LOG_COST]) || 0,
