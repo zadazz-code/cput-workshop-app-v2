@@ -1783,6 +1783,8 @@ syncBarCheckin();
   const bar = document.getElementById('actionBar'), visit = document.getElementById('visitCard');
   function place(){ bar.style.bottom = (visit.classList.contains('hidden') ? 14 : 14 + visit.offsetHeight + 10) + 'px'; placeToast(); }
   new ResizeObserver(place).observe(visit);
+  new ResizeObserver(place).observe(bar);
+  new MutationObserver(place).observe(bar, { attributes: true, attributeFilter: ['class'] });
   new MutationObserver(place).observe(visit, { attributes: true, attributeFilter: ['class'] });
   new MutationObserver(place).observe(document.getElementById('visitBody'), { attributes: true, attributeFilter: ['class'] });
   place();
