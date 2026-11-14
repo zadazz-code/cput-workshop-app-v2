@@ -192,6 +192,8 @@ button.x{background:var(--color-surface-raised);color:var(--color-error);border:
 .visit{left:0;right:0;bottom:0;max-width:none;border-radius:0;border:0;border-top:1px solid rgba(255,255,255,.9);box-shadow:0 -6px 20px rgba(0,71,63,.12);z-index:5}
 .visitIn{max-width:560px;margin:0 auto;display:flex;flex-direction:column-reverse}
 .visitHead{padding:11px 16px}
+/* Canvas layout: small uppercase section headings */
+#app h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--color-primary-strong);margin:26px 4px 10px;font-weight:700}
 </style>
 </head>
 <body>
@@ -231,68 +233,54 @@ button.x{background:var(--color-surface-raised);color:var(--color-error);border:
     <div id="who" class="alert success"></div>
     <div id="overdueAlert" class="alert error hidden"></div>
 
-    <div class="seg" role="tablist" style="margin-top:14px">
-      <button id="tabCheckin" role="tab" aria-selected="true" type="button" onclick="showTab('checkin')">Out to student</button>
-      <button id="tabCheckout" role="tab" aria-selected="false" type="button" class="off" onclick="showTab('checkout')">To check out</button>
+    <h2>Student</h2>
+    <div class="card" id="studentBox"></div>
+    <div id="stuReader" class="hidden"></div>
+
+    <div id="holdSection">
+      <button id="holdToggle" class="holdToggle" onclick="toggleHold()" aria-expanded="true">
+        <span>Out to this student · <b id="nHold">0</b> items</span><span id="holdArrow">Hide ▲</span>
+      </button>
+      <div id="holdBody">
+        <div id="listHold"><p class="small">Confirm a student to see what they have out.</p></div>
+        <button id="btnHoldIn" class="secondary hidden" onclick="checkInHolding()" disabled>Check in selected</button>
+      </div>
     </div>
 
-    <div data-tab="checkout">
-      <h2>Student</h2>
-      <div class="card" id="studentBox"></div>
-      <div id="stuReader" class="hidden"></div>
-
-      <h2>Scan tools</h2>
-      <div class="card">
-        <div class="seg">
-          <button id="modeAdd" onclick="setMode('add')">Add to lists</button>
-          <button id="modeWho" class="off" onclick="setMode('who')">Who has this?</button>
-        </div>
-        <div id="reader"></div>
-        <button id="camBtn" class="secondary" onclick="toggleCamera()">Start camera</button>
-        <div id="zoomBox" class="hidden">
-          <label for="zoom">Zoom in</label>
-          <input id="zoom" type="range" min="1" max="3" step="0.1" value="1">
-          <p class="small" style="margin:4px 0 0">Zoom works on most Android phones. On iPhone, move the camera closer instead.</p>
-        </div>
-        <label for="manual">Or type a number or code</label>
-        <input id="manual" placeholder="e.g. 042, DB or WR-2.5" autocapitalize="characters" autocomplete="off">
-        <button id="manualBtn" class="ghost" onclick="addManual()">Add tool</button>
+    <h2>Scan tools</h2>
+    <div class="card">
+      <div class="seg">
+        <button id="modeAdd" onclick="setMode('add')">Add to lists</button>
+        <button id="modeWho" class="off" onclick="setMode('who')">Who has this?</button>
       </div>
-      <div id="whoResult"></div>
-
-      <h2>Return date</h2>
-      <div class="card">
-        <label for="retDate">Return by</label>
-        <input id="retDate" type="date">
-        <p class="small">Set to today. Change it if the tool is due back on another day.</p>
+      <div id="reader"></div>
+      <button id="camBtn" class="secondary" onclick="toggleCamera()">Start camera</button>
+      <div id="zoomBox" class="hidden">
+        <label for="zoom">Zoom in</label>
+        <input id="zoom" type="range" min="1" max="3" step="0.1" value="1">
+        <p class="small" style="margin:4px 0 0">Zoom works on most Android phones. On iPhone, move the camera closer instead.</p>
       </div>
+      <label for="manual">Or type a number or code</label>
+      <input id="manual" placeholder="e.g. 042, DB or WR-2.5" autocapitalize="characters" autocomplete="off">
+      <button id="manualBtn" class="ghost" onclick="addManual()">Add tool</button>
+    </div>
+    <div id="whoResult"></div>
 
-      <h2>To check out (<span id="nOut">0</span>)</h2>
-      <div id="listOut"></div>
-      <p id="outHint" class="small"></p>
-      <button id="btnOut" class="hidden" onclick="checkOut()" disabled>Check out</button>
+    <h2>Return date</h2>
+    <div class="card">
+      <label for="retDate">Return by</label>
+      <input id="retDate" type="date">
+      <p class="small">Set to today. Change it if the tool is due back on another day.</p>
     </div>
 
-    <div data-tab="checkin" class="hidden">
-      <div id="holdSection">
-        <button id="holdToggle" class="holdToggle" onclick="toggleHold()" aria-expanded="false">
-          <span>Out to this student · <b id="nHold">0</b> items</span><span id="holdArrow">Show ▼</span>
-        </button>
-        <div id="holdBody">
-          <div class="chips" role="group" aria-label="Filter">
-            <button class="chip selected" type="button" data-filter="all">All</button>
-            <button class="chip" type="button" data-filter="overdue">Overdue</button>
-            <button class="chip" type="button" data-filter="today">Due today</button>
-          </div>
-          <div id="listHold"><p class="small">Confirm a student to see what they have out.</p></div>
-          <button id="btnHoldIn" class="secondary hidden" onclick="checkInHolding()" disabled>Check in selected</button>
-        </div>
-      </div>
+    <h2>To check out (<span id="nOut">0</span>)</h2>
+    <div id="listOut"></div>
+    <p id="outHint" class="small"></p>
+    <button id="btnOut" class="hidden" onclick="checkOut()" disabled>Check out</button>
 
-      <h2>To check in (<span id="nIn">0</span>)</h2>
-      <div id="listIn"></div>
-      <button id="btnIn" class="secondary hidden" onclick="checkIn()" disabled>Check in</button>
-    </div>
+    <h2>To check in (<span id="nIn">0</span>)</h2>
+    <div id="listIn"></div>
+    <button id="btnIn" class="secondary hidden" onclick="checkIn()" disabled>Check in</button>
   </section>
 </main>
 
@@ -1783,7 +1771,6 @@ new MutationObserver(() => {
   if (n) { a.textContent = '! ' + n + ' overdue tool' + (n > 1 ? 's' : '') + '. Please return ' + (n > 1 ? 'them' : 'it') + ' to the storeroom.'; a.classList.remove('hidden'); }
   else a.classList.add('hidden');
 }).observe($('listHold'), { childList: true, subtree: true });
-showTab('checkin');
 // Keep the bar's Check in button in step with the hidden holdings check-in button.
 function syncBarCheckin(){
   const src = $('btnHoldIn'), dst = $('barCheckin');
