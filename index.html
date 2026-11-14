@@ -1,0 +1,1779 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#00897b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Workshop Tools">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;500&display=swap">
+<title>Workshop Tools</title>
+<style>
+:root{
+  --teal:#00897b; --dark:#00473f; --mid:#80cbc4; --light:#b2dfdb; --pale:#e0f2f1; --red:#c62828;
+  --accent-dark:#00473f;
+  --bg:#e0f2f1; --ink:#00302b; --mute:#2f5a55;
+  --dark-sh:#b7d4d1; --light-w:#ffffff;
+  --raise:9px 9px 18px var(--dark-sh), -9px -9px 18px var(--light-w);
+  --raise-sm:5px 5px 10px var(--dark-sh), -5px -5px 10px var(--light-w);
+  --inset:inset 6px 6px 12px var(--dark-sh), inset -6px -6px 12px var(--light-w);
+  --glass:rgba(255,255,255,.5); --glass-edge:rgba(255,255,255,.85);
+  --blur:blur(16px) saturate(140%);
+}
+*{box-sizing:border-box}
+html,body{font-weight:300}
+input,select,textarea{font-weight:300}
+b,strong,h1,h2,h3,h4,label,button,th,.id,[style*="font-weight:bold"]{font-weight:500 !important}
+html,body{margin:0;background-color:var(--bg);background-image:radial-gradient(circle at 10% 6%,#b2dfdb 0,transparent 36%),radial-gradient(circle at 95% 40%,#80cbc4 0,transparent 30%),radial-gradient(circle at 30% 100%,#d7efec 0,transparent 42%);background-attachment:fixed;min-height:100%;font-family:Ubuntu,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:18px;color:var(--ink)}
+header{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;margin:10px 12px 0;border-radius:22px;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-edge);box-shadow:0 10px 26px rgba(0,71,63,.10);color:var(--dark);font-weight:bold;font-size:18px}
+main{max-width:560px;margin:0 auto;padding:12px 14px 150px}
+h2{color:var(--dark);font-size:22px;margin:22px 4px 10px}
+.card{background:var(--bg);border:0;border-radius:24px;padding:16px;margin:14px 0;box-shadow:var(--raise);min-width:0;overflow:hidden}
+label{display:block;font-weight:500;color:var(--dark);margin:12px 4px 8px;font-size:15px}
+input,select{width:100%;min-width:0;max-width:100%;height:52px;font-size:20px;padding:8px 16px;border:0;border-radius:16px;background:var(--bg);box-shadow:var(--inset);color:var(--ink);font-family:inherit;outline:none;margin-top:4px}
+input:focus-visible,select:focus-visible{box-shadow:var(--inset),0 0 0 3px rgba(0,137,123,.45)}
+input::placeholder{color:#7b9893}
+input[type=date]{-webkit-appearance:none;appearance:none;display:block;height:48px;font-size:18px;text-align:left;padding:6px 14px}
+input[type=range]{height:auto;padding:0;border:0;box-shadow:none;background:transparent;accent-color:var(--teal)}
+select{margin-top:4px}
+button{display:block;width:100%;min-height:52px;font-size:20px;font-weight:bold;border:0;border-radius:18px;background:var(--teal);color:#fff;margin-top:14px;padding:12px;font-family:inherit;box-shadow:var(--raise-sm);cursor:pointer}
+button:active{box-shadow:var(--inset)}
+button:focus-visible{outline:3px solid rgba(0,137,123,.55);outline-offset:3px}
+button.secondary{background:var(--dark)}
+button.ghost{background:var(--bg);color:var(--dark);box-shadow:var(--raise-sm)}
+button.x{width:auto;min-height:40px;margin:0;padding:6px 14px;font-size:16px;background:var(--bg);color:var(--red);box-shadow:var(--raise-sm)}
+button:disabled{background:var(--bg);color:#8aa5a1;box-shadow:var(--inset);cursor:not-allowed}
+#signout,#staffBtn{width:auto;min-height:40px;margin:0;padding:8px 14px;font-size:15px}
+#staffBtn{margin-left:auto}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{height:40px;width:auto;background:#fff;border-radius:10px;padding:4px 8px;box-shadow:var(--raise-sm);display:block}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;border:0;border-radius:22px;margin:12px 0;background:var(--bg);box-shadow:var(--raise)}
+.row .id{font-weight:bold;color:var(--ink)}
+.row small{color:var(--mute);display:block;margin-top:3px}
+.row.late{background:#f6dcd8}
+.row.late .id,.row.late small{color:var(--red)}
+.row.late small{font-weight:bold}
+.row.dueToday{background:#f9e6e2}
+.row.stuLate{background:#efb9b2}
+.row.stuLate .id,.row.stuLate small{color:#7f0000}
+.row.stuLate small{font-weight:bold}
+.row.picked{background:#d5f0e4}
+.row.picked .id,.row.picked small{color:#1b5e20}
+.row.hilite{animation:rowFlash 1.2s ease-out}
+@keyframes rowFlash{0%{box-shadow:0 0 0 4px rgba(0,137,123,.55),var(--raise)}100%{box-shadow:var(--raise)}}
+#listHold .row{cursor:pointer;user-select:none}
+#holdSection{scroll-margin-top:90px}
+.holdToggle{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;min-height:52px;background:var(--dark);color:#fff;border:0;border-radius:18px;padding:12px 16px;font-size:18px;font-weight:500;margin:20px 0 8px;text-align:left;box-shadow:var(--raise-sm)}
+.holdToggle b{font-weight:500}
+.stuBanner{background:var(--bg);box-shadow:var(--inset);color:var(--red);font-weight:bold;padding:14px 16px;border-radius:18px;margin:12px 0}
+.who{background:var(--bg);box-shadow:var(--raise);border-radius:24px;padding:16px;margin:14px 0}
+.who.late{background:#f6dcd8}
+.who.late .big,.who.late .tag{color:var(--red)}
+.who .big{font-size:22px;font-weight:bold;color:var(--ink)}
+.tag{color:var(--red);font-weight:bold}
+.small{font-size:15px;color:var(--mute)}
+.hidden{display:none !important}
+#myReader,#stuReader,#reader{width:100%;border-radius:20px;overflow:hidden;background:#000;margin-top:10px;scroll-margin-top:90px;box-shadow:var(--raise)}
+#zoomBox{margin-top:10px}
+.seg{display:flex;gap:10px;margin-bottom:10px}
+.seg button{margin:0;min-height:44px;font-size:17px}
+.seg button.off{background:var(--bg);color:var(--dark);box-shadow:var(--raise-sm)}
+.overlay{position:fixed;inset:0;background:rgba(0,48,43,.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.overlay.hidden{display:none !important}
+.sheet{background:rgba(255,255,255,.72);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);width:100%;max-width:560px;border-radius:28px 28px 0 0;padding:20px;max-height:85vh;overflow:auto;border:1px solid var(--glass-edge);box-shadow:0 -10px 40px rgba(0,71,63,.14)}
+.sheet button{margin-top:12px}
+#confirmBox button:focus,#famBox button:focus{outline:3px solid var(--teal);outline-offset:3px}
+.toast{position:fixed;left:12px;right:12px;bottom:96px;max-width:536px;margin:0 auto;padding:14px 16px;border-radius:20px;font-weight:bold;background:rgba(0,71,63,.92);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);color:#fff;box-shadow:0 10px 30px rgba(0,48,43,.25);z-index:9}
+.toast.ok{background:rgba(0,71,63,.94);color:#fff}
+.toast.bad{background:rgba(198,40,40,.94);color:#fff}
+.toast button{display:inline-block;width:auto;min-height:40px;margin:8px 0 0 14px;padding:6px 14px;font-size:17px;background:#fff;color:var(--dark);border:0;border-radius:12px;box-shadow:none}
+.scanFlash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none;opacity:0;z-index:30;transition:opacity .15s;backdrop-filter:blur(4px)}
+.scanFlash.show{opacity:1}
+.scanFlash.good{background:rgba(0,137,123,.9);color:#fff}
+.scanFlash.bad{background:rgba(198,40,40,.92);color:#fff}
+#scanMark{font-size:120px;line-height:1;font-weight:bold}
+#scanLabel{font-size:26px;font-weight:bold;text-align:center;padding:0 20px;word-break:break-all}
+.stepper{display:flex;align-items:center;gap:10px;margin-top:6px}
+.stepper button{width:auto;min-width:52px;min-height:48px;margin:0;padding:6px 12px;font-size:24px;line-height:1}
+.stepper input{width:110px;height:48px;text-align:center;font-size:20px;padding:4px;flex:none}
+.stepper.sm button{min-width:40px;min-height:40px;font-size:20px;padding:4px 8px}
+.stepper.sm input{width:64px;height:40px}
+.stepper .qn{min-width:34px;text-align:center;font-weight:bold;font-size:20px;color:var(--dark)}
+.famItem{display:block;width:100%;text-align:left;touch-action:manipulation;user-select:none;padding:14px 16px;margin:12px 0;border:0;border-radius:20px;background:var(--bg);color:var(--ink);font-size:18px;cursor:pointer;box-shadow:var(--raise);min-height:0}
+.famItem .fName{font-weight:500}
+.famItem .fSub{font-size:15px;margin-top:3px;color:var(--mute)}
+.famItem.sel{box-shadow:var(--inset),0 0 0 3px var(--teal)}
+.famItem.low{background:#f6dcd8}
+.famItem.none{background:#e9b5ae;color:#7f0000;cursor:not-allowed}
+.visit{position:fixed;left:12px;right:12px;bottom:110px;max-width:536px;margin:0 auto;z-index:5;background:rgba(255,255,255,.7);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-edge);border-radius:22px;box-shadow:0 10px 30px rgba(0,71,63,.14);overflow:hidden}
+.visitIn{max-width:560px;margin:0 auto}
+.visitHead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;background:var(--dark);color:#fff;font-weight:500;font-size:17px;cursor:pointer}
+.visitBody{max-height:40vh;overflow:auto;padding:2px 16px 12px}
+.visitLine{padding:9px 0;border-bottom:1px solid var(--mid);font-size:16px}
+.visitLine .big{font-weight:500}
+.visitLine small{color:var(--mute);font-size:15px}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:12px 14px calc(12px + env(safe-area-inset-bottom));z-index:6;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-top:1px solid var(--glass-edge);box-shadow:0 -8px 26px rgba(0,71,63,.12)}
+.barIn{max-width:560px;margin:0 auto;display:flex;gap:10px;align-items:center}
+.barSum{flex:1;min-width:0;font-size:16px;color:var(--mute);line-height:1.3}
+.barSum b{color:var(--dark)}
+.bar button{width:auto;min-width:170px;min-height:52px;margin:0;font-size:18px;padding:10px 14px}
+.accHold{background:var(--bg)}
+/* Styleguide v2 tokens and components (colours from the staff palette) */
+:root{--color-primary:#00897b;--color-primary-hover:#00796b;--color-primary-strong:#00473f;--color-primary-soft:#b2dfdb;--color-focus:#00cfcc;--color-surface:#f4fbfa;--color-surface-raised:#ffffff;--color-canvas:#e0f2f1;--color-text:#00302b;--color-muted:#2f5a55;--color-disabled:#dbe7e5;--color-disabled-text:#7b9893;--color-error:#c62828;--color-error-soft:#fbe0dc;--color-success:#00695c;--elev1:3px 3px 8px rgba(0,71,63,.12),-3px -3px 8px rgba(255,255,255,.9);--elev2:6px 6px 14px rgba(0,71,63,.14),-6px -6px 14px rgba(255,255,255,.9);--inset:inset 4px 4px 9px rgba(0,71,63,.13),inset -4px -4px 9px rgba(255,255,255,.9)}
+html,body{background:linear-gradient(-45deg,#e0f2f1,#b2dfdb,#d7f3ef,#80cbc4,#e0f2f1);background-size:400% 400%;animation:meshShift 24s ease-in-out infinite;color:var(--color-text);font-size:17px}
+@keyframes meshShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@media (prefers-reduced-motion:reduce){html,body{animation:none}}
+header{background:rgba(255,255,255,.6);border-radius:20px;color:var(--color-primary-strong);border:1px solid rgba(255,255,255,.9)}
+.brand > span:last-child{background:none;-webkit-text-fill-color:currentColor;color:var(--color-primary-strong);font-size:18px}
+h2{font-size:24px;font-weight:700;color:var(--color-primary-strong);margin:24px 4px 10px}
+label{color:var(--color-primary-strong);font-size:14px;margin:14px 4px 8px}
+.card{background:var(--color-surface);border:0;border-radius:20px;box-shadow:var(--elev2);padding:18px}
+input,select{border:0;border-radius:999px;background:var(--color-surface);box-shadow:var(--inset);color:var(--color-text);height:56px;padding:0 20px}
+input:focus-visible,select:focus-visible{box-shadow:var(--inset),0 0 0 3px var(--color-focus)}
+button{background:var(--color-primary);color:#fff;border-radius:16px;box-shadow:var(--elev1);min-height:52px;font-weight:700}
+button:hover:not(:disabled){background:var(--color-primary-hover)}
+button:active:not(:disabled){box-shadow:var(--inset)}
+button:focus-visible{outline:3px solid var(--color-focus);outline-offset:3px}
+button:disabled{background:var(--color-disabled);color:var(--color-disabled-text);box-shadow:none;cursor:not-allowed}
+button.secondary{background:var(--color-primary-strong)}
+button.ghost{background:transparent;color:var(--color-primary-strong);border:2px solid var(--color-primary);box-shadow:none}
+button.ghost:hover:not(:disabled){background:var(--color-primary-soft)}
+button.x{background:var(--color-surface-raised);color:var(--color-error);border:2px solid var(--color-error);box-shadow:none}
+#signout,#staffBtn{border-radius:14px;min-height:40px;font-size:15px}
+.seg{display:flex;gap:4px;padding:4px;border-radius:999px;background:var(--color-surface);box-shadow:var(--inset)}
+.seg button{flex:1;margin:0;border-radius:999px;background:var(--color-primary);color:#fff;box-shadow:var(--elev1)}
+.seg button.off{background:transparent;color:var(--color-muted);box-shadow:none;border:0}
+.row{background:var(--color-surface-raised);border:0;border-left:6px solid var(--color-primary);border-radius:20px;box-shadow:var(--elev2);padding:16px}
+.row.late{background:var(--color-error-soft);border-left-color:var(--color-error)}
+.row.dueToday{background:#fdeeea;border-left-color:#e57373}
+.row.stuLate{background:#f5c9c3;border-left-color:#8e1b1b}
+.row.picked{background:#d5f0e4;border-left-color:var(--color-success)}
+.row .id{color:var(--color-text)}
+.row small{color:var(--color-muted)}
+.row.late .id,.row.late small{color:var(--color-error)}
+.stuBanner{background:var(--color-error-soft);color:var(--color-error);border-left:6px solid var(--color-error);border-radius:16px;box-shadow:none}
+.holdToggle{background:var(--color-primary-strong);border-radius:16px;box-shadow:var(--elev1);min-height:56px}
+.famItem{background:var(--color-surface-raised);border:0;border-left:6px solid var(--color-primary);border-radius:20px;box-shadow:var(--elev2);color:var(--color-text)}
+.famItem.low{background:var(--color-error-soft);border-left-color:var(--color-error)}
+.famItem.none{background:#e9b5ae;border-left-color:#8e1b1b;color:#5a0d0d}
+.famItem.sel{box-shadow:var(--inset),0 0 0 3px var(--color-focus)}
+.who{background:var(--color-surface-raised);border:0;border-radius:20px;box-shadow:var(--elev2)}
+.who.late{background:var(--color-error-soft)}
+.toast{background:var(--color-primary-strong);border-radius:16px;box-shadow:0 10px 30px rgba(0,48,43,.25);font-weight:600}
+.toast.bad{background:var(--color-error)}
+.toast button{background:#fff;color:var(--color-primary-strong);border-radius:12px;box-shadow:none}
+.bar{background:rgba(255,255,255,.75);border-top:1px solid rgba(255,255,255,.9);box-shadow:0 -8px 26px rgba(0,71,63,.12)}
+.bar button{min-width:170px;font-size:17px}
+.bar button.ghost{background:transparent}
+.barSum{color:var(--color-muted)}
+.sheet{border-radius:28px 28px 0 0}
+.visit{border-radius:20px}
+.visitHead{background:var(--color-primary-strong)}
+/* v2 layout components */
+.headline{font-size:28px;font-weight:700;color:var(--color-primary-strong);margin:18px 4px 6px}
+.alert{display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px 16px;border-radius:16px;font-size:15px;font-weight:600}
+.alert.success{background:#c8ede5;color:var(--color-success)}
+.alert.error{background:var(--color-error-soft);color:var(--color-error)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+.chip{background:var(--color-surface-raised);color:var(--color-primary-strong);border:0;border-radius:999px;padding:8px 14px;min-height:0;font-size:14px;font-weight:600;box-shadow:var(--elev1)}
+.chip.selected{background:var(--color-primary-soft);box-shadow:var(--inset)}
+.chip:disabled{background:var(--color-disabled);color:var(--color-disabled-text);box-shadow:none}
+.chip:hover:not(:disabled){background:var(--color-primary-soft)}
+#who{font-weight:600}
+#overdueAlert{margin-top:8px}
+</style>
+</head>
+<body>
+<header>
+  <span class="brand"><img class="logo" src="logo.png" alt="Product and Industrial Design"><span>Workshop Tools</span></span>
+  <button id="staffBtn" class="ghost" onclick="toggleStaffView()">Staff sign in</button>
+  <button id="signout" class="ghost hidden" onclick="lockOut('Signed out.')">Sign out</button>
+</header>
+
+<main>
+  <section id="studentIn">
+    <h1 class="headline">Your tools</h1>
+    <div class="card">
+      <label for="myNo">Student number</label>
+      <input id="myNo" inputmode="numeric" autocomplete="off" placeholder="Your student number">
+      <button class="secondary" onclick="scanMyNumber()">Scan student card</button>
+      <div id="myReader" class="hidden"></div>
+      <p class="small">Scan your card or type your number. Your tools and return dates appear below.</p>
+    </div>
+    <div id="myResult"></div>
+  </section>
+
+  <section id="signin" class="hidden">
+    <h1 class="headline">Staff sign-in</h1>
+    <div class="card">
+      <label for="pin">Your PIN</label>
+      <input id="pin" type="password" inputmode="numeric" autocomplete="off">
+      <button id="signinBtn" onclick="signIn()">Sign in</button>
+      <button class="ghost" onclick="showStaffView(false)">Cancel</button>
+      <p class="small" style="margin-top:14px">New to this? <a href="guide.html" target="_blank" rel="noopener" style="color:var(--color-primary-strong);font-weight:bold">Read the staff guide</a></p>
+      <p class="small">Your PIN is used only to sign in. You are signed out after 10 minutes without activity.</p>
+    </div>
+  </section>
+
+  <section id="app" class="hidden">
+    <h1 class="headline">Check out</h1>
+    <div id="who" class="alert success"></div>
+    <div id="overdueAlert" class="alert error hidden"></div>
+
+    <div class="seg" role="tablist" style="margin-top:14px">
+      <button id="tabCheckout" role="tab" aria-selected="true" type="button" onclick="showTab('checkout')">To check out</button>
+      <button id="tabCheckin" role="tab" aria-selected="false" type="button" class="off" onclick="showTab('checkin')">Out to student</button>
+    </div>
+
+    <div data-tab="checkout">
+      <h2>Student</h2>
+      <div class="card" id="studentBox"></div>
+      <div id="stuReader" class="hidden"></div>
+
+      <h2>Scan tools</h2>
+      <div class="card">
+        <div class="seg">
+          <button id="modeAdd" onclick="setMode('add')">Add to lists</button>
+          <button id="modeWho" class="off" onclick="setMode('who')">Who has this?</button>
+        </div>
+        <div id="reader"></div>
+        <button id="camBtn" class="secondary" onclick="toggleCamera()">Start camera</button>
+        <div id="zoomBox" class="hidden">
+          <label for="zoom">Zoom in</label>
+          <input id="zoom" type="range" min="1" max="3" step="0.1" value="1">
+          <p class="small" style="margin:4px 0 0">Zoom works on most Android phones. On iPhone, move the camera closer instead.</p>
+        </div>
+        <label for="manual">Or type a number or code</label>
+        <input id="manual" placeholder="e.g. 042, DB or WR-2.5" autocapitalize="characters" autocomplete="off">
+        <button id="manualBtn" class="ghost" onclick="addManual()">Add tool</button>
+      </div>
+      <div id="whoResult"></div>
+
+      <h2>Return date</h2>
+      <div class="card">
+        <label for="retDate">Return by</label>
+        <input id="retDate" type="date">
+        <p class="small">Set to today. Change it if the tool is due back on another day.</p>
+      </div>
+
+      <h2>To check out (<span id="nOut">0</span>)</h2>
+      <div id="listOut"></div>
+      <p id="outHint" class="small"></p>
+      <button id="btnOut" class="hidden" onclick="checkOut()" disabled>Check out</button>
+    </div>
+
+    <div data-tab="checkin" class="hidden">
+      <div id="holdSection">
+        <button id="holdToggle" class="holdToggle" onclick="toggleHold()" aria-expanded="false">
+          <span>Out to this student · <b id="nHold">0</b> items</span><span id="holdArrow">Show ▼</span>
+        </button>
+        <div id="holdBody" class="hidden">
+          <div class="chips" role="group" aria-label="Filter">
+            <button class="chip selected" type="button" data-filter="all">All</button>
+            <button class="chip" type="button" data-filter="overdue">Overdue</button>
+            <button class="chip" type="button" data-filter="today">Due today</button>
+          </div>
+          <div id="listHold"><p class="small">Confirm a student to see what they have out.</p></div>
+          <button id="btnHoldIn" class="secondary hidden" onclick="checkInHolding()" disabled>Check in selected</button>
+        </div>
+      </div>
+
+      <h2>To check in (<span id="nIn">0</span>)</h2>
+      <div id="listIn"></div>
+      <button id="btnIn" class="secondary hidden" onclick="checkIn()" disabled>Check in</button>
+    </div>
+  </section>
+</main>
+
+<div id="visitCard" class="visit hidden">
+  <div class="visitIn">
+    <div class="visitHead" onclick="toggleVisit()"><span id="visitSum"></span><span id="visitArrow">▲</span></div>
+    <div id="visitBody" class="visitBody hidden"></div>
+  </div>
+</div>
+
+<div id="actionBar" class="bar hidden">
+  <div class="barIn">
+    <div id="barSum" class="barSum"></div>
+    <button id="barBtn" onclick="barAction()" disabled>Check out</button>
+  </div>
+</div>
+
+<div id="scanFlash" class="scanFlash">
+  <div id="scanMark"></div>
+  <div id="scanLabel"></div>
+</div>
+
+<div id="confirmBox" class="overlay hidden">
+  <div class="sheet">
+    <h2 id="confirmTitle" style="margin-top:0"></h2>
+    <div id="confirmBody"></div>
+    <button id="confirmOk">Confirm</button>
+    <button id="confirmNo" class="ghost">Cancel</button>
+  </div>
+</div>
+
+<div id="famBox" class="overlay hidden">
+  <div class="sheet">
+    <h2 id="famTitle" style="margin-top:0"></h2>
+    <label>Choose</label>
+    <input type="hidden" id="famSel">
+    <div id="famList"></div>
+    <p id="famStock" class="small" style="margin:6px 0 0"></p>
+    <div id="famQtyBox">
+      <label for="famQty">How many</label>
+      <div class="stepper">
+        <button class="ghost" onclick="famStep(-1)">−</button>
+        <input id="famQty" type="number" inputmode="numeric" min="1" value="1" onchange="famQtyFix()">
+        <button class="ghost" onclick="famStep(1)">+</button>
+      </div>
+    </div>
+    <p id="famTotal" style="font-size:20px;font-weight:bold;margin:8px 0 0"></p>
+    <div id="famBasket"></div>
+    <button id="famOk" onclick="addFamilyLine()">Add to check out</button>
+    <button id="famNo" class="ghost" onclick="document.getElementById('famBox').classList.add('hidden'); focusTool();">Cancel</button>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const API = 'PASTE_V2_EXEC_URL_HERE';
+const IDLE_MS = 10 * 60 * 1000;
+
+function fresh(){ return { token: '', name: '', student: null, items: new Map(), lines: new Map(), visitTakes: [] }; }
+
+let S = fresh();
+let last = Date.now();
+let busy = false;
+let qr = null, camOn = false, lastId = '', lastAt = 0, toastTimer = null, cbN = 0;
+const pending = new Set();
+let toolCache = new Map();   // id -> {id, name, status}, loaded at sign-in so names show at once
+
+async function loadToolCache(){
+  if (!S.token) return;
+  const token = S.token;
+  try {
+    const r = await api({ api: 'toollist', token: token });
+    if (S.token === token) toolCache = new Map(r.tools.map(t => [t.id, t]));
+  } catch (e) { /* the scan still works without names; the server answer fills them in */ }
+}
+let mode = 'add'; // 'add' = add to check-out/check-in lists, 'who' = show who has the tool
+let scanTarget = 'tool'; // 'tool' = reading tool labels, 'student' = staff reading a student's number QR, 'mystudent' = a student reading their own card
+const studentCache = new Map(); // students confirmed this sign-in, so repeat numbers don't wait for the server
+
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ---------- Messages ----------
+
+function status(msg, kind = 'ok', ms = 6000, action = null){
+  const t = $('toast');
+  t.innerHTML = '';
+  t.appendChild(document.createTextNode(msg));
+  if (action) {
+    const b = document.createElement('button');
+    b.textContent = action.label;
+    b.onclick = () => { t.classList.add('hidden'); action.fn(); };
+    t.appendChild(b);
+  }
+  t.className = 'toast ' + kind;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.add('hidden'), ms);
+}
+
+function handleErr(e){
+  if (/Session expired/i.test(e.message)) return lockOut('Your session ended. Sign in again.');
+  status(e.message, 'bad', 9000);
+}
+
+// ---------- Server calls (JSONP: works from GitHub Pages without CORS) ----------
+
+function api(params){
+  return new Promise((resolve, reject) => {
+    const name = 'cb_' + (++cbN) + '_' + Date.now();
+    const s = document.createElement('script');
+    const timer = setTimeout(() => finish(new Error('No response from the storeroom server. Check the signal and try again.')), 20000);
+    function finish(err, data){
+      clearTimeout(timer);
+      delete window[name];
+      s.remove();
+      if (err) reject(err); else resolve(data);
+    }
+    window[name] = res => res.ok ? finish(null, res.data) : finish(new Error(res.error));
+    s.onerror = () => finish(new Error('Could not reach the storeroom server.'));
+    const qs = new URLSearchParams(Object.assign({}, params, { callback: name }));
+    s.src = API + '?' + qs.toString();
+    document.head.appendChild(s);
+  });
+}
+
+// ---------- Idle sign-out (10 minutes) ----------
+
+function touch(){ last = Date.now(); }
+['pointerdown', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, touch, true));
+setInterval(() => {
+  if (S.token && Date.now() - last > IDLE_MS) lockOut('Signed out after 10 minutes without activity.');
+}, 5000);
+// Leaving the app (switching away, locking the phone, or closing it) signs the staff member out.
+// On return the screen starts empty, so no student or checkout list from before is still showing.
+const LEAVE_MS = 30 * 1000;
+let leftAt = 0;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { leftAt = Date.now(); return; }
+  const away = leftAt ? Date.now() - leftAt : 0;
+  leftAt = 0;
+  if (S.token && (away > LEAVE_MS || Date.now() - last > IDLE_MS)) lockOut('Signed out after leaving the app. Sign in again.');
+});
+// iPhones can restore a page from memory when a home-screen app is reopened. Treat that as leaving the app.
+window.addEventListener('pageshow', e => {
+  if (e.persisted && S.token) lockOut('Signed out after leaving the app. Sign in again.');
+});
+
+// ---------- Sign in / out ----------
+
+// Switches the first screen between the student view and the staff sign-in.
+// The top-right button toggles between "Staff sign in" and "Students".
+function showStaffView(on){
+  $('signin').classList.toggle('hidden', !on);
+  $('studentIn').classList.toggle('hidden', on);
+  $('myResult').classList.toggle('hidden', on);
+  $('staffBtn').textContent = on ? 'Student sign in' : 'Staff sign in';
+  if (on) {
+    $('pin').focus();
+  } else {
+    $('pin').value = '';
+  }
+}
+
+function toggleStaffView(){
+  showStaffView($('signin').classList.contains('hidden'));
+}
+
+async function signIn(){
+  const pin = $('pin').value.trim();
+  if (!pin) return status('Enter your PIN.', 'bad');
+  $('signinBtn').disabled = true;
+  try {
+    const r = await api({ api: 'signin', pin: pin });
+    S = fresh();
+    S.token = r.token;
+    S.name = r.name;
+    $('pin').value = '';
+    touch();
+    showApp();
+    // Put the cursor in the student number box, so staff can type straight away.
+    setTimeout(() => { const el = $('stuNo'); if (el) el.focus(); }, 0);
+  } catch (e) {
+    status(e.message, 'bad', 9000);
+  } finally {
+    $('signinBtn').disabled = false;
+  }
+}
+
+function showApp(){
+  loadToolCache();
+  $('signin').classList.add('hidden');
+  $('staffBtn').classList.add('hidden');
+  $('studentIn').classList.add('hidden');
+  $('myResult').innerHTML = '';
+  $('app').classList.remove('hidden');
+  updateBar();
+  $('signout').classList.remove('hidden');
+  $('who').textContent = 'Signed in as ' + S.name + '. Signs out after 10 minutes without activity.';
+  $('retDate').value = todayStr();
+  // A fresh sign-in never starts with a student, so the old list is cleared.
+  renderStudent();
+  renderLists();
+  loadHolding();
+  // Keep the server responsive while staff are signed in: a tiny request every 2 minutes.
+  clearInterval(keepAlive);
+  keepAlive = setInterval(() => api({ api: 'ping' }).catch(() => {}), 2 * 60 * 1000);
+  renderStudent();
+  renderLists();
+}
+
+async function lockOut(msg){
+  await stopCamera();
+  S = fresh();
+  studentCache.clear();
+  toolCache = new Map();
+  scanTarget = 'tool';
+  setMode('add');
+  $('app').classList.add('hidden');
+  updateBar();
+  clearInterval(keepAlive);
+  showStaffView(false);
+  $('staffBtn').classList.remove('hidden');
+  $('signout').classList.add('hidden');
+  // Empty the screen as well, so nothing from the last student is left in the page.
+  holdItems = new Map();
+  lastAction = null;
+  $('whoResult').innerHTML = '';
+  $('myResult').innerHTML = '';
+  $('famBox').classList.add('hidden');
+  $('confirmBox').classList.add('hidden');
+  $('visitBody').innerHTML = '';
+  focusStart();
+  renderStudent();
+  renderLists();
+  loadHolding();
+  if (msg) status(msg, 'bad', 9000);
+}
+
+// ---------- Student ----------
+
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function fmtDate(ymd){
+  return new Date(ymd + 'T12:00:00').toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function renderStudent(){
+  const box = $('studentBox');
+  if (S.student) {
+    box.innerHTML =
+      '<div style="font-weight:bold">' + esc(S.student.holder) +
+        (S.student.year ? ' <span style="font-weight:normal">· ' + esc(S.student.year) + '</span>' : '') + '</div>' +
+      '<button class="ghost" onclick="changeStudent()">Change student</button>';
+    return;
+  }
+  box.innerHTML =
+    '<label for="stuNo">Student number</label>' +
+    '<input id="stuNo" inputmode="numeric" autocomplete="off">' +
+    '<button class="secondary" onclick="scanStudent()">Scan student QR</button>' +
+    '<button onclick="confirmStudent()">Confirm student</button>';
+}
+
+function changeStudent(){
+  touch();
+  S.student = null;
+  focusStart();
+  S.lines.clear();
+  S.visitTakes = [];
+  renderStudent();
+  renderLists();
+  loadHolding();
+}
+
+// Tools currently out to the confirmed student, earliest return first; overdue ones shown in red.
+async function loadHolding(){
+  // Until a student is confirmed, the whole "Out to this student" section is hidden.
+  $('holdSection').classList.toggle('hidden', !S.student);
+  renderHoldToggle();
+  if (!S.student) {
+    $('nHold').textContent = '0';
+    $('listHold').innerHTML = '<p class="small">Confirm a student to see what they have out.</p>';
+    return;
+  }
+  const token = S.token, no = S.student.no;
+  loadVisit();
+  try {
+    const r = await api({ api: 'holding', token: token, no: no });
+    if (S.token !== token || !S.student || S.student.no !== no) return;
+    renderHolding(r.items, r.accessories);
+  } catch (e) {
+    handleErr(e);
+  }
+}
+
+function renderHolding(items, accs){
+  holdItems = new Map(items.map(t => [t.id, t]));
+  accs = accs || [];
+  const accUnits = accs.reduce((n, a) => n + a.qty, 0);
+  $('nHold').textContent = items.length + accUnits;
+  const toolHtml = items.map(t =>
+    '<label class="row' + (t.overdue ? ' late' : '') + '">' +
+    '<input type="checkbox" class="hold" value="' + esc(t.id) + '" onchange="pickHold(this)" style="display:none">' +
+    '<div><div class="id">' + esc(t.name) + '</div>' +
+    '<small>' + (t.overdue ? 'OVERDUE · ' : '') + 'Return by ' + esc(t.due) + '</small></div>' +
+    '</label>').join('');
+  // Accessories: one row per item out, each with its own tick box.
+  const accHtml = accs.flatMap(a => Array.from({ length: a.qty }, () =>
+    '<label class="row"><input type="checkbox" class="accHold" data-code="' + esc(a.code) + '" data-label="' + esc(a.label) +
+    '" onchange="pickHold(this)" style="display:none">' +
+    '<div><div class="id">' + esc(a.label) + '</div>' +
+    '<small>Out to this student · tick to return</small></div></label>')).join('');
+  $('listHold').innerHTML = (toolHtml + accHtml) || '<p class="small">No tools or accessories are out to this student.</p>';
+  updateHoldBtn();
+}
+
+// Tapping a tool turns its row green to show it is selected.
+function pickHold(el){
+  el.closest('label').classList.toggle('picked', el.checked);
+  updateHoldBtn();
+}
+
+function updateHoldBtn(){
+  updateBar();
+  const n = document.querySelectorAll('input.hold:checked').length + accTicked();
+  $('btnHoldIn').textContent = n ? 'Check in selected (' + n + ')' : 'Check in selected';
+  $('btnHoldIn').disabled = busy || !n;
+}
+
+// Checks in the ticked tools from the student's list.
+async function checkInHolding(){
+  touch();
+  const picked = Array.from(document.querySelectorAll('input.hold:checked'));
+  const ids = picked.map(c => c.value);
+  const accs = accReturns();
+  if (!ids.length && !accs.length) return;
+  const token = S.token;
+  const items = picked.map(c => ({
+    id: c.value,
+    name: c.closest('label').querySelector('.id').textContent
+  }));
+  const total = ids.length + accs.reduce((n, a) => n + a.qty, 0);
+  const parts = [];
+  if (items.length) parts.push(toolLines(items));
+  if (accs.length) parts.push(accs.map(a => esc(a.label) + ' × ' + a.qty).join('<br>'));
+  const ok = await confirmSave('Check in ' + total + ' item' + (total > 1 ? 's' : '') + '?', parts, 'Check in');
+  if (!ok || S.token !== token) return;
+  // Remove the ticked rows straight away; the list is reloaded from the server afterwards either way.
+  picked.forEach(c => c.closest('label').remove());
+  busy = true; updateHoldBtn();
+  status('Saving…', 'ok', 30000);
+  let msg = '', kind = 'ok', undo = null;
+  try {
+    if (ids.length) {
+      const r = await api({ api: 'checkin', token: token, ids: ids.join(',') });
+      if (S.token !== token) return;
+      const no = S.student ? S.student.no : '';
+      lastAction = { type: 'in', items: r.done.map(id => {
+        const name = (items.find(x => x.id === id) || {}).name || '';
+        const dueDate = (holdItems.get(id) || {}).dueDate;
+        return { id: id, name: name, no: no, dueDate: dueDate };
+      }) };
+      msg = 'Checked in ' + r.done.length + '.';
+      if (r.notOut.length) { msg += ' Already in: ' + r.notOut.join(', ') + '.'; kind = 'bad'; }
+      if (r.done.length) undo = { label: 'Undo', fn: undoLast };
+    }
+    if (accs.length) {
+      const r2 = await api({ api: 'return', token: token, no: S.student ? S.student.no : '',
+        lines: accs.map(a => a.code + ':' + a.qty).join(',') });
+      if (S.token !== token) return;
+      msg += (msg ? ' ' : '') + 'Returned ' + r2.done.map(d => (d.label || d.code) + ' × ' + d.qty).join(', ') + '.';
+    }
+    status(msg, kind, 10000, undo);
+    scrollToStudent();
+  } catch (e) {
+    handleErr(e);
+  } finally {
+    busy = false;
+    renderLists();
+    loadHolding();
+  }
+}
+
+// Puts the cursor where the next input is needed, so a scan or typed number goes straight in.
+function focusStart(){
+  setTimeout(() => {
+    let el;
+    if (S.token) el = !S.student ? $('stuNo') : $('manual');   // staff: student box, then tool box
+    else el = $('signin').classList.contains('hidden') ? $('myNo') : $('pin');   // students: their number box; staff sign-in: PIN
+    if (el) el.focus({ preventScroll: true });
+  }, 0);
+}
+
+// After a student is confirmed, put the cursor in the tool box. preventScroll keeps the student name in view.
+function focusTool(){
+  setTimeout(() => { const el = $('manual'); if (el) el.focus({ preventScroll: true }); }, 0);
+}
+
+async function confirmStudent(){
+  touch();
+  const no = $('stuNo').value.trim();
+  if (!no) return status('Enter the student number.', 'bad');
+  const cached = studentCache.get(no);
+  if (cached) {
+    S.student = { no: no, holder: cached.holder, year: cached.year };
+    status('Student confirmed: ' + cached.holder + (cached.year ? ' (' + cached.year + ')' : ''));
+    renderStudent();
+    renderLists();
+    loadHolding();
+    scrollToStudent();
+    focusTool();
+    return;
+  }
+  const token = S.token;
+  try {
+    const r = await api({ api: 'student', token: token, no: no });
+    if (S.token !== token) return;
+    studentCache.set(no, { holder: r.holder, year: r.year || '' });
+    S.student = { no: no, holder: r.holder, year: r.year || '' };
+    status('Student confirmed: ' + r.holder + (r.year ? ' (' + r.year + ')' : ''));
+    renderStudent();
+    renderLists();
+    loadHolding();
+    scrollToStudent();
+    focusTool();
+  } catch (e) {
+    handleErr(e);
+  }
+}
+
+// ---------- Scanning ----------
+
+// Accepts the new simple labels (just the ID, e.g. TL-042) and the older labels (a full link ending ?tool=TL-042).
+function parseId(text){
+  const raw = String(text || '').trim();
+  try {
+    const t = new URL(raw).searchParams.get('tool');
+    if (t) return normaliseId(t);
+  } catch (e) {}
+  if (/^[A-Za-z]{1,4}-\d{1,4}$/.test(raw) || /^\d{1,4}$/.test(raw)) return normaliseId(raw);
+  return null;
+}
+
+// Scans a student's QR code (their number) in its own small camera window under the student box.
+// The window closes by itself once the card is read. Tapping the button again cancels.
+async function scanStudent(){
+  touch();
+  if (scanTarget === 'student' && camOn) { stopCamera(); return; }
+  if (camOn) await stopCamera();
+  scanTarget = 'student';
+  $('stuReader').classList.remove('hidden');
+  status('Point the camera at the student QR code.');
+  startCamera('stuReader');
+}
+
+async function onStudentCode(text){
+  const no = String(text || '').trim();
+  if (!/^\d{4,15}$/.test(no)) {
+    if (Date.now() - lastAt > 3000) { lastAt = Date.now(); feedback(false); status('That is not a student QR code.', 'bad'); }
+    return;
+  }
+  scanTarget = 'tool';
+  stopCamera();
+  feedback(true, 'Student card read');
+  if (!$('stuNo')) return;
+  $('stuNo').value = no;
+  confirmStudent();
+}
+
+// Scan feedback: a short beep and a vibration when a label is read or refused.
+// The audio is unlocked on a tap (Start camera), because phones block sound otherwise.
+let audioCtx = null;
+function unlockAudio(){
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  } catch (e) {}
+}
+function beep(freq, ms){
+  try {
+    if (!audioCtx) return;
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.frequency.value = freq;
+    g.gain.value = 0.2;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + ms / 1000);
+  } catch (e) {}
+}
+let flashTimer = null;
+
+// Big full-screen green (good) or red (bad) flash with a tick or cross and the label that was read.
+function flashScan(ok, label){
+  const f = $('scanFlash');
+  f.className = 'scanFlash ' + (ok ? 'good' : 'bad');
+  $('scanMark').textContent = ok ? '✓' : '✗';
+  $('scanLabel').textContent = label || '';
+  void f.offsetWidth; // restart the transition
+  f.classList.add('show');
+  clearTimeout(flashTimer);
+  flashTimer = setTimeout(() => f.classList.remove('show'), 700);
+}
+
+function feedback(ok, label){
+  if (navigator.vibrate) navigator.vibrate(ok ? 60 : [120, 80, 120]);
+  beep(ok ? 1000 : 300, ok ? 90 : 300);
+  flashScan(ok, label);
+}
+
+async function startCamera(elId = 'reader'){
+  unlockAudio();
+  if (camOn) return;
+  if (typeof Html5Qrcode === 'undefined') {
+    return status('The scanner did not load. Check the internet connection, or type the tool ID.', 'bad', 9000);
+  }
+  qr = new Html5Qrcode(elId);
+  try {
+    // Scan area is now 90% of the shorter side of the camera view (was a fixed 240px square).
+    await qr.start({ facingMode: 'environment' }, {
+      fps: 15,
+      qrbox: (w, h) => { const s = Math.floor(Math.min(w, h) * 0.9); return { width: s, height: s }; },
+      experimentalFeatures: { useBarCodeDetectorIfSupported: true }
+    }, onCode, () => {});
+    camOn = true;
+    $('camBtn').textContent = 'Stop camera';
+    // Move the camera view to the top of the screen, under the header, so it is visible without scrolling.
+    $(elId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(setupZoom, 400); // give the camera a moment to start
+  } catch (e) {
+    status('Camera not available. Allow camera access in your browser, or type the tool ID below.', 'bad', 9000);
+  }
+}
+
+async function stopCamera(){
+  if (qr && camOn) {
+    try { await qr.stop(); } catch (e) {}
+    try { qr.clear(); } catch (e) {}
+  }
+  qr = null;
+  camOn = false;
+  zoomTrack = null;
+  $('zoomBox').classList.add('hidden');
+  $('myReader').classList.add('hidden');
+  $('stuReader').classList.add('hidden');
+  $('camBtn').textContent = 'Start camera';
+}
+
+function toggleCamera(){
+  touch();
+  if (scanTarget !== 'tool') stopCamera();
+  scanTarget = 'tool';
+  camOn ? stopCamera() : startCamera();
+}
+
+// Student self-service: scan the card to fill in the student number, then type the surname.
+async function scanMyNumber(){
+  touch();
+  scanTarget = 'mystudent';
+  if (camOn) await stopCamera();
+  $('myReader').classList.remove('hidden');
+  status('Point the camera at your student card.');
+  startCamera('myReader');
+}
+
+function onMyCode(text){
+  const no = String(text || '').trim();
+  if (!/^\d{4,15}$/.test(no)) {
+    if (Date.now() - lastAt > 3000) { lastAt = Date.now(); feedback(false); status('That is not a student card.', 'bad'); }
+    return;
+  }
+  scanTarget = 'tool';
+  stopCamera();
+  feedback(true, 'Student card read');
+  $('myNo').value = no;
+  showMyTools(true);
+}
+
+// Loads a student's tools. Runs by itself after a card scan, or once a typed number is complete.
+// "auto" lookups stay quiet if the number isn't found yet, so partial numbers don't show errors.
+async function showMyTools(auto = false){
+  touch();
+  const no = $('myNo').value.trim();
+  if (!no) { $('myResult').innerHTML = ''; return; }
+  if (!auto && !/^\d{4,15}$/.test(no)) return status('Enter your student number.', 'bad');
+  $('myResult').innerHTML = '<p class="small">Checking…</p>';
+  try {
+    const r = await api({ api: 'mytools', no: no });
+    if ($('myNo').value.trim() === no) $('myResult').innerHTML = myToolsHtml(r);
+  } catch (e) {
+    if ($('myNo').value.trim() !== no) return;
+    $('myResult').innerHTML = '';
+    if (!auto) status(e.message, 'bad', 9000);
+  }
+}
+
+// Typing: once the number looks complete, wait briefly and then load the tools.
+let myTimer = null;
+let keepAlive = null; // timer that pings the server while staff are signed in
+$('myNo').addEventListener('input', () => {
+  clearTimeout(myTimer);
+  if (!/^\d{4,15}$/.test($('myNo').value.trim())) { $('myResult').innerHTML = ''; return; }
+  myTimer = setTimeout(() => showMyTools(true), 600);
+});
+
+function myToolsHtml(r){
+  // Overdue tools first, then the rest in order of return date.
+  const items = r.items.slice().sort((a, b) => (b.overdue - a.overdue));
+  const accs = r.accessories || [];
+  const head = '<h2>Hi ' + esc(r.name) + ', these are your tools</h2>';
+  if (!items.length && !accs.length) return head + '<p class="small">No tools or accessories are signed out to you.</p>';
+  // Accessories: one row per item, with the date it was taken. They have no return date.
+  const accHtml = accs.length
+    ? '<h2>Accessories you have</h2>' + accs.flatMap(a => Array.from({ length: a.qty }, () =>
+        '<div class="row"><div><div class="id">' + esc(a.label) + '</div>' +
+        '<small>' + (a.taken ? 'Taken ' + esc(a.taken) : 'Taken') + ' · return to the storeroom when finished</small>' +
+        '</div></div>')).join('')
+    : '';
+  if (!items.length) return head + accHtml;
+  const late = items.filter(t => t.overdue).length;
+  const banner = late
+    ? '<div class="stuBanner">You have ' + late + ' overdue tool' + (late > 1 ? 's' : '') +
+      '. Please return ' + (late > 1 ? 'them' : 'it') + ' to the storeroom as soon as possible.</div>'
+    : '';
+  return head + banner + items.map(t =>
+    '<div class="row' + (t.overdue ? ' stuLate' : t.dueToday ? ' dueToday' : '') + '"><div>' +
+    '<div class="id">' + esc(t.name) + '</div>' +
+    '<small>' + (t.overdue ? 'OVERDUE · ' : t.dueToday ? 'Due back today · ' : '') + 'Return by ' + esc(t.due) + '</small>' +
+    '</div></div>').join('') +
+    '<p class="small">Overdue tools are dark red and listed first. Tools due back today are light red.</p>' + accHtml;
+}
+
+function onCode(text){
+  touch();
+  if (scanTarget === 'mystudent') return onMyCode(text);
+  if (scanTarget === 'student') return onStudentCode(text);
+  const famCode = String(text || '').trim().toUpperCase();
+  if (/^[A-Z]{2,4}$/.test(famCode)) {
+    // A family code (e.g. DB) opens the picker. A short cooldown stops the camera reopening it straight after Cancel.
+    const nowF = Date.now();
+    if (famCode === lastFam && nowF - lastFamAt < 4000) return;
+    lastFam = famCode; lastFamAt = nowF;
+    return openFamily(famCode);
+  }
+  const id = parseId(text);
+  if (!id) { feedback(false); return status('That QR code is not a storeroom tool.', 'bad'); }
+  const now = Date.now();
+  if (id === lastId && now - lastAt < 3000) return; // ignore the same label being read again
+  lastId = id;
+  lastAt = now;
+  feedback(true, id);
+  mode === 'who' ? lookupTool(id) : addTool(id);
+}
+
+// Typing just the number is enough: "42" or "042" becomes "TL-042".
+// Other IDs (for example C-014) are used as typed.
+function normaliseId(raw){
+  const s = String(raw || '').trim().toUpperCase();
+  if (/^\d{1,4}$/.test(s)) return 'TL-' + s.padStart(3, '0');
+  return s;
+}
+
+function addManual(){
+  touch();
+  const id = normaliseId($('manual').value);
+  if (!id) return;
+  $('manual').value = '';
+  $('manual').focus(); // keep the cursor in the box for the next number
+  // Family codes (DB) and item codes (WR-2.5) open the picker. Anything else is a tool ID.
+  if (mode !== 'who' && /^[A-Z]{2,4}(-[0-9A-Z.]+)?$/.test(id)) return openFamily(id.split('-')[0], id.includes('-') ? id : '');
+  mode === 'who' ? lookupTool(id) : addTool(id);
+}
+
+// The tool appears in the list straight away as "Checking…", then fills in when the server replies.
+// Enter in the student number box confirms the student. The box is rebuilt on screen, so listen at document level.
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target && e.target.id === 'stuNo') { e.preventDefault(); confirmStudent(); }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target && e.target.id === 'pin') { e.preventDefault(); signIn(); }
+});
+
+// Enter adds the typed tool and keeps the cursor in the box, so the next number can be typed straight away.
+// Enter with a number in the box adds it. Enter on an empty box runs the bar's action (check out or check in), so two Enters finish a session.
+$('manual').addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  if ($('manual').value.trim()) addManual();
+  else barAction();
+});
+
+// On the summary, the arrow keys move between Confirm and Cancel, and Enter presses the highlighted one
+// (Confirm by default). Listened on the whole page while the summary is open, so the focus does not matter.
+// The Enter that opened the summary is ignored for a moment, so it cannot also confirm it.
+let confirmOpenedAt = 0;
+document.addEventListener('keydown', e => {
+  if ($('confirmBox').classList.contains('hidden')) return;
+  // Down and Right move to Cancel; Up and Left move to Confirm.
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+    e.preventDefault();
+    const toCancel = e.key === 'ArrowDown' || e.key === 'ArrowRight';
+    (toCancel ? $('confirmNo') : $('confirmOk')).focus({ preventScroll: true });
+    return;
+  }
+  if (e.key !== 'Enter') return;
+  if (performance.now() - confirmOpenedAt < 400) { e.preventDefault(); return; }
+  if (e.target === $('confirmNo') || e.target === $('confirmOk')) return;   // a focused button presses itself
+  e.preventDefault();
+  $('confirmOk').click();
+});
+
+async function addTool(id){
+  touch();
+  if (S.items.has(id)) return status('That item is already in the list.', 'bad');
+  if (pending.has(id)) return;
+  const known = toolCache.get(id);
+  if (known && known.status === 'Repair') {
+    flashScan(false, id);
+    return status(known.name + ' is currently unavailable due to repairs.', 'bad');
+  }
+  pending.add(id);
+  if (known) status('Checking ' + known.name + '…');
+  S.items.set(id, { id: id, name: known ? known.name : 'Checking…', pending: true });
+  renderLists();
+  highlightRow(id);
+  const token = S.token;
+  try {
+    const t = await api({ api: 'tool', token: token, id: id });
+    if (S.token !== token) return;
+    if (t.repair) {
+      S.items.delete(id);
+      flashScan(false, id);
+      return status(t.name + ' is currently unavailable due to repairs.', 'bad');
+    }
+    S.items.set(id, t);
+    status(t.name + ' added' + (t.out ? '. It is out, so it goes to check-in.' : '.'));
+  } catch (e) {
+    if (S.token === token) S.items.delete(id);
+    flashScan(false, id);
+    handleErr(e);
+  } finally {
+    pending.delete(id);
+    renderLists();
+  }
+}
+
+function removeItem(id){
+  touch();
+  S.items.delete(id);
+  renderLists();
+}
+
+// ---------- Camera zoom ----------
+
+let zoomTrack = null;
+
+// Uses the phone camera's own zoom, if the browser reports it. Otherwise the slider stays hidden.
+function setupZoom(){
+  const v = document.querySelector('#reader video');
+  const stream = v && v.srcObject;
+  const track = stream && stream.getVideoTracks ? stream.getVideoTracks()[0] : null;
+  const caps = track && track.getCapabilities ? track.getCapabilities() : {};
+  if (!caps.zoom) {
+    zoomTrack = null;
+    $('zoomBox').classList.add('hidden');
+    return;
+  }
+  zoomTrack = track;
+  const z = $('zoom');
+  z.min = caps.zoom.min;
+  z.max = caps.zoom.max;
+  z.step = caps.zoom.step || 0.1;
+  z.value = track.getSettings().zoom || caps.zoom.min;
+  $('zoomBox').classList.remove('hidden');
+}
+
+async function applyZoom(value){
+  touch();
+  if (!zoomTrack) return;
+  try {
+    await zoomTrack.applyConstraints({ advanced: [{ zoom: Number(value) }] });
+  } catch (e) {
+    status('Zoom is not available on this phone. Move the camera closer instead.', 'bad', 8000);
+  }
+}
+
+$('zoom').addEventListener('input', e => applyZoom(e.target.value));
+
+// ---------- Who has this tool? ----------
+
+function setMode(m){
+  mode = m;
+  $('modeAdd').classList.toggle('off', m !== 'add');
+  $('modeWho').classList.toggle('off', m !== 'who');
+  $('manualBtn').textContent = m === 'who' ? 'Look up' : 'Add tool';
+  $('whoResult').innerHTML = '';
+}
+
+// Shows who a scanned tool is out to. Does not change the check-out or check-in lists.
+async function lookupTool(id){
+  touch();
+  if (pending.has(id)) return;
+  pending.add(id);
+  const token = S.token;
+  $('whoResult').innerHTML = '<div class="who"><div class="big">' + esc(id) + '</div><p style="margin:10px 0 0">Looking up…</p></div>';
+  try {
+    const t = await api({ api: 'tool', token: token, id: id });
+    if (S.token !== token || mode !== 'who') return;
+    $('whoResult').innerHTML = t.out
+      ? '<div class="who' + (t.overdue ? ' late' : '') + '">' +
+          '<div class="big">' + esc(t.name) + '</div>' +
+          '<p style="margin:12px 0 2px"><b>Out to</b></p>' +
+          '<div class="big">' + esc(t.borrower || t.holder) + '</div>' +
+          (t.year ? '<div style="font-size:18px;margin-top:2px">' + esc(t.year) + '</div>' : '') +
+          '<p style="margin:12px 0 0"><b>Return by</b> ' + esc(t.due || 'no date set') + '</p>' +
+          (t.overdue ? '<p class="tag" style="font-weight:bold;margin:6px 0 0">OVERDUE</p>' : '') +
+        '</div>'
+      : t.repair
+        ? '<div class="who"><div class="big">' + esc(t.name) + '</div>' +
+          '<p style="margin:10px 0 0;color:#b71c1c;font-weight:bold">Currently unavailable due to repairs.</p></div>'
+        : '<div class="who"><div class="big">' + esc(t.name) + '</div>' +
+          '<p style="margin:10px 0 0">Available. Not out to anyone.</p></div>';
+  } catch (e) {
+    $('whoResult').innerHTML = '';
+    handleErr(e);
+  } finally {
+    pending.delete(id);
+  }
+}
+
+// ---------- Confirm before saving, and undo ----------
+
+let lastAction = null;          // the last save this session, so it can be undone
+let holdItems = new Map();      // tools out to the student currently on screen, by ID
+
+// Shows a summary and waits for Confirm or Cancel. Resolves true only on Confirm.
+function confirmSave(title, lines, okLabel){
+  return new Promise(resolve => {
+    $('confirmTitle').textContent = title;
+    $('confirmBody').innerHTML = lines.map(l => '<p style="margin:8px 0">' + l + '</p>').join('');
+    $('confirmOk').textContent = okLabel;
+    const done = v => { $('confirmBox').classList.add('hidden'); resolve(v); };
+    $('confirmOk').onclick = () => done(true);
+    $('confirmNo').onclick = () => done(false);
+    confirmOpenedAt = performance.now();
+    $('confirmBox').classList.remove('hidden');
+    setTimeout(() => $('confirmOk').focus({ preventScroll: true }), 0);
+  });
+}
+
+function toolLines(items){
+  return items.map(t => esc(t.name)).join('<br>');
+}
+
+function noFromHolder(h){
+  const m = /\((\d+)\)\s*$/.exec(String(h || ''));
+  return m ? m[1] : '';
+}
+
+// Reverses the last save: check-outs are checked back in; check-ins are signed out again to the same student and date.
+async function undoLast(){
+  const a = lastAction;
+  if (!a) return;
+  lastAction = null;
+  const token = S.token;
+  try {
+    if (a.type === 'out') {
+      const r = await api({ api: 'checkin', token: token, ids: a.ids.join(',') });
+      if (S.token !== token) return;
+      let msg = 'Undone: ' + r.done.length + ' tool' + (r.done.length === 1 ? '' : 's') + ' checked back in.';
+      if (r.notOut.length) msg += ' Could not undo: ' + r.notOut.join(', ') + '.';
+      status(msg, r.notOut.length ? 'bad' : 'ok', 8000);
+    } else {
+      const failed = [];
+      const groups = new Map();
+      a.items.forEach(it => {
+        if (!it.no || !it.dueDate) { failed.push(it.id); return; }
+        const k = it.no + '|' + it.dueDate;
+        if (!groups.has(k)) groups.set(k, { no: it.no, ret: it.dueDate, ids: [] });
+        groups.get(k).ids.push(it.id);
+      });
+      let back = 0;
+      for (const g of groups.values()) {
+        try {
+          const r = await api({ api: 'checkout', token: token, ids: g.ids.join(','), no: g.no, ret: g.ret });
+          back += r.done.length;
+          failed.push(...r.taken);
+        } catch (e) {
+          failed.push(...g.ids);
+        }
+      }
+      if (S.token !== token) return;
+      let msg = 'Undone: ' + back + ' tool' + (back === 1 ? '' : 's') + ' signed out again.';
+      if (failed.length) msg += ' Could not undo: ' + failed.join(', ') + '.';
+      status(msg, failed.length ? 'bad' : 'ok', 8000);
+    }
+    loadHolding();
+  } catch (e) {
+    handleErr(e);
+  }
+}
+
+// ---------- Lists and buttons ----------
+
+// Flashes a tool's row green and brings it into view, so the list confirms the scan.
+function highlightRow(id){
+  const el = Array.from(document.querySelectorAll('[data-id]')).find(e => e.dataset.id === id);
+  if (!el) return;
+  el.classList.remove('hilite');
+  void el.offsetWidth;
+  el.classList.add('hilite'); // highlight only; don't scroll, so the camera stays in view
+}
+
+function rowHtml(t){
+  const detail = t.pending ? 'Checking…' : t.out
+    ? 'Out to ' + esc(t.borrower || t.holder) + (t.due ? ' · back by ' + esc(t.due) : '') + (t.overdue ? ' · OVERDUE' : '')
+    : 'Available';
+  return '<div class="row" data-id="' + esc(t.id) + '"><div><div class="id">' + esc(t.name) + '</div>' +
+    '<small>' + detail + '</small></div>' +
+    '<button class="x" onclick="removeItem(\'' + esc(t.id) + '\')">Remove</button></div>';
+}
+
+function renderLists(){
+  const outs = [], ins = [], checking = [];
+  S.items.forEach(t => (t.pending ? checking : t.out ? ins : outs).push(t));
+
+  const outCount = outs.length + S.lines.size;
+  $('nOut').textContent = outCount;
+  $('nIn').textContent = ins.length;
+  $('listOut').innerHTML = (checking.concat(outs).map(rowHtml).join('') + [...S.lines.values()].map(lineHtml).join('')) || '<p class="small">No tools waiting to be checked out.</p>';
+  $('listIn').innerHTML = ins.map(rowHtml).join('') || '<p class="small">No tools waiting to be checked in.</p>';
+
+  $('outHint').textContent = outCount && !S.student ? 'Confirm a student above before checking out.' : '';
+  $('btnOut').textContent = outCount ? 'Check out ' + outCount + ' item' + (outCount > 1 ? 's' : '') : 'Check out';
+  $('btnOut').disabled = busy || !outCount || !S.student;
+
+  $('btnIn').textContent = ins.length ? 'Check in ' + ins.length + ' tool' + (ins.length > 1 ? 's' : '') : 'Check in';
+  $('btnIn').disabled = busy || !ins.length;
+  updateBar();
+}
+
+async function checkOut(){
+  touch();
+  const ids = [...S.items.values()].filter(t => !t.pending && !t.out).map(t => t.id);
+  const lines = [...S.lines.values()];
+  if ((!ids.length && !lines.length) || !S.student) return;
+  const ret = $('retDate').value;
+  if (!ret) return status('Choose the return date first.', 'bad');
+  const token = S.token;
+  const removed = ids.map(id => S.items.get(id)).filter(Boolean);
+  const total = ids.length + lines.reduce((n, l) => n + l.qty, 0);
+  const parts = [
+    'To: <b>' + esc(S.student.holder) + '</b>' + (S.student.year ? ' · ' + esc(S.student.year) : ''),
+    'Return by: <b>' + esc(fmtDate(ret)) + '</b>'
+  ];
+  if (removed.length) parts.push(toolLines(removed));
+  if (lines.length) {
+    parts.push(lines.map(l => esc(l.label) + ' × ' + l.qty +
+      (l.unitCost ? ' · ' + money(l.unitCost) + ' each = ' + money(l.unitCost * l.qty) : '')).join('<br>'));
+    const due = lines.reduce((n, l) => n + (l.unitCost || 0) * l.qty, 0);
+    if (due > 0) parts.push('<b>Total to pay: ' + money(due) + '</b>');
+  }
+  const ok = await confirmSave('Check out ' + total + ' item' + (total > 1 ? 's' : '') + '?', parts, 'Check out');
+  if (S.token !== token) return;
+  if (!ok) {
+    // Cancel empties the check out, as the first screen does, and puts the cursor back in the tool box.
+    ids.forEach(id => S.items.delete(id));
+    S.lines.clear();
+    renderLists();
+    focusTool();
+    return status('Check out cleared.');
+  }
+  // Clear the rows straight away; they come back only if the server refuses them.
+  const savedLines = new Map(S.lines);
+  ids.forEach(id => S.items.delete(id));
+  S.lines.clear();
+  busy = true; renderLists();
+  status('Saving…', 'ok', 30000);
+  let toolsSaved = !ids.length, linesSaved = !lines.length;
+  try {
+    let msg = '', kind = 'ok', undo = null;
+    if (ids.length) {
+      const r = await api({ api: 'checkout', token: token, ids: ids.join(','), no: S.student.no, ret: ret });
+      if (S.token !== token) return;
+      toolsSaved = true;
+      lastAction = { type: 'out', ids: r.done };
+      msg = 'Checked out ' + r.done.length + ' to ' + r.holder + ', return by ' + r.returnBy + '.';
+      if (r.taken.length) { msg += ' Not checked out (already out, out for maintenance, or unknown): ' + r.taken.join(', ') + '.'; kind = 'bad'; }
+      if (r.done.length) undo = { label: 'Undo', fn: undoLast };
+    }
+    if (lines.length) {
+      const r2 = await api({ api: 'take', token: token, no: S.student.no,
+        lines: lines.map(l => l.code + ':' + l.qty).join(',') });
+      if (S.token !== token) return;
+      linesSaved = true;
+      r2.done.forEach(d => {
+        if (d.consumable) S.visitTakes.push({ label: d.label, qty: d.qty, unitCost: d.unitCost, total: d.total,
+          stockLeft: d.stockLeft, at: d.at });
+      });
+      msg += (msg ? ' ' : '') + 'Taken: ' + r2.done.map(d => (d.label || d.code) + ' × ' + d.qty + (d.total ? ' (' + money(d.total) + ')' : '')).join(', ') + '.';
+    }
+    status(msg, kind, 10000, undo);
+    loadHolding();
+    stopCamera(); // the next items are picked from the list, so close the camera
+    scrollToStudent();
+  } catch (e) {
+    if (S.token === token) {
+      if (!toolsSaved) removed.forEach(t => S.items.set(t.id, t));
+      if (!linesSaved) savedLines.forEach((v, k) => S.lines.set(k, v));
+    }
+    handleErr(e);
+  } finally {
+    busy = false;
+    renderLists();
+  }
+}
+
+async function checkIn(){
+  touch();
+  const ids = [...S.items.values()].filter(t => !t.pending && t.out).map(t => t.id);
+  if (!ids.length) return;
+  const token = S.token;
+  const removed = ids.map(id => S.items.get(id)).filter(Boolean);
+  const ok = await confirmSave('Check in ' + ids.length + ' tool' + (ids.length > 1 ? 's' : '') + '?',
+    [toolLines(removed)], 'Check in');
+  if (!ok || S.token !== token) return;
+  ids.forEach(id => S.items.delete(id));
+  busy = true; renderLists();
+  status('Saving…', 'ok', 30000);
+  try {
+    const r = await api({ api: 'checkin', token: token, ids: ids.join(',') });
+    if (S.token !== token) return;
+    lastAction = { type: 'in', items: removed.filter(t => r.done.includes(t.id)).map(t => ({
+      id: t.id, name: t.name, no: noFromHolder(t.holder), dueDate: t.dueDate
+    })) };
+    let msg = 'Checked in ' + r.done.length + '.';
+    if (r.notOut.length) msg += ' Already in: ' + r.notOut.join(', ') + '.';
+    status(msg, r.notOut.length ? 'bad' : 'ok', 10000, r.done.length ? { label: 'Undo', fn: undoLast } : null);
+    loadHolding();
+  } catch (e) {
+    if (S.token === token) removed.forEach(t => S.items.set(t.id, t));
+    handleErr(e);
+  } finally {
+    busy = false;
+    renderLists();
+  }
+}
+
+// ---------- Family items (drill bits, sanding paper and similar) ----------
+
+let famCurrent = null;            // the family whose picker is open
+let lastFam = '', lastFamAt = 0;  // stops the camera reopening the same family straight after Cancel
+
+function isConsumable(group){ return String(group || '').trim().toLowerCase() === 'consumables'; }
+function money(n){ return 'R' + Number(n).toFixed(2); }
+
+// Opens the picker for a scanned family code, e.g. DB.
+// Opens the picker for a family code, e.g. DB. If an item code was typed (e.g. WR-2.5), that item is selected.
+// If the code is not a family at all, it is treated as a tool ID (e.g. C-014).
+let famBasket = [];   // items queued in the open picker: [{item, qty}]
+
+// Queues the current selection. Merges with the same item if it is already queued.
+function famQueueCurrent(){
+  const it = famItem();
+  if (!it || it.stock < 1) return false;
+  const q = isConsumable(famCurrent.group) ? Math.floor(Number($('famQty').value)) : 1;
+  if (!(q >= 1)) return false;
+  const have = S.lines.get(it.code);
+  const queued = famBasket.find(b => b.item.code === it.code);
+  const total = (have ? have.qty : 0) + (queued ? queued.qty : 0) + q;
+  if (total > it.stock) { status('Only ' + it.stock + ' of ' + it.label + ' in stock.', 'bad'); return false; }
+  if (queued) queued.qty += q; else famBasket.push({ item: it, qty: q });
+  return true;
+}
+
+function famBasketRender(){
+  const el = $('famBasket');
+  if (!famBasket.length) { el.innerHTML = ''; return; }
+  const consumable = famCurrent && isConsumable(famCurrent.group);
+  let sum = 0;
+  const rows = famBasket.map((b, i) => {
+    const cost = consumable && b.item.unitCost ? b.qty * b.item.unitCost : 0;
+    sum += cost;
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px">' +
+      '<span>' + esc(b.item.label) + ' × ' + b.qty + (cost ? ' · ' + money(cost) : '') + '</span>' +
+      '<button class="x" onclick="famRemove(' + i + ')">Remove</button></div>';
+  }).join('');
+  el.innerHTML = '<p style="margin:12px 0 0"><b>Logged for this check-out</b></p>' + rows +
+    (sum ? '<p style="font-weight:bold;margin:6px 0 0">Basket total: ' + money(sum) + '</p>' : '');
+}
+
+function famRemove(i){
+  famBasket.splice(i, 1);
+  famBasketRender();
+  famQtyFix();
+}
+
+// Logs the current choice to the basket and keeps the picker open. The cursor moves to Add to check out.
+function famLogCurrent(){
+  if (!famQueueCurrent()) return;
+  $('famSel').value = '';   // cleared, so Add to check out does not log this choice a second time
+  famSelChanged();
+  famRender();
+  famBasketRender();
+  status('Logged. Add another item, or move to Add to check out.');
+  famFocus($('famOk'));
+}
+
+async function openFamily(code, pick){
+  touch();
+  if (!$('famBox').classList.contains('hidden')) return;
+  if (mode === 'who') return status('Switch to Add to lists to pick items.', 'bad');
+  if (pending.has('fam:' + code)) return;
+  pending.add('fam:' + code);
+  const token = S.token;
+  try {
+    let f;
+    try {
+      f = await api({ api: 'family', token: token, qr: code });
+    } catch (e) {
+      if (pick && /Family not found/.test(e.message)) return addTool(pick);
+      throw e;
+    }
+    if (S.token !== token) return;
+    if (!S.student) return status('Confirm a student first, then scan again.', 'bad');
+    famCurrent = f;
+    famBasket = [];
+    famBasketRender();
+    $('famTitle').textContent = f.family;
+    const first = (f.items.find(i => i.stock > 0) || f.items[0] || {}).code || '';
+    $('famSel').value = pick || first;
+    famSelChanged();
+    famRender();
+    $('famBox').classList.remove('hidden');
+    focusFamItem();
+  } catch (e) {
+    flashScan(false, 'Not found');
+    handleErr(e);
+  } finally {
+    pending.delete('fam:' + code);
+  }
+}
+
+function famItem(){
+  return famCurrent ? famCurrent.items.find(i => i.code === $('famSel').value) || null : null;
+}
+
+// Draws the items as blocks: light red when low, dark red with "No stock" when empty.
+function famRender(){
+  const sel = $('famSel').value;
+  $('famList').innerHTML = famCurrent ? famCurrent.items.map(it => {
+    const cls = ['famItem', it.stock < 1 ? 'none' : it.low ? 'low' : '', it.code === sel ? 'sel' : ''].join(' ');
+    let sub = it.stock < 1 ? 'No stock' : it.low ? 'Low stock: ' + it.stock + ' left' : it.stock + ' in stock';
+    if (famCurrent && isConsumable(famCurrent.group) && it.unitCost) sub += ' · ' + money(it.unitCost) + ' each';
+    return '<div class="' + cls + '" role="button" tabindex="0" data-code="' + esc(it.code) + '" onclick="famTap(this)">' +
+      '<div class="fName">' + esc(it.label) + '</div><div class="fSub">' + sub + '</div></div>';
+  }).join('') : '';
+}
+
+// Keyboard: Up and Down move through the items that have stock, Enter adds the choice to To check out.
+// In the quantity box the arrows change the quantity as usual.
+function focusFamItem(){
+  const el = document.querySelector('#famList .famItem.sel') || document.querySelector('#famList .famItem');
+  if (el) el.focus({ preventScroll: true });
+}
+
+// Touch and mouse: one tap selects an item. A second tap on the same item within half a second adds it
+// (a double-click on a computer does the same). Phones cannot press Enter, so this is how they add items.
+let famLastTap = { code: '', at: 0 };
+function famTap(el){
+  const code = el.dataset.code;
+  if (el.classList.contains('none')) return;   // no stock: nothing to pick
+  const now = performance.now();
+  const second = famLastTap.code === code && now - famLastTap.at < 500;
+  famLastTap = second ? { code: '', at: 0 } : { code, at: now };
+  famPick(code);
+  if (second) famLogCurrent();   // logs an accessory, or a consumable with the quantity shown
+}
+
+// Keyboard in the picker: Up and Down move through the items, the quantity box and the two buttons.
+// An item is chosen as the cursor reaches it. Enter on an item or the quantity moves on to the next step,
+// and Enter on a button presses it (Add another item, Add to check out).
+function famFocusables(){
+  return [...document.querySelectorAll('#famList .famItem:not(.none), #famQtyBox:not(.hidden) #famQty, #famOk:not([disabled]), #famNo')];
+}
+
+function famFocus(el){
+  if (!el) return;
+  if (el.classList.contains('famItem')) {
+    const code = el.dataset.code;
+    famPick(code);
+    famRender();
+    const again = document.querySelector('#famList [data-code="' + code + '"]');
+    if (again) { again.scrollIntoView({ block: 'nearest' }); again.focus({ preventScroll: true }); }
+    return;
+  }
+  el.scrollIntoView({ block: 'nearest' });
+  el.focus({ preventScroll: true });
+}
+
+function famMove(dir){
+  const list = famFocusables();
+  if (!list.length) return;
+  let idx = list.indexOf(document.activeElement);
+  if (idx < 0) {
+    const sel = list.findIndex(el => el.dataset.code === $('famSel').value);
+    idx = sel >= 0 ? sel : (dir > 0 ? -1 : list.length);
+  }
+  famFocus(list[Math.min(list.length - 1, Math.max(0, idx + dir))]);
+}
+
+document.addEventListener('keydown', e => {
+  if ($('famBox').classList.contains('hidden')) return;
+  // Only keys pressed inside the picker count. The Enter that opened it (from the tool box) must not also choose an item.
+  if (!$('famBox').contains(e.target) && e.target !== document.body) return;
+  if (e.target.classList && e.target.classList.contains('x')) return;   // Remove buttons keep their own keys
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); famMove(e.key === 'ArrowDown' ? 1 : -1); return; }
+  if (e.key !== 'Enter') return;
+  if (e.target.tagName === 'BUTTON') return;   // a focused button presses itself
+  e.preventDefault();
+  if (e.target.id === 'famQty') return famLogCurrent();
+  if (e.target.classList.contains('famItem')) {
+    // A consumable needs its amount first; an accessory is logged at once.
+    if (famCurrent && isConsumable(famCurrent.group)) return famFocus($('famQty'));
+    return famLogCurrent();
+  }
+  if (!$('famSel').value) return famMove(1);
+  addFamilyLine();   // nothing in focus: accept the current choice
+});
+
+// Only items with stock can be picked. Empty ones show dark red and stay greyed out.
+function famPick(code){
+  const it = famCurrent && famCurrent.items.find(i => i.code === code);
+  if (!it || it.stock < 1) return;
+  $('famSel').value = code;
+  famSelChanged();
+}
+
+function famSelChanged(){
+  const it = famItem();
+  const kind = famCurrent && isConsumable(famCurrent.group) ? 'used up when taken' : 'comes back';
+  $('famStock').textContent = it ? (it.stock < 1 ? 'No stock' : it.stock + ' in stock' + (it.low ? ' · LOW, reorder soon' : '') + ' · ' + kind) : '';
+  // Accessories are always one at a time, so only consumables need a quantity.
+  $('famQtyBox').classList.toggle('hidden', !(famCurrent && isConsumable(famCurrent.group)));
+  $('famQty').value = 1;
+  famQtyFix();
+  famRender();
+}
+
+// Keeps the quantity between 1 and what is in stock.
+function famQtyFix(){
+  const it = famItem();
+  let q = Math.floor(Number($('famQty').value)) || 1;
+  if (q < 1) q = 1;
+  if (it && q > it.stock) q = Math.max(it.stock, 0);
+  $('famQty').value = q;
+  const priced = it && famCurrent && isConsumable(famCurrent.group) && it.unitCost;
+  $('famTotal').textContent = priced ? 'Total: ' + money(it.unitCost * q) : '';
+  const canPick = !!it && it.stock >= 1;
+  $('famOk').disabled = !famBasket.length && !canPick;
+}
+
+function famStep(d){
+  $('famQty').value = (Math.floor(Number($('famQty').value)) || 1) + d;
+  famQtyFix();
+}
+
+function addFamilyLine(){
+  touch();
+  const it = famItem();
+  if (it && it.stock >= 1 && !famQueueCurrent()) return;   // current choice invalid: keep the picker open
+  if (!famBasket.length) return;
+  const names = [];
+  let last = null;
+  famBasket.forEach(b => {
+    const have = S.lines.get(b.item.code);
+    S.lines.set(b.item.code, { code: b.item.code, label: b.item.label, family: famCurrent.family, group: famCurrent.group,
+      qty: (have ? have.qty : 0) + b.qty, stock: b.item.stock, unitCost: b.item.unitCost });
+    names.push(b.item.label);
+    last = b.item;
+  });
+  famBasket = [];
+  famBasketRender();
+  $('famBox').classList.add('hidden');
+  focusTool();   // Enter now checks out: the cursor is in the tool box, empty
+  feedback(true, names.join(', '));
+  renderLists();
+  highlightRow(last.code);
+}
+
+function lineHtml(l){
+  const c = esc(l.code);
+  const used = isConsumable(l.group);
+  const controls = used
+    ? '<div class="stepper sm">' +
+        '<button class="ghost" data-code="' + c + '" onclick="lineStep(this.dataset.code,-1)">−</button>' +
+        '<span class="qn">' + l.qty + '</span>' +
+        '<button class="ghost" data-code="' + c + '" onclick="lineStep(this.dataset.code,1)">+</button>' +
+      '</div>'
+    : '<span class="qn">× ' + l.qty + '</span>';
+  return '<div class="row" data-id="' + c + '"><div style="min-width:0"><div class="id">' + esc(l.label) + '</div>' +
+    '<small>' + (used ? 'Used up' : 'Comes back') + ' · ' + l.stock + ' in stock' +
+    (used && l.unitCost ? '<br>' + money(l.unitCost) + ' each · total ' + money(l.unitCost * l.qty) : '') + '</small></div>' +
+    controls +
+    '<button class="x" data-code="' + c + '" onclick="removeLine(this.dataset.code)">Remove</button></div>';
+}
+
+let holdOpen = false;
+function toggleHold(){
+  touch();
+  // Keep it open while items are ticked, so a tick cannot be hidden by accident.
+  if (holdOpen && (document.querySelectorAll('input.hold:checked').length || accTicked())) return;
+  holdOpen = !holdOpen;
+  renderHoldToggle();
+  if (holdOpen) scrollToHold();   // bring the "Out to this student" bar to the top of the screen
+  else scrollToStudent();         // closing returns to the student section, as after a new sign-in
+}
+function scrollToHold(){
+  const headerH = document.querySelector('header').offsetHeight;
+  const y = $('holdToggle').getBoundingClientRect().top + window.scrollY - headerH - 12;
+  window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+}
+function renderHoldToggle(){
+  $('holdBody').classList.toggle('hidden', !holdOpen);
+  $('holdArrow').textContent = holdOpen ? 'Hide ▲' : 'Show ▼';
+  $('holdToggle').setAttribute('aria-expanded', String(holdOpen));
+}
+
+// After a save, move the screen up to the top of the student section, so the whole student area is in view.
+function scrollToStudent(){
+  holdOpen = false;
+  renderHoldToggle();
+  loadToolCache();   // names and status may have changed after a save
+  focusTool();
+  const heading = $('studentBox').previousElementSibling; // the "Student" heading above the student box
+  if (!heading) return;
+  // Stop just below the sticky header, so the heading and the student's name are both visible.
+  const headerH = document.querySelector('header').offsetHeight;
+  const y = heading.getBoundingClientRect().top + window.scrollY - headerH - 12;
+  window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+}
+
+function lineStep(code, d){
+  touch();
+  const l = S.lines.get(code);
+  if (!l) return;
+  let q = l.qty + d;
+  if (q < 1) q = 1;
+  if (q > l.stock) { status('Only ' + l.stock + ' of ' + l.label + ' in stock.', 'bad'); q = l.stock; }
+  l.qty = q;
+  renderLists();
+}
+
+function removeLine(code){
+  touch();
+  S.lines.delete(code);
+  renderLists();
+}
+
+// Accessories on the holding list: one tick box per item out, so each one is returned one at a time.
+function accTicked(){ return document.querySelectorAll('input.accHold:checked').length; }
+function accReturns(){
+  const byCode = new Map();
+  document.querySelectorAll('input.accHold:checked').forEach(c => {
+    const k = c.dataset.code;
+    const a = byCode.get(k) || { code: k, label: c.dataset.label, qty: 0 };
+    a.qty += 1;
+    byCode.set(k, a);
+  });
+  return Array.from(byCode.values());
+}
+
+// ---------- Consumables taken today ----------
+// Loaded from the Log whenever a student is confirmed, so it survives sign-out and restarts.
+async function loadVisit(){
+  if (!S.student) return;
+  const token = S.token, no = S.student.no;
+  try {
+    const r = await api({ api: 'visit', token: token, no: no });
+    if (S.token !== token || !S.student || S.student.no !== no) return;
+    S.visitTakes = r.takes;
+    renderVisit();
+  } catch (e) {
+    handleErr(e);
+  }
+}
+
+// Lists each consumable taken for the current student, with the time and stock left, to check a disputed count.
+// Cleared on sign-out, when the student changes, or when the app is restarted.
+let visitOpen = false;
+function toggleVisit(){ visitOpen = !visitOpen; renderVisit(); }
+
+function renderVisit(){
+  const card = $('visitCard');
+  if (!card) return;
+  const takes = S.visitTakes || [];
+  const show = !!S.student && takes.length > 0 && !$('app').classList.contains('hidden');
+  card.classList.toggle('hidden', !show);
+  if (!show) return;
+  const total = Math.round(takes.reduce((n, t) => n + t.total, 0) * 100) / 100;
+  $('visitSum').textContent = 'Consumables today · ' + takes.length + ' taken · ' + money(total);
+  $('visitArrow').textContent = visitOpen ? '▼' : '▲';
+  $('visitBody').classList.toggle('hidden', !visitOpen);
+  $('visitBody').innerHTML = takes.map(t =>
+    '<div class="visitLine"><div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
+    '<small>' + money(t.unitCost) + ' each = ' + money(t.total) + ' · ' + esc(t.at) +
+      (t.stockLeft == null ? '' : ' · ' + t.stockLeft + ' left in stock') + '</small></div>'
+  ).join('') + '<div class="visitLine"><b>Total this visit: ' + money(total) + '</b></div>';
+}
+
+// ---------- Bottom action bar ----------
+// Shows what is waiting and runs the main action. The action follows the order: check out, then the
+// student's ticked tools, then check in. Only the first available one is offered.
+let barChoice = null;
+
+function updateBar(){
+  const bar = $('actionBar');
+  if (!bar) return;
+  const items = [...S.items.values()].filter(t => !t.pending);
+  const outs = items.filter(t => !t.out).length + S.lines.size;
+  const ins = items.filter(t => t.out).length;
+  const ticked = document.querySelectorAll('input.hold:checked').length + accTicked();
+  bar.classList.toggle('hidden', $('app').classList.contains('hidden'));
+
+  const parts = [];
+  if (outs) parts.push('<b>' + outs + '</b> to check out');
+  if (ins) parts.push('<b>' + ins + '</b> to check in');
+  if (ticked) parts.push('<b>' + ticked + '</b> ticked from student');
+  $('barSum').innerHTML = parts.length ? parts.join(' · ') : 'Scan tools or tick a student\'s tools to begin.';
+
+  const btn = $('barBtn');
+  if (outs && S.student) {
+    barChoice = checkOut;
+    btn.textContent = 'Check out ' + outs;
+  } else if (ticked) {
+    barChoice = checkInHolding;
+    btn.textContent = 'Check in ' + ticked;
+  } else if (ins) {
+    barChoice = checkIn;
+    btn.textContent = 'Check in ' + ins;
+  } else {
+    barChoice = null;
+    btn.textContent = outs ? 'Check out' : 'Check in';
+  }
+  btn.disabled = busy || !barChoice;
+  renderVisit();
+}
+
+function barAction(){
+  if (barChoice) barChoice();
+}
+
+// ---------- Offline shell ----------
+// Service worker disabled in this local copy so edits show on reload.
+focusStart();
+</script>
+
+<script>
+// v2 layout helpers: tabs, filter chips and the overdue alert. The working script above is unchanged.
+function showTab(name){
+  document.querySelectorAll('[data-tab]').forEach(g => g.classList.toggle('hidden', g.dataset.tab !== name));
+  const co = $('tabCheckout'), ci = $('tabCheckin');
+  co.setAttribute('aria-selected', name === 'checkout' ? 'true' : 'false');
+  ci.setAttribute('aria-selected', name === 'checkin' ? 'true' : 'false');
+  co.classList.toggle('off', name !== 'checkout');
+  ci.classList.toggle('off', name !== 'checkin');
+}
+let holdFilter = 'all';
+function applyHoldFilter(){
+  document.querySelectorAll('#listHold .row').forEach(r => {
+    const overdue = r.classList.contains('late') || r.classList.contains('stuLate');
+    const today = r.classList.contains('dueToday');
+    const show = holdFilter === 'all' || (holdFilter === 'overdue' ? overdue : today);
+    r.classList.toggle('hidden', !show);
+  });
+  document.querySelectorAll('[data-filter]').forEach(b => b.classList.toggle('selected', b.dataset.filter === holdFilter));
+}
+document.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => { holdFilter = b.dataset.filter; applyHoldFilter(); }));
+new MutationObserver(() => {
+  applyHoldFilter();
+  const n = document.querySelectorAll('#listHold .row.late, #listHold .row.stuLate').length;
+  const a = $('overdueAlert');
+  if (n) { a.textContent = '! ' + n + ' overdue tool' + (n > 1 ? 's' : '') + '. Please return ' + (n > 1 ? 'them' : 'it') + ' to the storeroom.'; a.classList.remove('hidden'); }
+  else a.classList.add('hidden');
+}).observe($('listHold'), { childList: true, subtree: true });
+showTab('checkout');
+</script>
+</body>
+</html>
