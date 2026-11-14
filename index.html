@@ -1775,7 +1775,7 @@ function renderVisit(){
   const picked = owing.items.filter(t => paySelected.has(t.row));
   const pickedTotal = Math.round(picked.reduce((n, t) => n + t.total, 0) * 100) / 100;
   const selBar = owing.items.length
-    ? '<div class="visitLine" style="display:flex;align-items:center;justify-content:space-between;gap:10px">' +
+    ? '<div class="visitLine" style="display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-2px;z-index:2;background:#f3fbfa;margin:0 -14px;padding:8px 14px;border-bottom:1px solid #b2dfdb">' +
       '<div><b>' + picked.length + ' selected · ' + money(pickedTotal) + '</b></div>' +
       '<button type="button" onclick="payNow()"' + (picked.length ? '' : ' disabled') + '>Pay ' + money(pickedTotal) + '</button></div>'
     : '';
