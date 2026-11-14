@@ -35,10 +35,19 @@ a{color:var(--dark);font-weight:700}
 /* Glass header with the staff logo */
 header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-edge);border-radius:22px;box-shadow:0 10px 26px rgba(0,71,63,.10)}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
-.logo{height:34px;width:auto;background:#fff;border-radius:10px;padding:3px 6px;box-shadow:var(--raise-sm);display:block}
+.logo{height:44px;width:auto;display:block}
+.left{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}
+.track{position:relative;width:160px;height:40px;border-radius:999px;background:var(--bg);box-shadow:var(--inset);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;flex:0 0 auto}
+.opt{position:absolute;top:0;height:40px;line-height:40px;width:80px;text-align:center;font-size:13px;font-weight:700;color:var(--mute)}
+.opt.staff{left:0}
+.opt.student{left:80px}
+.knob{position:absolute;top:4px;left:4px;width:72px;height:32px;border-radius:999px;background:var(--bg);box-shadow:var(--raise-sm);display:flex;align-items:center;justify-content:center;transition:left .35s cubic-bezier(.4,.1,.2,1);z-index:2}
+.knob svg{width:16px;height:16px}
+.track.on .knob{left:84px}
+.track:focus-visible{outline:2px solid rgba(0,207,204,.6);outline-offset:3px}
 .bt{font-size:16px;font-weight:700;color:var(--dark);line-height:1.2;white-space:nowrap}
 .bs{font-size:12px;color:var(--mute);margin-top:2px}
-#signout,#staffBtn{width:auto;min-height:0;margin:0;padding:9px 14px;white-space:nowrap;border:0;border-radius:14px;background:var(--bg);color:var(--dark);font:inherit;font-size:13px;font-weight:700;box-shadow:var(--raise-sm);cursor:pointer}
+#signout{width:auto;min-height:0;margin:0;padding:9px 14px;white-space:nowrap;border:0;border-radius:14px;background:var(--bg);color:var(--dark);font:inherit;font-size:13px;font-weight:700;box-shadow:var(--raise-sm);cursor:pointer}
 
 /* Section labels and text */
 .sec{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:22px 4px 10px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--mute)}
@@ -170,14 +179,15 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 <body>
 <div class="phone">
   <header class="top">
-    <div class="brand">
-      <img class="logo" src="logo.png" alt="Product and Industrial Design">
+    <div class="left">
       <div class="bt">Workshop Tools</div>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <button id="staffBtn" type="button" onclick="toggleStaffView()">Staff sign in</button>
+      <div id="staffBtn" class="track" role="switch" aria-checked="false" aria-label="Staff sign in" tabindex="0" onclick="toggleStaffView()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleStaffView();}">
+        <span class="opt staff">Staff</span><span class="opt student">Student</span>
+        <span class="knob"><svg viewBox="0 0 24 24" fill="none" stroke="#00473f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span>
+      </div>
       <button id="signout" class="hidden" type="button" onclick="lockOut('Signed out.')">Sign out</button>
     </div>
+    <img class="logo" src="logo.png" alt="Product and Industrial Design">
   </header>
 
   <section id="studentIn">
@@ -414,12 +424,13 @@ window.addEventListener('pageshow', e => {
 // ---------- Sign in / out ----------
 
 // Switches the first screen between the student view and the staff sign-in.
-// The top-right button toggles between "Staff sign in" and "Students".
+// The header slider toggles between Student (off) and Staff sign-in (on).
 function showStaffView(on){
   $('signin').classList.toggle('hidden', !on);
   $('studentIn').classList.toggle('hidden', on);
   $('myResult').classList.toggle('hidden', on);
-  $('staffBtn').textContent = on ? 'Student sign in' : 'Staff sign in';
+  $('staffBtn').classList.toggle('on', on);
+  $('staffBtn').setAttribute('aria-checked', on ? 'true' : 'false');
   if (on) {
     $('pin').focus();
   } else {
