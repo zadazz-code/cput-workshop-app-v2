@@ -1736,6 +1736,7 @@ function updateBar(){
     btn.textContent = 'Check out (' + outs + ')';
   }
   btn.disabled = busy || !barChoice;
+  syncBarCheckin();
   renderVisit();
 }
 
@@ -1773,6 +1774,8 @@ function syncBarCheckin(){
   const src = $('btnHoldIn'), dst = $('barCheckin');
   dst.disabled = src.disabled;
   dst.textContent = src.textContent && src.textContent.indexOf('(') > -1 ? src.textContent : 'Check in';
+  // Only show this second button beside Check out. Otherwise the main bar button already says Check in, so there is one.
+  dst.classList.toggle('hidden', barChoice !== checkOut || src.disabled);
 }
 new MutationObserver(syncBarCheckin).observe($('btnHoldIn'), { attributes: true, childList: true, subtree: true, characterData: true, attributeFilter: ['disabled'] });
 syncBarCheckin();
