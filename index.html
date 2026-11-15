@@ -145,6 +145,10 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 .visitIn{display:flex;flex-direction:column-reverse}
 .logFilters{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}
 .logFilters input{min-width:0}
+.logDates{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dpill{height:48px;display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;padding:0 12px;box-sizing:border-box;background:var(--bg);border-radius:18px;box-shadow:var(--raise-sm);cursor:pointer;font-size:15px;color:var(--dark)}
+.dpill .dlab{color:#8fa9a5;font-weight:600;font-size:13px;white-space:nowrap}
+.logFilters .dpill input{flex:0 1 auto;width:104px;min-width:0;font-size:14px;height:auto;margin:0;padding:0;border:0;background:transparent;box-shadow:none;font:inherit;color:var(--dark);text-align:center}
 .logRow{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid rgba(0,71,63,.12);font-size:14px;flex-wrap:wrap}
 .visitHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px;padding:14px 18px;background:var(--bg);color:var(--dark);font-weight:700;font-size:15px;border-radius:18px;box-shadow:var(--raise-sm);cursor:pointer;white-space:nowrap}
 .visitBody{max-height:45vh;overflow:auto;padding:2px 14px 10px}
@@ -287,8 +291,10 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
         <div class="logFilters">
           <input id="logStu" placeholder="Student number (optional)" inputmode="numeric">
           <button type="button" onclick="loadLog()">Search</button>
-          <input id="logFrom" type="date" aria-label="From date">
-          <input id="logTo" type="date" aria-label="To date">
+          <div class="logDates">
+            <label class="dpill"><span class="dlab">From date</span><input id="logFrom" type="date"></label>
+            <label class="dpill"><span class="dlab">To date</span><input id="logTo" type="date"></label>
+          </div>
         </div>
         <p id="logInfo" class="small"></p>
         <div id="logRows"></div>
