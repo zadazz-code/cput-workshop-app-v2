@@ -197,7 +197,7 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
       <div class="field"><input id="myNo" inputmode="numeric" autocomplete="off" placeholder="Your student number"></div>
       <div style="display:flex;gap:10px">
         <button class="secondary" type="button" onclick="scanMyNumber()" style="flex:1;margin-top:12px">Scan QR</button>
-        <button type="button" onclick="showMyTools(false)" style="flex:1;margin-top:12px">Confirm</button>
+        <button id="myBtn" type="button" onclick="myButton()" style="flex:1;margin-top:12px">Sign in</button>
       </div>
       <div id="myReader" class="hidden"></div>
       <p class="small">Scan your card or type your number. Your tools and return dates appear below.</p>
@@ -888,7 +888,11 @@ async function showMyTools(auto = false){
   $('myResult').innerHTML = '<p class="small">Checking…</p>';
   try {
     const r = await api({ api: 'mytools', no: no });
-    if ($('myNo').value.trim() === no) $('myResult').innerHTML = myToolsHtml(r);
+    if ($('myNo').value.trim() === no) {
+      $('myResult').innerHTML = myToolsHtml(r);
+      myShown = true;
+      setMyButton();
+    }
   } catch (e) {
     if ($('myNo').value.trim() !== no) return;
     $('myResult').innerHTML = '';
@@ -900,8 +904,23 @@ async function showMyTools(auto = false){
 let myTimer = null;
 let keepAlive = null; // timer that pings the server while staff are signed in
 // Typing or scanning does not load the tools any more. The student presses Confirm (or Enter).
-$('myNo').addEventListener('input', () => { clearTimeout(myTimer); $('myResult').innerHTML = ''; });
-$('myNo').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); showMyTools(false); } });
+$('myNo').addEventListener('input', () => { clearTimeout(myTimer); $('myResult').innerHTML = ''; myShown = false; setMyButton(); });
+$('myNo').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); if (!myShown) showMyTools(false); } });
+
+// The student page button: Sign in loads the tools; Sign out clears the number and the list.
+let myShown = false;
+function setMyButton(){ $('myBtn').textContent = myShown ? 'Sign out' : 'Sign in'; }
+function myButton(){
+  if (myShown) {
+    $('myNo').value = '';
+    $('myResult').innerHTML = '';
+    myShown = false;
+    setMyButton();
+    status('Signed out.');
+  } else {
+    showMyTools(false);
+  }
+}
 
 // Student view: what they still owe for consumables, under the tools list.
 function owingHtml(r){
