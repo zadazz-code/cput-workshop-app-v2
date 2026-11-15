@@ -2008,16 +2008,18 @@ function renderVisit(){
   const older = owing.items.filter(t => !todayRows.has(t.row));
   const olderTotal = Math.round(older.reduce((n, t) => n + t.total, 0) * 100) / 100;
   const olderHtml = older.length
-    ? '<div class="visitLine"><b>Earlier · not yet paid · ' + money(olderTotal) + '</b></div>' +
-      older.map(t => payRow(
+    ? older.map(t => payRow(
         '<div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
         '<small>' + money(t.total) + ' · ' + esc(t.date) + '</small>', payBtn(t.row, false), true)).join('')
     : '';
-  const todayHtml = takes.map(t => payRow(
+  const takeRow = t => payRow(
     '<div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
     '<small>' + money(t.unitCost) + ' each = ' + money(t.total) + ' · ' + esc(t.at) +
       (t.stockLeft == null ? '' : ' · ' + t.stockLeft + ' left in stock') + '</small>',
-    payBtn(t.row, !!t.paid), !t.paid)).join('');
+    payBtn(t.row, !!t.paid), !t.paid);
+  // Still to pay goes first, so it is the first thing you see; paid takes follow.
+  const todayUnpaid = takes.filter(t => !t.paid);
+  const todayPaid = takes.filter(t => t.paid);
   // Totals the ticked takes; one button pays them all.
   const picked = owing.items.filter(t => paySelected.has(t.row));
   const pickedTotal = Math.round(picked.reduce((n, t) => n + t.total, 0) * 100) / 100;
@@ -2026,7 +2028,12 @@ function renderVisit(){
       '<div><b>' + picked.length + ' selected · ' + money(pickedTotal) + '</b></div>' +
       '<button type="button" onclick="payNow()"' + (picked.length ? '' : ' disabled') + '>Pay ' + money(pickedTotal) + '</button></div>'
     : '';
-  $('visitBody').innerHTML = selBar + olderHtml + todayHtml + '<div class="visitLine"><b>Total this visit: ' + money(total) + '</b></div>';
+  const owingHead = (older.length || todayUnpaid.length)
+    ? '<div class="visitLine"><b>To pay · ' + money(owing.total) + '</b></div>' : '';
+  const paidHead = todayPaid.length ? '<div class="visitLine"><b>Paid</b></div>' : '';
+  $('visitBody').innerHTML = selBar + owingHead + olderHtml + todayUnpaid.map(takeRow).join('') +
+    paidHead + todayPaid.map(takeRow).join('') +
+    '<div class="visitLine"><b>Total this visit: ' + money(total) + '</b></div>';
 }
 
 // ---------- Bottom action bar ----------
