@@ -1341,6 +1341,9 @@ async function checkOut(){
     'To' +
       '<div style="margin-top:8px;padding:14px 18px;border-radius:18px;background:var(--bg);box-shadow:var(--inset);text-align:center;font-weight:700;color:var(--dark)">' +
         esc(S.student.holder) + (S.student.year ? ' · ' + esc(S.student.year) : '') + '</div>',
+  ];
+  // The return date only applies to tools that come back. Consumables and accessories have none.
+  if (ids.length) parts.push(
     'Return by' +
       '<div style="position:relative;margin-top:8px;padding:14px 18px;border-radius:18px;background:var(--bg);box-shadow:var(--inset);text-align:center;font-weight:700;color:var(--dark)">' +
         '<span id="retShow">' + longDate(todayStr()) + '</span>' +
@@ -1348,8 +1351,7 @@ async function checkOut(){
           'onchange="document.getElementById(\'retShow\').textContent = longDate(this.value)" ' +
           'style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;margin:0">' +
       '</div>',
-    '<span class="small">Set to today. Change it if the tool is due back on another day.</span>'
-  ];
+    '<span class="small">Set to today. Change it if the tool is due back on another day.</span>');
   if (removed.length) parts.push(toolLines(removed));
   if (lines.length) {
     parts.push(lines.map(l => esc(l.label) + ' × ' + l.qty +
@@ -1361,7 +1363,7 @@ async function checkOut(){
   if (S.token !== token) return;
   // The return date is picked in the sheet above, so read it now that the sheet has closed.
   const ret = ok && $('retDate') ? $('retDate').value : '';
-  if (ok && !ret) return status('Choose the return date first.', 'bad');
+  if (ok && ids.length && !ret) return status('Choose the return date first.', 'bad');
   if (!ok) {
     // Cancel empties the check out, as the first screen does, and puts the cursor back in the tool box.
     ids.forEach(id => S.items.delete(id));
