@@ -103,6 +103,8 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 .tool.dueToday .code,.tool.dueToday .tag{color:#9c2a22}
 .tool.overdue{box-shadow:3px 3px 8px rgba(70,25,15,.18),-2px -2px 6px rgba(255,255,255,.35);background:#f08a82}
 .tool.overdue .code,.tool.overdue .tag{color:#6e1a14}
+/* Status buttons sit pressed in, like the tool number circle */
+.tool.dueToday .tag,.tool.overdue .tag{box-shadow:inset 3px 3px 6px rgba(70,25,15,.22),inset -3px -3px 6px rgba(255,255,255,.6)}
 .tool.dueToday .meta{color:var(--ink)}
 .tool.selected{outline:3px solid var(--teal);outline-offset:2px}
 .code{flex:0 0 52px;height:52px;border-radius:50%;background:var(--bg);box-shadow:var(--inset-xs);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green);text-align:center}
