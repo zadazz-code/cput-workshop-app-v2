@@ -178,7 +178,13 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
   #app > .colL, #app > .colR{min-width:0}
   #actionBar{position:static;left:auto;right:auto;bottom:auto;max-width:none;margin:12px 0 0;z-index:auto}
   /* Out to this student: four rows visible, scroll for the rest */
-  #listHold{max-height:372px;overflow-y:auto;padding-right:4px}
+  #listHold{max-height:372px;overflow-y:auto;padding-right:22px;scrollbar-width:none}
+  #listHold::-webkit-scrollbar{display:none}
+  .holdWrap{position:relative}
+  /* Visible slider on the right: track plus a thumb that follows the list and can be dragged */
+  .holdSlider{position:absolute;right:4px;top:4px;bottom:4px;width:12px;border-radius:999px;background:var(--bg);box-shadow:var(--inset-xs)}
+  .holdThumb{position:absolute;left:1px;right:1px;top:0;height:40px;border-radius:999px;background:var(--teal);box-shadow:var(--raise-xs);cursor:grab;touch-action:none}
+  .holdThumb:active{cursor:grabbing}
 }
 /* Loading indicator: shows while the app waits for the storeroom server */
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -288,7 +294,10 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
     </button>
     <div id="holdSection">
       <div id="holdBody">
-        <div id="listHold"><p class="small">Confirm a student to see what they have out.</p></div>
+        <div class="holdWrap">
+          <div id="listHold"><p class="small">Confirm a student to see what they have out.</p></div>
+          <div id="holdSlider" class="holdSlider hidden" aria-hidden="true"><div id="holdThumb" class="holdThumb"></div></div>
+        </div>
         <button id="btnHoldIn" class="hidden" type="button" onclick="checkInHolding()" disabled>Check in selected</button>
       </div>
     </div>
@@ -704,6 +713,7 @@ function renderHolding(items, accs){
     '</label>')).join('');
   $('listHold').innerHTML = (toolHtml + accHtml) || '<p class="small">No tools or accessories are out to this student.</p>';
   updateHoldBtn();
+  updateHoldSlider();
 }
 
 // Tapping a tool turns its row green to show it is selected.
@@ -1791,7 +1801,38 @@ function renderHoldToggle(){
   $('holdBody').classList.toggle('hidden', !holdOpen);
   $('holdArrow').textContent = holdOpen ? 'Hide ▲' : 'Show ▼';
   $('holdToggle').setAttribute('aria-expanded', String(holdOpen));
+  updateHoldSlider();
 }
+// Wide screens: the slider shows only when the list scrolls, and its thumb shows where you are in it.
+function updateHoldSlider(){
+  const L = $('listHold'), sl = $('holdSlider'), th = $('holdThumb');
+  if (!L || !sl || !th) return;
+  const range = L.scrollHeight - L.clientHeight;
+  const show = isWide() && holdOpen && range > 2;
+  sl.classList.toggle('hidden', !show);
+  if (!show) return;
+  const track = sl.clientHeight;
+  const size = Math.max(36, track * (L.clientHeight / L.scrollHeight));
+  th.style.height = size + 'px';
+  th.style.transform = 'translateY(' + ((track - size) * (L.scrollTop / range)) + 'px)';
+}
+$('listHold').addEventListener('scroll', updateHoldSlider);
+window.addEventListener('resize', updateHoldSlider);
+(function dragHoldThumb(){
+  const th = $('holdThumb'), sl = $('holdSlider');
+  let startY = 0, startTop = 0;
+  th.addEventListener('pointerdown', e => {
+    startY = e.clientY; startTop = $('listHold').scrollTop; th.setPointerCapture(e.pointerId);
+  });
+  th.addEventListener('pointermove', e => {
+    if (!th.hasPointerCapture(e.pointerId)) return;
+    const L = $('listHold');
+    const range = L.scrollHeight - L.clientHeight;
+    const travel = sl.clientHeight - th.offsetHeight;
+    if (travel <= 0) return;
+    L.scrollTop = startTop + (e.clientY - startY) * (range / travel);
+  });
+})();
 
 // After a save, move the screen up to the top of the student section, so the whole student area is in view.
 function scrollToStudent(){
