@@ -143,6 +143,9 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 /* Visit strip above the bar */
 .visit{position:fixed;left:12px;right:12px;bottom:14px;max-width:366px;margin:0 auto;z-index:5;background:rgba(255,255,255,.6);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-edge);border-radius:22px;box-shadow:0 10px 30px rgba(0,71,63,.14);overflow:hidden}
 .visitIn{display:flex;flex-direction:column-reverse}
+.logFilters{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}
+.logFilters input{min-width:0}
+.logRow{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid rgba(0,71,63,.12);font-size:14px;flex-wrap:wrap}
 .visitHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px;padding:14px 18px;background:var(--bg);color:var(--dark);font-weight:700;font-size:15px;border-radius:18px;box-shadow:var(--raise-sm);cursor:pointer;white-space:nowrap}
 .visitBody{max-height:45vh;overflow:auto;padding:2px 14px 10px}
 .visitLine{padding:8px 0;border-bottom:1px solid #b2dfdb;font-size:14px}
@@ -271,6 +274,26 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
     <div id="listIn"></div>
     <button id="btnIn" class="hidden" type="button" onclick="checkIn()" disabled>Check in</button>
     </div>
+
+    <div id="logCard" class="card hidden">
+      <div class="cardHead">
+        <div>
+          <div class="st">Log</div>
+          <div class="ss">Managers only. Read-only history of tools and payments.</div>
+        </div>
+        <button id="logToggle" type="button" onclick="toggleLog()">Show</button>
+      </div>
+      <div id="logBody" class="hidden">
+        <div class="logFilters">
+          <input id="logStu" placeholder="Student number (optional)" inputmode="numeric">
+          <button type="button" onclick="loadLog()">Search</button>
+          <input id="logFrom" type="date" aria-label="From date">
+          <input id="logTo" type="date" aria-label="To date">
+        </div>
+        <p id="logInfo" class="small"></p>
+        <div id="logRows"></div>
+      </div>
+    </div>
   </section>
 </div>
 
@@ -331,7 +354,7 @@ const $ = id => document.getElementById(id);
 const API = 'https://script.google.com/macros/s/AKfycby3Gd4Qrb8myXJOgViMPSj5vsIbvmvHczBaBdRSqKB1Do3Lk_dp513QT9N7cOFYE2j0xQ/exec';
 const IDLE_MS = 10 * 60 * 1000;
 
-function fresh(){ return { token: '', name: '', student: null, items: new Map(), lines: new Map(), visitTakes: [] }; }
+function fresh(){ return { token: '', name: '', manager: false, student: null, items: new Map(), lines: new Map(), visitTakes: [] }; }
 
 let S = fresh();
 let last = Date.now();
@@ -460,6 +483,7 @@ async function signIn(){
     S = fresh();
     S.token = r.token;
     S.name = r.name;
+    S.manager = !!r.manager;
     $('pin').value = '';
     touch();
     showApp();
@@ -482,6 +506,11 @@ function showApp(){
   updateBar();
   $('signout').classList.remove('hidden');
   $('who').textContent = 'Signed in as ' + S.name + '. Signs out after 10 minutes without activity.';
+  // The Log card is only for managers (Manager = YES on the Staff sheet).
+  $('logCard').classList.toggle('hidden', !S.manager);
+  $('logBody').classList.add('hidden');
+  $('logToggle').textContent = 'Show';
+  logLoaded = false;
   // A fresh sign-in never starts with a student, so the old list is cleared.
   renderStudent();
   renderLists();
@@ -1750,6 +1779,33 @@ let visitOpen = false;
 // Takes picked with Pay, paid together with one button. Cleared when the student changes or after paying.
 let paySelected = new Set(), paySelectedNo = null;
 function toggleVisit(){ visitOpen = !visitOpen; renderVisit(); }
+
+// Manager-only Log view (read-only). The server refuses this for anyone who is not a manager.
+let logLoaded = false;
+function toggleLog(){
+  const open = $('logBody').classList.toggle('hidden') === false;
+  $('logToggle').textContent = open ? 'Hide' : 'Show';
+  if (open && !logLoaded) loadLog();
+}
+async function loadLog(){
+  const token = S.token;
+  if (!token || !S.manager) return;
+  $('logInfo').textContent = 'Loading...';
+  try {
+    const r = await api({ api: 'log', token: token, no: $('logStu').value.trim(), from: $('logFrom').value, to: $('logTo').value });
+    if (S.token !== token) return;
+    logLoaded = true;
+    $('logInfo').textContent = r.total + ' entries' + (r.capped ? ' (showing the latest 500)' : '');
+    $('logRows').innerHTML = r.rows.map(x =>
+      '<div class="logRow"><div><b>' + esc(x.time) + '</b> · ' + esc(x.action) + ' · ' + esc(x.tool) +
+      (x.studentNo ? ' · student ' + esc(x.studentNo) : '') + (x.holder ? ' (' + esc(x.holder) + ')' : '') + '</div>' +
+      '<div class="small">' + esc(x.staff) + (x.total !== '' ? ' · ' + money(x.total) : '') +
+      (x.paid ? ' · paid ' + esc(x.paid) + (x.paidBy ? ' by ' + esc(x.paidBy) : '') : '') + '</div></div>'
+    ).join('') || '<p class="small">Nothing found.</p>';
+  } catch (e) {
+    $('logInfo').textContent = e.message;
+  }
+}
 
 // Picks or un-picks a take with its Pay button. Nothing is paid until Pay is pressed.
 function togglePay(row){

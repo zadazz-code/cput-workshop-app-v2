@@ -499,7 +499,7 @@ function apiSignin(pin) {
   if (!staff) throw new Error('Wrong PIN');
   const token = Utilities.getUuid();
   CacheService.getScriptCache().put('tok:' + token, JSON.stringify(staff), SESSION_SECONDS);
-  return { token: token, name: staff.name, seconds: SESSION_SECONDS };
+  return { token: token, name: staff.name, manager: !!staff.manager, seconds: SESSION_SECONDS };
 }
 
 // Every other call uses the token. Each use refreshes the 10-minute timer.
