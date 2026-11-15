@@ -1,4 +1,4 @@
-// v23: 6-digit staff PINs; 5 wrong PINs in a row lock sign-in for 2 minutes; every sign-in attempt is logged to the "Sign-in log" sheet.
+// v23: 6-number staff passwords; 5 wrong passwords in a row lock sign-in for 2 minutes; every sign-in attempt is logged to the "Sign-in log" sheet.
 // ============================================================
 // Workshop Tools - Apps Script (v21)
 // v21: consumable payments. Log column M records when a consumable take was paid (blank = unpaid).
@@ -21,7 +21,7 @@
 // ============================================================
 
 const TOOLS = 'Tools', STUDENTS = 'Students', LOG = 'Log', STAFF = 'Staff', SIGNIN_LOG = 'Sign-in log';
-// Sign-in protection: PINs are 6 digits; after 5 wrong PINs in a row, sign-in is locked for 2 minutes.
+// Sign-in protection: passwords are 6 numbers; after 5 wrong passwords in a row, sign-in is locked for 2 minutes.
 const PIN_FAILS_ALLOWED = 5, PIN_LOCK_SECONDS = 120, PIN_FAIL_WINDOW_SECONDS = 900;
 const TEAL = '#00897b', TEAL_DARK = '#00473f', TEAL_LIGHT = '#b2dfdb',
       TEAL_MID = '#80cbc4', TEAL_PALE = '#e0f2f1';
@@ -52,7 +52,7 @@ function doGet(e) {
 function startPage() {
   return '<h2 style="color:' + TEAL_DARK + ';margin:12px 0 0">Start a student</h2>' +
     '<p>Enter the student once. Every tool you add in the next 30 minutes goes to this student.</p>' +
-    field('pin', 'Your PIN', 'password', 'inputmode="numeric"') +
+    field('pin', 'Your password', 'password', 'inputmode="numeric"') +
     field('stu', 'Student number', 'text', 'inputmode="numeric"') +
     dateField() +
     button('Set student', "run('startBatch')", TEAL) +
@@ -63,7 +63,7 @@ function startPage() {
 function startScript() {
   return '<script>function run(fn){' +
     'var v=function(i){var el=document.getElementById(i);return el?el.value:""};' +
-    'if(!v("pin")){alert("Enter your PIN.");return;}' +
+    'if(!v("pin")){alert("Enter your password.");return;}' +
     'if(fn==="startBatch"&&(!v("stu")||!v("ret"))){alert("Enter the student number and the return date.");return;}' +
     'google.script.run.withSuccessHandler(function(m){document.body.innerHTML=m})' +
     '.withFailureHandler(function(err){alert(err.message)})' +
@@ -75,7 +75,7 @@ function startScript() {
 function addPage() {
   return '<h2 style="color:' + TEAL_DARK + ';margin:12px 0 0">Add tools for this student</h2>' +
     '<p>Pick a category, then tick the tools you have fetched.</p>' +
-    field('pin', 'Your PIN', 'password', 'inputmode="numeric"') +
+    field('pin', 'Your password', 'password', 'inputmode="numeric"') +
     '<label for="cat" style="display:block;margin:16px 0 6px;font-size:18px;font-weight:bold;color:' +
     TEAL_DARK + '">Category</label>' +
     '<select id="cat" style="display:block;width:100%;height:52px;font-size:18px;padding:8px;box-sizing:border-box;' +
@@ -89,7 +89,7 @@ function addScript() {
   return '<script>var PIN_SAVED="";' +
     'function showList(){var pin=document.getElementById("pin").value;' +
     'var cat=document.getElementById("cat").value;' +
-    'if(!pin){alert("Enter your PIN.");return;}PIN_SAVED=pin;' +
+    'if(!pin){alert("Enter your password.");return;}PIN_SAVED=pin;' +
     'google.script.run.withSuccessHandler(function(m){document.body.innerHTML=m})' +
     '.withFailureHandler(function(err){alert(err.message)}).availableList(pin,cat);}' +
     'function checkoutSelected(){var boxes=document.querySelectorAll("input.pick:checked");' +
@@ -108,7 +108,7 @@ function categoryOptions() {
 // Called from the browser: lists the available tools in one category.
 function availableList(pin, category) {
   const staff = findStaff(pin);
-  if (!staff) throw new Error('Wrong PIN');
+  if (!staff) throw new Error('Wrong password');
   const b = getBatch(staff.id);
   if (!b) throw new Error('No student set. Start a new student first.');
 
@@ -136,7 +136,7 @@ function availableList(pin, category) {
 // Called from the browser: checks out every ticked tool to the current student.
 function checkoutBatch(pin, toolIds) {
   const staff = findStaff(pin);
-  if (!staff) throw new Error('Wrong PIN');
+  if (!staff) throw new Error('Wrong password');
   const b = getBatch(staff.id);
   if (!b) throw new Error('Student session has ended. Start a new student.');
 
@@ -182,7 +182,7 @@ function staffPage(toolId) {
   if (!t) return '<p>Tool not found: ' + esc(toolId) + '</p>';
   const title = '<h2 style="color:' + TEAL_DARK + ';margin:12px 0 0">' + esc(t.name) + '</h2>' +
     '<p style="color:#333;margin:4px 0 0">Tool ID: ' + esc(t.id) + '</p>';
-  const pin = field('pin', 'Your PIN', 'password', 'inputmode="numeric"');
+  const pin = field('pin', 'Your password', 'password', 'inputmode="numeric"');
   const links = '<p style="margin-top:20px">' + navLink('start', 'Start a new student') + '</p>' +
     '<p>' + navLink('add', 'Add tools for this student') + '</p>';
 
@@ -238,7 +238,7 @@ function listPage() {
 function script(id) {
   return '<script>function act(a){' +
     'var v=function(i){var el=document.getElementById(i);return el?el.value:""};' +
-    'if(!v("pin")){alert("Enter your PIN.");return;}' +
+    'if(!v("pin")){alert("Enter your password.");return;}' +
     'google.script.run.withSuccessHandler(function(m){document.body.innerHTML=m})' +
     '.withFailureHandler(function(err){alert(err.message)})' +
     '.recordMove("' + id + '",a,v("pin"),v("stu"),v("ret"));}</script>';
@@ -248,7 +248,7 @@ function script(id) {
 
 function recordMove(toolId, action, pin, studentNo, returnDate) {
   const staff = findStaff(pin);
-  if (!staff) throw new Error('Wrong PIN');
+  if (!staff) throw new Error('Wrong password');
 
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
@@ -305,7 +305,7 @@ function recordMove(toolId, action, pin, studentNo, returnDate) {
 
 function startBatch(pin, studentNo, returnDate) {
   const staff = findStaff(pin);
-  if (!staff) throw new Error('Wrong PIN');
+  if (!staff) throw new Error('Wrong password');
   const holder = studentLookup(studentNo);
   if (!holder) throw new Error('Student number not found');
   if (!returnDate) throw new Error('Return date is required');
@@ -322,7 +322,7 @@ function startBatch(pin, studentNo, returnDate) {
 
 function endBatch(pin) {
   const staff = findStaff(pin);
-  if (!staff) throw new Error('Wrong PIN');
+  if (!staff) throw new Error('Wrong password');
   CacheService.getScriptCache().remove('batch:' + staff.id);
   return '<h2 style="color:' + TEAL_DARK + '">Session ended</h2><p>No student is set for you now.</p>';
 }
@@ -338,7 +338,7 @@ function findStaff(pin) {
   const p = String(pin || '').trim();
   if (!p) return null;
   const rows = SpreadsheetApp.getActive().getSheetByName(STAFF).getDataRange().getValues();
-  // A PIN typed as a number can lose leading zeros in the sheet, so pad it back to 6 digits.
+  // A password typed as a number can lose leading zeros in the sheet, so pad it back to 6 digits.
   const pinOf = v => typeof v === 'number' ? String(v).padStart(6, '0') : String(v).trim();
   const hits = rows.slice(1).filter(r => String(r[0]).trim() !== '' && pinOf(r[2]) === p);
   if (hits.length !== 1) return null;
@@ -498,17 +498,17 @@ function apiRoute(p) {
   }
 }
 
-// PIN is used once, at sign-in. Returns a token that expires after 10 minutes of inactivity.
+// Password is used once, at sign-in. Returns a token that expires after 10 minutes of inactivity.
 function apiSignin(pin) {
   const cache = CacheService.getScriptCache();
   const lockedUntil = Number(cache.get('pinlock') || 0);
   if (lockedUntil > Date.now()) {
     const wait = Math.ceil((lockedUntil - Date.now()) / 1000);
     logSignin('Locked out', '', 0);
-    throw new Error('Too many wrong PINs. Wait ' + wait + ' seconds, then try again.');
+    throw new Error('Too many wrong passwords. Wait ' + wait + ' seconds, then try again.');
   }
   const p = String(pin || '').trim();
-  if (!/^\d{6}$/.test(p)) throw new Error('Your PIN is 6 digits.');
+  if (!/^\d{6}$/.test(p)) throw new Error('Your password is 6 numbers.');
   const staff = findStaff(p);
   if (!staff) {
     const fails = Number(cache.get('pinfails') || 0) + 1;
@@ -516,12 +516,12 @@ function apiSignin(pin) {
       // Lock sign-in for everyone for 2 minutes. The cache expiry ends the lock.
       cache.put('pinlock', String(Date.now() + PIN_LOCK_SECONDS * 1000), PIN_LOCK_SECONDS);
       cache.remove('pinfails');
-      logSignin('Wrong PIN, sign-in locked for 2 minutes', '', fails);
-      throw new Error('Too many wrong PINs. Sign-in is locked for 2 minutes.');
+      logSignin('Wrong password, sign-in locked for 2 minutes', '', fails);
+      throw new Error('Too many wrong passwords. Sign-in is locked for 2 minutes.');
     }
     cache.put('pinfails', String(fails), PIN_FAIL_WINDOW_SECONDS);
-    logSignin('Wrong PIN', '', fails);
-    throw new Error('Wrong PIN');
+    logSignin('Wrong password', '', fails);
+    throw new Error('Wrong password');
   }
   cache.remove('pinfails');
   logSignin('Signed in', staff.name, 0);
@@ -538,7 +538,7 @@ function logSignin(result, name, wrongInRow) {
     let sh = ss.getSheetByName(SIGNIN_LOG);
     if (!sh) {
       sh = ss.insertSheet(SIGNIN_LOG);
-      sh.appendRow(['Time', 'Result', 'Name', 'Wrong PINs in a row']);
+      sh.appendRow(['Time', 'Result', 'Name', 'Wrong passwords in a row']);
       sh.setFrozenRows(1);
     }
     sh.appendRow([new Date(), result, name, wrongInRow || '']);

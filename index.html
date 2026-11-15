@@ -247,12 +247,12 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
   <section id="signin" class="hidden">
     <div class="sec"><span>Staff sign-in</span></div>
     <div class="card">
-      <label for="pin">Your PIN</label>
-      <div class="field"><input id="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="6 digits"></div>
+      <label for="pin">Your password</label>
+      <div class="field"><input id="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="6 numbers"></div>
       <button id="signinBtn" type="button" onclick="signIn()">Sign in</button>
       <button class="ghost" type="button" onclick="showStaffView(false)">Cancel</button>
       <p class="small" style="margin-top:14px">New to this? <a href="guide.html" target="_blank" rel="noopener">Read the staff guide</a></p>
-      <p class="small">Your PIN is used only to sign in. You are signed out after 10 minutes without activity.</p>
+      <p class="small">Your password is used only to sign in. It is 6 numbers. You are signed out after 10 minutes without activity.</p>
     </div>
   </section>
 
@@ -544,8 +544,8 @@ function toggleStaffView(){
 
 async function signIn(){
   const pin = $('pin').value.trim();
-  if (!pin) return status('Enter your PIN.', 'bad');
-  if (!/^\d{6}$/.test(pin)) return status('Your PIN is 6 digits.', 'bad');
+  if (!pin) return status('Enter your password.', 'bad');
+  if (!/^\d{6}$/.test(pin)) return status('Your password is 6 numbers.', 'bad');
   $('signinBtn').disabled = true;
   try {
     const r = await api({ api: 'signin', pin: pin });
