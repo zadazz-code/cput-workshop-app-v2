@@ -336,8 +336,8 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
           <input id="logStu" placeholder="Student number" inputmode="numeric">
           <button type="button" onclick="loadLog()">Search</button>
           <div class="logDates">
-            <label class="dpill"><span class="dlab">From date</span><span id="logFromTxt" class="dval empty">Any</span><input id="logFrom" type="date" aria-label="From date" onchange="setLogDateText(this)"></label>
-            <label class="dpill"><span class="dlab">To date</span><span id="logToTxt" class="dval empty">Any</span><input id="logTo" type="date" aria-label="To date" onchange="setLogDateText(this)"></label>
+            <label class="dpill" onclick="openDate(this)"><span class="dlab">From date</span><span id="logFromTxt" class="dval empty">Any</span><input id="logFrom" type="date" aria-label="From date" onchange="setLogDateText(this)"></label>
+            <label class="dpill" onclick="openDate(this)"><span class="dlab">To date</span><span id="logToTxt" class="dval empty">Any</span><input id="logTo" type="date" aria-label="To date" onchange="setLogDateText(this)"></label>
           </div>
         </div>
         <p id="logInfo" class="small"></p>
@@ -1904,6 +1904,12 @@ function toggleVisit(){ visitOpen = !visitOpen; renderVisit(); }
 
 // Manager-only Log view (read-only). The server refuses this for anyone who is not a manager.
 let logLoaded = false;
+// Opens the calendar straight away when a date pill is tapped (the field itself is hidden under the pill).
+function openDate(pill){
+  const i = pill.querySelector('input');
+  if (!i) return;
+  try { if (i.showPicker) i.showPicker(); } catch (e) {}
+}
 function toggleLog(){
   const open = $('logBody').classList.toggle('hidden') === false;
   $('logToggle').textContent = open ? 'Hide' : 'Show';
