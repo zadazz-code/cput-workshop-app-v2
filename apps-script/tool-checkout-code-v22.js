@@ -1034,6 +1034,10 @@ function apiLog(token, no, from, to) {
   const stu = String(no || '').trim();
   const fromD = from ? new Date(from + 'T00:00:00') : null;
   const toD = to ? new Date(to + 'T23:59:59') : null;
+  const names = {};   // tool ID -> name, from the Tools sheet
+  SpreadsheetApp.getActive().getSheetByName(TOOLS).getDataRange().getValues().slice(1).forEach(t => {
+    if (String(t[0]).trim()) names[String(t[0]).trim()] = String(t[1] || '');
+  });
   const rows = SpreadsheetApp.getActive().getSheetByName(LOG).getDataRange().getValues();
   const out = [];
   for (let i = 1; i < rows.length; i++) {
@@ -1047,6 +1051,7 @@ function apiLog(token, no, from, to) {
     out.push({
       time: Utilities.formatDate(when, tz, 'yyyy-MM-dd HH:mm'),
       tool: String(r[1] || ''),
+      name: names[String(r[1] || '').trim()] || '',
       action: String(r[2] || ''),
       studentNo: studentNo,
       holder: String(r[4] || ''),

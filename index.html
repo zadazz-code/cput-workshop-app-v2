@@ -149,7 +149,8 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 .dpill{height:48px;display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;padding:0 12px;box-sizing:border-box;background:var(--bg);border-radius:18px;box-shadow:var(--raise-sm);cursor:pointer;font-size:15px;color:var(--dark)}
 .dpill .dlab{color:#8fa9a5;font-weight:600;font-size:13px;white-space:nowrap}
 .logFilters .dpill input{flex:0 1 auto;width:104px;min-width:0;font-size:14px;height:auto;margin:0;padding:0;border:0;background:transparent;box-shadow:none;font:inherit;color:var(--dark);text-align:center}
-.logRow{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid rgba(0,71,63,.12);font-size:14px;flex-wrap:wrap}
+.logRow{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:12px 0;border-top:1px solid rgba(0,71,63,.12);font-size:14px}
+.logLine{display:flex;align-items:center;gap:8px;flex-wrap:wrap;text-align:left}
 .visitHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px;padding:14px 18px;background:var(--bg);color:var(--dark);font-weight:700;font-size:15px;border-radius:18px;box-shadow:var(--raise-sm);cursor:pointer;white-space:nowrap}
 .visitBody{max-height:45vh;overflow:auto;padding:2px 14px 10px}
 .visitLine{padding:8px 0;border-bottom:1px solid #b2dfdb;font-size:14px}
@@ -1802,12 +1803,18 @@ async function loadLog(){
     if (S.token !== token) return;
     logLoaded = true;
     $('logInfo').textContent = r.total + ' entries' + (r.capped ? ' (showing the latest 500)' : '');
-    $('logRows').innerHTML = r.rows.map(x =>
-      '<div class="logRow"><div><b>' + esc(x.time) + '</b> · ' + esc(x.action) + ' · ' + esc(x.tool) +
-      (x.studentNo ? ' · student ' + esc(x.studentNo) : '') + (x.holder ? ' (' + esc(x.holder) + ')' : '') + '</div>' +
-      '<div class="small">' + esc(x.staff) + (x.total !== '' ? ' · ' + money(x.total) : '') +
-      (x.paid ? ' · paid ' + esc(x.paid) + (x.paidBy ? ' by ' + esc(x.paidBy) : '') : '') + '</div></div>'
-    ).join('') || '<p class="small">Nothing found.</p>';
+    $('logRows').innerHTML = r.rows.map(x => {
+      const when = longDate(x.time.slice(0, 10)) + ' at ' + x.time.slice(11);
+      const what = (x.name ? esc(x.name) + ' <span class="small">(' + esc(x.tool) + ')</span>' : esc(x.tool));
+      const who = x.studentNo ? ' · student ' + esc(x.studentNo) + (x.holder ? ' (' + esc(x.holder) + ')' : '') : '';
+      const pay = x.paid
+        ? '<div class="logLine"><span class="tag success">Paid</span> ' + esc(longDate(x.paid.slice(0, 10))) + ' at ' + esc(x.paid.slice(11)) + (x.paidBy ? ' by ' + esc(x.paidBy) : '') + '</div>'
+        : (x.total !== '' ? '<div class="logLine"><span class="tag error">Unpaid</span></div>' : '');
+      return '<div class="logRow">' +
+        '<div class="logLine"><b>' + what + '</b> · ' + esc(x.action) + who + '</div>' +
+        '<div class="logLine small">' + esc(when) + ' · ' + esc(x.staff) + (x.total !== '' ? ' · ' + money(x.total) : '') + '</div>' +
+        pay + '</div>';
+    }).join('') || '<p class="small">Nothing found.</p>';
   } catch (e) {
     $('logInfo').textContent = e.message;
   }
