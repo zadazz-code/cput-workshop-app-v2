@@ -534,6 +534,9 @@ function fmtDate(ymd){
 
 function renderStudent(){
   const box = $('studentBox');
+  // The "Out to this student" pill only shows once a student is confirmed.
+  $('holdToggle').classList.toggle('hidden', !S.student);
+  $('holdSection').classList.toggle('hidden', !S.student);
   if (S.student) {
     box.innerHTML =
       '<div class="field"><span class="fv">' + esc(S.student.holder) +
