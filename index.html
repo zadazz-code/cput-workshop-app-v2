@@ -1816,6 +1816,8 @@ function updateBar(){
     btn.textContent = 'Check out (' + outs + ')';
   }
   btn.disabled = busy || !barChoice;
+  // Hide the whole bar when there is nothing to check out or in. It returns when there is.
+  bar.classList.toggle('hidden', $('app').classList.contains('hidden') || !barChoice);
   syncBarCheckin();
   renderVisit();
 }
