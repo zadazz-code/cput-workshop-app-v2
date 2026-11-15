@@ -1881,16 +1881,17 @@ function renderVisit(){
     if (row == null) return '';
     if (paid) return '<span class="tag success">Paid</span>';
     const on = paySelected.has(row);
-    return '<span class="tag error">Unpaid</span> ' +
-      '<button type="button" class="ghost" onclick="togglePay(' + row + ')"' +
+    return '<button type="button" class="ghost" onclick="togglePay(' + row + ')"' +
       (on ? ' style="background:var(--teal);color:#fff"' : '') + '>' + (on ? 'Selected' : 'Pay') + '</button>';
   };
   // One line per take: details on the left, the Pay / Paid button on the right, like the student's tool list.
   // Unpaid rows sit pressed in; paid rows stay flat.
+  // Unpaid shows its status under the name and the Pay button on the right; paid shows only the Paid pill on the right.
   const payRow = (details, button, unpaid) =>
     '<div class="visitLine" style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0;padding:12px 14px;border-radius:18px;' +
     (unpaid ? 'background:var(--bg);box-shadow:var(--inset-sm)' : 'background:transparent') + '">' +
-    '<div style="min-width:0">' + details + '</div><div style="flex:0 0 auto">' + button + '</div></div>';
+    '<div style="min-width:0">' + details + (unpaid ? '<div style="margin-top:8px"><span class="tag error">Unpaid</span></div>' : '') + '</div>' +
+    '<div style="flex:0 0 auto">' + button + '</div></div>';
   // Takes from earlier days that are still unpaid, listed separately.
   const todayRows = new Set(takes.map(t => t.row));
   const older = owing.items.filter(t => !todayRows.has(t.row));
