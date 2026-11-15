@@ -1052,6 +1052,8 @@ function apiLog(token, no, from, to) {
       time: Utilities.formatDate(when, tz, 'yyyy-MM-dd HH:mm'),
       tool: String(r[1] || ''),
       name: names[String(r[1] || '').trim()] || '',
+      student: studentNo ? fullNameForHolder(String(r[4] || '')) : '',
+      year: studentNo ? yearForHolder(String(r[4] || '')) : '',
       action: String(r[2] || ''),
       studentNo: studentNo,
       holder: String(r[4] || ''),

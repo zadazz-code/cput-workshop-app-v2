@@ -1804,15 +1804,16 @@ async function loadLog(){
     logLoaded = true;
     $('logInfo').textContent = r.total + ' entries' + (r.capped ? ' (showing the latest 500)' : '');
     $('logRows').innerHTML = r.rows.map(x => {
+      const what = x.name ? esc(x.name) + ' <span class="small">(' + esc(x.tool) + ')</span>' : esc(x.tool);
+      const to = x.student ? '<div class="logLine">' + esc(x.action === 'Out' ? 'Out to ' : x.action + ' by ') + esc(x.student) + (x.year ? ' · ' + esc(x.year) : '') + '</div>' : '';
       const when = longDate(x.time.slice(0, 10)) + ' at ' + x.time.slice(11);
-      const what = (x.name ? esc(x.name) + ' <span class="small">(' + esc(x.tool) + ')</span>' : esc(x.tool));
-      const who = x.studentNo ? ' · student ' + esc(x.studentNo) + (x.holder ? ' (' + esc(x.holder) + ')' : '') : '';
       const pay = x.paid
         ? '<div class="logLine"><span class="tag success">Paid</span> ' + esc(longDate(x.paid.slice(0, 10))) + ' at ' + esc(x.paid.slice(11)) + (x.paidBy ? ' by ' + esc(x.paidBy) : '') + '</div>'
         : (x.total !== '' ? '<div class="logLine"><span class="tag error">Unpaid</span></div>' : '');
       return '<div class="logRow">' +
-        '<div class="logLine"><b>' + what + '</b> · ' + esc(x.action) + who + '</div>' +
-        '<div class="logLine small">' + esc(when) + ' · ' + esc(x.staff) + (x.total !== '' ? ' · ' + money(x.total) : '') + '</div>' +
+        '<div class="logLine"><b>' + what + '</b> · ' + esc(x.action) + '</div>' +
+        to +
+        '<div class="logLine small">' + esc(when) + ' · signed by ' + esc(x.staff) + (x.total !== '' ? ' · ' + money(x.total) : '') + '</div>' +
         pay + '</div>';
     }).join('') || '<p class="small">Nothing found.</p>';
   } catch (e) {
