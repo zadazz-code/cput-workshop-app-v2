@@ -403,6 +403,8 @@ function placeToast(){
 
 function status(msg, kind = 'ok', ms = 6000, action = null){
   const t = $('toast');
+  // Routine confirmations are not shown. The bar only appears for problems, or for a check out with Undo.
+  if (kind === 'ok' && !action) { clearTimeout(toastTimer); t.classList.add('hidden'); return; }
   t.innerHTML = '';
   t.appendChild(document.createTextNode(msg));
   if (action) {
