@@ -232,7 +232,7 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
         </div>
         <button id="camBtn" type="button" onclick="toggleCamera()">Camera</button>
       </div>
-      <div class="seg" role="group" aria-label="Scan mode">
+      <div id="modeSeg" class="seg" role="group" aria-label="Scan mode">
         <button id="modeAdd" type="button" aria-selected="true" onclick="setMode('add')">Add to lists</button>
         <button id="modeWho" class="off" type="button" aria-selected="false" onclick="setMode('who')">Who has this?</button>
       </div>
@@ -537,6 +537,15 @@ function renderStudent(){
   // The "Out to this student" pill only shows once a student is confirmed.
   $('holdToggle').classList.toggle('hidden', !S.student);
   $('holdSection').classList.toggle('hidden', !S.student);
+  // Without a confirmed student the scan box only does Who has this?. Add to lists appears once one is confirmed.
+  const addWasHidden = $('modeAdd').classList.contains('hidden');
+  $('modeSeg').classList.toggle('hidden', !S.student);
+  $('modeAdd').classList.toggle('hidden', !S.student);
+  if (!S.student) {
+    if (mode !== 'who') setMode('who');
+  } else if (addWasHidden) {
+    setMode('add');
+  }
   if (S.student) {
     box.innerHTML =
       '<div class="field"><span class="fv">' + esc(S.student.holder) +
