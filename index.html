@@ -1350,6 +1350,7 @@ function renderLists(){
 
   const outCount = outs.length + S.lines.size;
   $('nOut').textContent = outCount;
+  syncHoldWide(outCount === 0);
   $('nIn').textContent = ins.length;
   $('listOut').innerHTML = (checking.concat(outs).map(rowHtml).join('') + [...S.lines.values()].map(lineHtml).join('')) || '<p class="small">No tools waiting to be checked out.</p>';
   $('listIn').innerHTML = ins.map(rowHtml).join('') || '<p class="small">No tools waiting to be checked in.</p>';
@@ -1763,6 +1764,16 @@ function toggleHold(){
   if (holdOpen) scrollToHold();   // bring the "Out to this student" bar to the top of the screen
   else scrollToStudent();         // closing returns to the student section, as after a new sign-in
 }
+// Wide screens: the "Out to this student" list is open while nothing is queued to check out,
+// closes while a check out is being built, and opens again once it has been saved.
+let lastQueueEmpty = null;
+const isWide = () => window.matchMedia('(min-width: 960px)').matches;
+function syncHoldWide(queueEmpty){
+  if (!isWide() || queueEmpty === lastQueueEmpty) return;
+  lastQueueEmpty = queueEmpty;
+  holdOpen = queueEmpty;
+  renderHoldToggle();
+}
 function scrollToHold(){
   const headerH = document.querySelector('header').offsetHeight;
   const y = $('holdToggle').getBoundingClientRect().top + window.scrollY - headerH - 12;
@@ -1776,7 +1787,7 @@ function renderHoldToggle(){
 
 // After a save, move the screen up to the top of the student section, so the whole student area is in view.
 function scrollToStudent(){
-  holdOpen = false;
+  if (!isWide()) holdOpen = false;
   renderHoldToggle();
   loadToolCache();   // names and status may have changed after a save
   focusTool();
