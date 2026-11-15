@@ -143,7 +143,7 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 /* Visit strip above the bar */
 .visit{position:fixed;left:12px;right:12px;bottom:14px;max-width:366px;margin:0 auto;z-index:5;background:rgba(255,255,255,.6);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-edge);border-radius:22px;box-shadow:0 10px 30px rgba(0,71,63,.14);overflow:hidden}
 .visitIn{display:flex;flex-direction:column-reverse}
-.visitHead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;background:var(--dark);color:#fff;font-weight:600;font-size:14px;cursor:pointer}
+.visitHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:10px 12px 12px;padding:14px 18px;background:var(--bg);color:var(--dark);font-weight:700;font-size:15px;border-radius:18px;box-shadow:var(--raise-sm);cursor:pointer}
 .visitBody{max-height:45vh;overflow:auto;padding:2px 14px 10px}
 .visitLine{padding:8px 0;border-bottom:1px solid #b2dfdb;font-size:14px}
 .visitLine .big{font-weight:700}
@@ -1767,9 +1767,10 @@ function renderVisit(){
   // A Pay button per take. Once paid it greys out and says Paid.
   const payBtn = (row, paid) => {
     if (row == null) return '';
-    if (paid) return '<button type="button" class="ghost" disabled style="opacity:.45">Paid</button>';
+    if (paid) return '<span class="tag success">Paid</span>';
     const on = paySelected.has(row);
-    return '<button type="button" class="ghost" onclick="togglePay(' + row + ')"' +
+    return '<span class="tag error">Unpaid</span> ' +
+      '<button type="button" class="ghost" onclick="togglePay(' + row + ')"' +
       (on ? ' style="background:var(--teal);color:#fff"' : '') + '>' + (on ? 'Selected' : 'Pay') + '</button>';
   };
   // One line per take: details on the left, the Pay / Paid button on the right, like the student's tool list.
