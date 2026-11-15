@@ -1257,7 +1257,9 @@ async function checkOut(){
   const removed = ids.map(id => S.items.get(id)).filter(Boolean);
   const total = ids.length + lines.reduce((n, l) => n + l.qty, 0);
   const parts = [
-    'To: <b>' + esc(S.student.holder) + '</b>' + (S.student.year ? ' · ' + esc(S.student.year) : ''),
+    'To' +
+      '<div style="margin-top:8px;padding:14px 18px;border-radius:18px;background:var(--bg);box-shadow:var(--inset);text-align:center;font-weight:700;color:var(--dark)">' +
+        esc(S.student.holder) + (S.student.year ? ' · ' + esc(S.student.year) : '') + '</div>',
     'Return by' +
       '<div style="position:relative;margin-top:8px;padding:14px 18px;border-radius:18px;background:var(--bg);box-shadow:var(--inset);text-align:center;font-weight:700;color:var(--dark)">' +
         '<span id="retShow">' + longDate(todayStr()) + '</span>' +
