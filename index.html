@@ -177,6 +177,8 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
   #app > #who, #app > #overdueAlert{grid-column:1 / -1}
   #app > .colL, #app > .colR{min-width:0}
   #actionBar{position:static;left:auto;right:auto;bottom:auto;max-width:none;margin:12px 0 0;z-index:auto}
+  /* Out to this student: four rows visible, scroll for the rest */
+  #listHold{max-height:372px;overflow-y:auto;padding-right:4px}
 }
 /* Loading indicator: shows while the app waits for the storeroom server */
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -254,7 +256,7 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
     <div id="studentBox" style="margin-top:16px"></div>
     <div id="stuReader" class="hidden"></div>
 
-    <div class="card">
+    <div id="scanCard" class="card">
       <div class="cardHead">
         <div>
           <div class="st">Scan a tool</div>
@@ -1774,6 +1776,12 @@ function syncHoldWide(queueEmpty){
   holdOpen = queueEmpty;
   renderHoldToggle();
 }
+$('scanCard').addEventListener('pointerdown', () => {
+  if (!isWide() || !holdOpen) return;
+  if (document.querySelectorAll('input.hold:checked').length || accTicked()) return;
+  holdOpen = false;
+  renderHoldToggle();
+});
 function scrollToHold(){
   const headerH = document.querySelector('header').offsetHeight;
   const y = $('holdToggle').getBoundingClientRect().top + window.scrollY - headerH - 12;
