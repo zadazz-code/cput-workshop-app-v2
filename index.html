@@ -535,7 +535,7 @@ function fmtDate(ymd){
 function renderStudent(){
   const box = $('studentBox');
   // The "Out to this student" pill only shows once a student is confirmed.
-  $('holdToggle').classList.toggle('hidden', !S.student);
+  if (!S.student) $('holdToggle').classList.add('hidden');
   $('holdSection').classList.toggle('hidden', !S.student);
   // Without a confirmed student the scan box only does Who has this?. Add to lists appears once one is confirmed.
   const addWasHidden = $('modeAdd').classList.contains('hidden');
@@ -597,6 +597,8 @@ function renderHolding(items, accs){
   accs = accs || [];
   const accUnits = accs.reduce((n, a) => n + a.qty, 0);
   $('nHold').textContent = items.length + accUnits;
+  // Hide the pill when the student has nothing out; it returns when something is out.
+  $('holdToggle').classList.toggle('hidden', items.length + accUnits === 0);
   const toolHtml = items.map(t =>
     '<label class="tool' + (t.overdue ? ' overdue' : t.dueToday ? ' dueToday' : '') + '">' +
     '<input type="checkbox" class="hold" value="' + esc(t.id) + '" onchange="pickHold(this)" style="display:none">' +
