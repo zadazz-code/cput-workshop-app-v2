@@ -548,8 +548,9 @@ function renderStudent(){
   box.innerHTML =
     '<label for="stuNo">Student number</label>' +
     '<div class="field"><input id="stuNo" inputmode="numeric" autocomplete="off" placeholder="Student number"></div>' +
-    '<button class="secondary" type="button" onclick="scanStudent()">Scan student QR</button>' +
-    '<button type="button" onclick="confirmStudent()">Confirm student</button>';
+    '<div style="display:flex;gap:10px">' +
+    '<button class="secondary" type="button" onclick="scanStudent()" style="flex:1;margin-top:12px">Scan QR</button>' +
+    '<button type="button" onclick="confirmStudent()" style="flex:1;margin-top:12px">Confirm</button></div>';
 }
 
 function changeStudent(){
@@ -758,7 +759,7 @@ async function onStudentCode(text){
   feedback(true, 'Student card read');
   if (!$('stuNo')) return;
   $('stuNo').value = no;
-  confirmStudent();
+  status('Card read. Press Confirm to continue.');
 }
 
 // Scan feedback: a short beep and a vibration when a label is read or refused.
