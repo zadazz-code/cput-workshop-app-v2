@@ -1886,8 +1886,10 @@ function renderVisit(){
       (on ? ' style="background:var(--teal);color:#fff"' : '') + '>' + (on ? 'Selected' : 'Pay') + '</button>';
   };
   // One line per take: details on the left, the Pay / Paid button on the right, like the student's tool list.
-  const payRow = (details, button) =>
-    '<div class="visitLine" style="display:flex;align-items:center;justify-content:space-between;gap:10px">' +
+  // Unpaid rows sit pressed in; paid rows stay flat.
+  const payRow = (details, button, unpaid) =>
+    '<div class="visitLine" style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0;padding:12px 14px;border-radius:18px;' +
+    (unpaid ? 'background:var(--bg);box-shadow:var(--inset-sm)' : 'background:transparent') + '">' +
     '<div style="min-width:0">' + details + '</div><div style="flex:0 0 auto">' + button + '</div></div>';
   // Takes from earlier days that are still unpaid, listed separately.
   const todayRows = new Set(takes.map(t => t.row));
@@ -1897,13 +1899,13 @@ function renderVisit(){
     ? '<div class="visitLine"><b>Earlier · not yet paid · ' + money(olderTotal) + '</b></div>' +
       older.map(t => payRow(
         '<div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
-        '<small>' + money(t.total) + ' · ' + esc(t.date) + '</small>', payBtn(t.row, false))).join('')
+        '<small>' + money(t.total) + ' · ' + esc(t.date) + '</small>', payBtn(t.row, false), true)).join('')
     : '';
   const todayHtml = takes.map(t => payRow(
     '<div class="big">' + esc(t.label) + ' × ' + t.qty + '</div>' +
     '<small>' + money(t.unitCost) + ' each = ' + money(t.total) + ' · ' + esc(t.at) +
       (t.stockLeft == null ? '' : ' · ' + t.stockLeft + ' left in stock') + '</small>',
-    payBtn(t.row, !!t.paid))).join('');
+    payBtn(t.row, !!t.paid), !t.paid)).join('');
   // Totals the ticked takes; one button pays them all.
   const picked = owing.items.filter(t => paySelected.has(t.row));
   const pickedTotal = Math.round(picked.reduce((n, t) => n + t.total, 0) * 100) / 100;
