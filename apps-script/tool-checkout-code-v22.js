@@ -484,7 +484,7 @@ function apiRoute(p) {
     case 'checkout': return apiCheckout(p.token, ids, p.no, p.ret);
     case 'checkin':  return apiCheckin(p.token, ids);
     case 'family':   return apiFamily(p.token, p.qr);
-    case 'take':     return apiTake(p.token, p.no, p.lines);
+    case 'take':     return apiTake(p.token, p.no, p.lines, p.ret);
     case 'return':   return apiReturnItems(p.token, p.no, p.lines);
     case 'visit':    return apiVisit(p.token, p.no);
     case 'markpaid': return apiMarkPaid(p.token, p.no, p.rows);
@@ -739,7 +739,7 @@ function apiFamily(token, qr) {
 // Tool lines have no quantity, so they are skipped here.
 function accessoriesHeld(no) {
   const log = SpreadsheetApp.getActive().getSheetByName(LOG).getDataRange().getValues();
-  const net = new Map(), since = new Map();
+  const net = new Map(), since = new Map(), retOf = new Map();
   log.slice(1).forEach(r => {
     if (String(r[3]).trim() !== String(no).trim()) return;
     const qty = Number(r[LOG_QTY]);
@@ -748,7 +748,10 @@ function accessoriesHeld(no) {
     const dir = r[2] === 'Out' ? 1 : r[2] === 'In' ? -1 : 0;
     net.set(code, (net.get(code) || 0) + dir * qty);
     if (dir === 1 && !since.has(code)) since.set(code, r[0]); // first time it was taken
+    if (dir === 1) retOf.set(code, String(r[14] || '').trim()); // latest return date
   });
+  const tz = Session.getScriptTimeZone();
+  const today = Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd');
   const fams = familyRows();
   const out = [];
   net.forEach((qty, code) => {
@@ -758,15 +761,19 @@ function accessoriesHeld(no) {
     const tab = familyTab(f.family);
     const row = tab.rows.slice(1).find(r => String(r[tab.col.code]).trim().toUpperCase() === code);
     const taken = since.get(code);
+    const ret = retOf.get(code) || '';   // yyyy-mm-dd, or '' for accessories taken before return dates
+    const d = ret ? new Date(ret + 'T12:00:00') : null;
     out.push({ code: code, qty: qty, label: row ? displayName(tab, row) : '', family: f.family,
-      taken: taken ? Utilities.formatDate(new Date(taken), Session.getScriptTimeZone(), 'd MMM yyyy') : '' });
+      taken: taken ? Utilities.formatDate(new Date(taken), tz, 'd MMM yyyy') : '',
+      due: d ? Utilities.formatDate(d, tz, 'd MMM yyyy') : '',
+      dueToday: ret === today, overdue: !!ret && ret < today });
   });
   return out;
 }
 
 // Takes items out to the current student. Accessories are expected back; consumables are used up.
 // Every line is checked before anything is written, so a bad line takes nothing.
-function apiTake(token, no, text) {
+function apiTake(token, no, text, ret) {
   const staff = staffFromToken(token);
   const holder = studentLookup(no);
   if (!holder) throw new Error('Student number not found');
@@ -796,8 +803,14 @@ function apiTake(token, no, text) {
       p.tab.sheet.getRange(p.row, p.tab.col.stock + 1).setValue(p.item.stock - p.l.qty);
       const cost = used ? p.item.unitCost : '';
       const total = used ? Math.round(p.item.unitCost * p.l.qty * 100) / 100 : '';
-      log.appendRow([now, p.l.code, used ? 'Used' : 'Out', String(no), holder, staff.id, staff.name, 'Scanner',
-        p.l.qty, cost, total, used ? p.item.stock - p.l.qty : '']);
+      const row = [now, p.l.code, used ? 'Used' : 'Out', String(no), holder, staff.id, staff.name, 'Scanner',
+        p.l.qty, cost, total, used ? p.item.stock - p.l.qty : ''];
+      // Accessories come back, so they carry a return date (Log column O). Consumables never do.
+      if (!used) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(String(ret || ''))) throw new Error('Choose a return date for ' + p.item.label);
+        row.push('', '', String(ret));
+      }
+      log.appendRow(row);
     });
     return { holder: holder, done: plan.map(p => ({
       code: p.l.code, qty: p.l.qty, label: p.item.label,

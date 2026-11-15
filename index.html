@@ -650,11 +650,13 @@ function renderHolding(items, accs){
     '</label>').join('');
   // Accessories: one row per item out, each with its own tick box.
   const accHtml = accs.flatMap(a => Array.from({ length: a.qty }, () =>
-    '<label class="tool"><input type="checkbox" class="accHold" data-code="' + esc(a.code) + '" data-label="' + esc(a.label) +
+    '<label class="tool' + (a.overdue ? ' overdue' : a.dueToday ? ' dueToday' : '') + '"><input type="checkbox" class="accHold" data-code="' + esc(a.code) + '" data-label="' + esc(a.label) +
     '" onchange="pickHold(this)" style="display:none">' +
     '<div class="code">' + esc(a.code) + '</div>' +
     '<div class="body"><div class="name">' + esc(a.label) + '</div>' +
-    '<div class="meta">Out to this student · tick to return</div></div></label>')).join('');
+    '<div class="meta">' + (a.due ? (a.dueToday && !a.overdue ? 'Due back today · ' : '') + 'Return by ' + esc(a.due) : 'No return date') + ' · tick to return</div></div>' +
+    (a.overdue ? '<span class="tag error">Overdue</span>' : a.dueToday ? '<span class="tag error">Due today</span>' : '<span class="tag success">Accessory</span>') +
+    '</label>')).join('');
   $('listHold').innerHTML = (toolHtml + accHtml) || '<p class="small">No tools or accessories are out to this student.</p>';
   updateHoldBtn();
 }
@@ -987,9 +989,9 @@ function myToolsBody(r){
   // Accessories: one row per item, with the date it was taken. They have no return date.
   const accHtml = accs.length
     ? '<h2>Accessories you have</h2>' + accs.flatMap(a => Array.from({ length: a.qty }, () =>
-        '<div class="tool"><div class="code">' + esc(a.code || '') + '</div><div class="body"><div class="name">' + esc(a.label) + '</div>' +
-        '<div class="meta">' + (a.taken ? 'Taken ' + esc(a.taken) : 'Taken') + ' · return to the storeroom when finished</div></div>' +
-        '<span class="tag success">Accessory</span></div>')).join('')
+        '<div class="tool' + (a.overdue ? ' overdue' : a.dueToday ? ' dueToday' : '') + '"><div class="code">' + esc(a.code || '') + '</div><div class="body"><div class="name">' + esc(a.label) + '</div>' +
+        '<div class="meta">' + (a.due ? (a.dueToday && !a.overdue ? 'Due back today · ' : '') + 'Return by ' + esc(a.due) : (a.taken ? 'Taken ' + esc(a.taken) : 'Taken')) + ' · return to the storeroom when finished</div></div>' +
+        (a.overdue ? '<span class="tag error">Overdue</span>' : a.dueToday ? '<span class="tag error">Due today</span>' : '<span class="tag success">Accessory</span>') + '</div>')).join('')
     : '';
   if (!items.length) return head + accHtml;
   const late = items.filter(t => t.overdue).length;
@@ -1342,8 +1344,9 @@ async function checkOut(){
       '<div style="margin-top:8px;padding:14px 18px;border-radius:18px;background:var(--bg);box-shadow:var(--inset);text-align:center;font-weight:700;color:var(--dark)">' +
         esc(S.student.holder) + (S.student.year ? ' · ' + esc(S.student.year) : '') + '</div>',
   ];
-  // The return date only applies to tools that come back. Consumables and accessories have none.
-  if (ids.length) parts.push(
+  // Tools and accessories come back, so they need a return date. Consumables alone do not.
+  const needsReturn = ids.length > 0 || lines.some(l => !isConsumable(l.group));
+  if (needsReturn) parts.push(
     'Return by' +
       '<div style="position:relative;margin-top:8px;padding:14px 18px;border-radius:18px;background:var(--bg);box-shadow:var(--inset);text-align:center;font-weight:700;color:var(--dark)">' +
         '<span id="retShow">' + longDate(todayStr()) + '</span>' +
@@ -1363,7 +1366,7 @@ async function checkOut(){
   if (S.token !== token) return;
   // The return date is picked in the sheet above, so read it now that the sheet has closed.
   const ret = ok && $('retDate') ? $('retDate').value : '';
-  if (ok && ids.length && !ret) return status('Choose the return date first.', 'bad');
+  if (ok && needsReturn && !ret) return status('Choose the return date first.', 'bad');
   if (!ok) {
     // Cancel empties the check out, as the first screen does, and puts the cursor back in the tool box.
     ids.forEach(id => S.items.delete(id));
@@ -1391,7 +1394,7 @@ async function checkOut(){
       if (r.done.length) undo = { label: 'Undo', fn: undoLast };
     }
     if (lines.length) {
-      const r2 = await api({ api: 'take', token: token, no: S.student.no,
+      const r2 = await api({ api: 'take', token: token, no: S.student.no, ret: ret,
         lines: lines.map(l => l.code + ':' + l.qty).join(',') });
       if (S.token !== token) return;
       linesSaved = true;
