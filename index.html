@@ -168,6 +168,11 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 .sheet{background:rgba(255,255,255,.88);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);width:100%;max-width:390px;border-radius:28px 28px 0 0;padding:20px;max-height:85vh;overflow:auto;border:1px solid var(--glass-edge);box-shadow:0 -10px 40px rgba(0,71,63,.14)}
 .sheet h2{font-size:18px;color:var(--dark);margin:0 4px 6px;text-transform:none;letter-spacing:0}
 .sheet button{margin-top:12px}
+/* Loading indicator: shows while the app waits for the storeroom server */
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;background:var(--bg);box-shadow:var(--raise-sm);color:var(--dark);font-size:13px;font-weight:700;pointer-events:none}
+.loader .ring{width:16px;height:16px;border-radius:50%;border:3px solid rgba(0,137,123,.22);border-top-color:var(--teal);animation:spin .8s linear infinite}
+.loader.hidden{display:none}
 .toast{position:fixed;left:12px;right:12px;bottom:110px;max-width:366px;margin:0 auto;padding:12px 14px;border-radius:16px;background:var(--dark);color:#fff;font-size:14px;font-weight:600;text-align:center;box-shadow:0 10px 30px rgba(0,48,43,.25);z-index:9}
 .toast.bad{background:var(--red)}
 .toast button{display:inline-block;width:auto;min-height:0;margin:8px 0 0 12px;padding:6px 12px;font-size:14px;background:#fff;color:var(--dark);border-radius:12px;box-shadow:none}
@@ -191,6 +196,7 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 </head>
 <body>
 <div class="phone">
+  <div id="loader" class="loader hidden" role="status" aria-live="polite"><span class="ring"></span><span>Loading…</span></div>
   <header class="top">
     <div class="left">
       <div class="bt">Workshop Tools</div>
@@ -426,7 +432,26 @@ function handleErr(e){
 
 // ---------- Server calls (JSONP: works from GitHub Pages without CORS) ----------
 
+let pendingCalls = 0, loaderTimer = null;
+function trackLoading(delta){
+  pendingCalls += delta;
+  if (pendingCalls > 0) {
+    if (!loaderTimer && $('loader').classList.contains('hidden')) {
+      loaderTimer = setTimeout(() => { loaderTimer = null; if (pendingCalls > 0) $('loader').classList.remove('hidden'); }, 250);
+    }
+  } else {
+    pendingCalls = 0;
+    clearTimeout(loaderTimer); loaderTimer = null;
+    $('loader').classList.add('hidden');
+  }
+}
+// Every call to the server goes through here, so the loader always shows while the app waits.
 function api(params){
+  trackLoading(1);
+  return apiRaw(params).finally(() => trackLoading(-1));
+}
+
+function apiRaw(params){
   return new Promise((resolve, reject) => {
     const name = 'cb_' + (++cbN) + '_' + Date.now();
     const s = document.createElement('script');
