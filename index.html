@@ -1240,6 +1240,14 @@ function renderLists(){
   updateBar();
 }
 
+// Shows a date as "15 November 2026" (the browser's own date box cannot be set to this format).
+function longDate(iso){
+  if (!iso) return '';
+  const m = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const [y, mo, d] = String(iso).split('-').map(Number);
+  return d + ' ' + m[mo - 1] + ' ' + y;
+}
+
 async function checkOut(){
   touch();
   const ids = [...S.items.values()].filter(t => !t.pending && !t.out).map(t => t.id);
@@ -1250,7 +1258,13 @@ async function checkOut(){
   const total = ids.length + lines.reduce((n, l) => n + l.qty, 0);
   const parts = [
     'To: <b>' + esc(S.student.holder) + '</b>' + (S.student.year ? ' · ' + esc(S.student.year) : ''),
-    'Return by: <input id="retDate" type="date" value="' + todayStr() + '" style="margin-top:6px">',
+    'Return by' +
+      '<div style="position:relative;margin-top:8px;padding:14px 18px;border-radius:18px;background:var(--bg);box-shadow:var(--inset);text-align:center;font-weight:700;color:var(--dark)">' +
+        '<span id="retShow">' + longDate(todayStr()) + '</span>' +
+        '<input id="retDate" type="date" value="' + todayStr() + '" aria-label="Return by" ' +
+          'onchange="document.getElementById(\'retShow\').textContent = longDate(this.value)" ' +
+          'style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;margin:0">' +
+      '</div>',
     '<span class="small">Set to today. Change it if the tool is due back on another day.</span>'
   ];
   if (removed.length) parts.push(toolLines(removed));
