@@ -84,8 +84,8 @@ button.secondary,button.ghost{background:var(--bg);color:var(--dark);box-shadow:
 button.secondary:hover:not(:disabled),button.ghost:hover:not(:disabled){background:var(--bg)}
 button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;background:var(--bg);color:var(--red);box-shadow:var(--raise-xs)}
 #camBtn{width:auto;flex:0 0 auto;margin:0;padding:12px 14px;font-size:14px}
-#holdToggle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;width:100%;min-height:0;margin:22px 0 10px;padding:0 4px;background:none;color:var(--mute);box-shadow:none;border-radius:0;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
-#holdToggle:hover:not(:disabled){background:none}
+#holdToggle{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;min-height:0;margin:16px 0 0;padding:14px 18px;background:var(--bg);color:var(--dark);box-shadow:var(--raise-sm);border:0;border-radius:18px;font-size:15px;text-transform:none;letter-spacing:0;font-weight:700}
+#holdToggle:hover:not(:disabled){background:var(--bg)}
 #holdToggle b{font-weight:700}
 #holdSection,#holdBody{scroll-margin-top:90px}
 #btnHoldIn,#btnOut,#btnIn,#manualBtn,#signinBtn{margin-top:12px}
@@ -259,14 +259,18 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
       </div>
     </div>
 
+    <div id="blockOut">
     <div class="sec"><span>To check out</span><span class="cnt"><span id="nOut">0</span></span></div>
     <div id="listOut"></div>
     <p id="outHint" class="small"></p>
     <button id="btnOut" class="hidden" type="button" onclick="checkOut()" disabled>Check out</button>
+    </div>
 
+    <div id="blockIn">
     <div class="sec"><span>To check in</span><span class="cnt"><span id="nIn">0</span></span></div>
     <div id="listIn"></div>
     <button id="btnIn" class="hidden" type="button" onclick="checkIn()" disabled>Check in</button>
+    </div>
   </section>
 </div>
 
@@ -1237,6 +1241,9 @@ function renderLists(){
 
   $('btnIn').textContent = ins.length ? 'Check in ' + ins.length + ' tool' + (ins.length > 1 ? 's' : '') : 'Check in';
   $('btnIn').disabled = busy || !ins.length;
+  // Hide each block until there is something to check out or in.
+  $('blockOut').classList.toggle('hidden', !outCount);
+  $('blockIn').classList.toggle('hidden', !ins.length);
   updateBar();
 }
 
