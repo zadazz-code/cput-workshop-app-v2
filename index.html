@@ -600,7 +600,8 @@ async function lockOut(msg){
   $('app').classList.add('hidden');
   updateBar();
   clearInterval(keepAlive);
-  showStaffView(false);
+  // Back to the staff sign-in, not the student screen.
+  showStaffView(true);
   $('staffBtn').classList.remove('hidden');
   $('signout').classList.add('hidden');
   // Empty the screen as well, so nothing from the last student is left in the page.
