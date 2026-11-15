@@ -1811,8 +1811,8 @@ async function loadLog(){
         ? '<div class="logLine"><span class="tag success">Paid</span> ' + esc(longDate(x.paid.slice(0, 10))) + ' at ' + esc(x.paid.slice(11)) + (x.paidBy ? ' by ' + esc(x.paidBy) : '') + '</div>'
         : (x.total !== '' ? '<div class="logLine"><span class="tag error">Unpaid</span></div>' : '');
       return '<div class="logRow">' +
-        '<div class="logLine"><b>' + what + '</b> · ' + esc(x.action) + '</div>' +
-        to +
+        '<div class="logLine"><b>' + what + '</b></div>' +
+        (to || '<div class="logLine">' + esc(x.action === 'In' ? 'Checked in' : x.action) + '</div>') +
         '<div class="logLine small">' + esc(when) + ' · signed by ' + esc(x.staff) + (x.total !== '' ? ' · ' + money(x.total) : '') + '</div>' +
         pay + '</div>';
     }).join('') || '<p class="small">Nothing found.</p>';
