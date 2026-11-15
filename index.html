@@ -545,7 +545,6 @@ function toggleStaffView(){
 async function signIn(){
   const pin = $('pin').value.trim();
   if (!pin) return status('Enter your password.', 'bad');
-  if (!/^\d{6}$/.test(pin)) return status('Your password is 6 numbers.', 'bad');
   $('signinBtn').disabled = true;
   try {
     const r = await api({ api: 'signin', pin: pin });

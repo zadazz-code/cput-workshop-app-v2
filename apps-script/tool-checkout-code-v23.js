@@ -508,8 +508,8 @@ function apiSignin(pin) {
     throw new Error('Too many wrong passwords. Wait ' + wait + ' seconds, then try again.');
   }
   const p = String(pin || '').trim();
-  if (!/^\d{6}$/.test(p)) throw new Error('Your password is 6 numbers.');
-  const staff = findStaff(p);
+  // Anything other than 6 numbers counts as a wrong password.
+  const staff = /^\d{6}$/.test(p) ? findStaff(p) : null;
   if (!staff) {
     const fails = Number(cache.get('pinfails') || 0) + 1;
     if (fails >= PIN_FAILS_ALLOWED) {
@@ -521,7 +521,7 @@ function apiSignin(pin) {
     }
     cache.put('pinfails', String(fails), PIN_FAIL_WINDOW_SECONDS);
     logSignin('Wrong password', '', fails);
-    throw new Error('Wrong password');
+    throw new Error('Incorrect password. This has been logged.');
   }
   cache.remove('pinfails');
   logSignin('Signed in', staff.name, 0);
