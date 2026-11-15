@@ -248,12 +248,6 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
     </div>
     <div id="whoResult"></div>
 
-    <div class="sec"><span>Return date</span></div>
-    <div class="card">
-      <label for="retDate">Return by</label>
-      <div class="field"><input id="retDate" type="date"></div>
-      <p class="small">Set to today. Change it if the tool is due back on another day.</p>
-    </div>
 
     <button id="holdToggle" type="button" onclick="toggleHold()" aria-expanded="true">
       <span>Out to this student</span><span><b id="nHold">0</b> items · <span id="holdArrow">Hide ▲</span></span>
@@ -484,7 +478,6 @@ function showApp(){
   updateBar();
   $('signout').classList.remove('hidden');
   $('who').textContent = 'Signed in as ' + S.name + '. Signs out after 10 minutes without activity.';
-  $('retDate').value = todayStr();
   // A fresh sign-in never starts with a student, so the old list is cleared.
   renderStudent();
   renderLists();
@@ -1252,14 +1245,13 @@ async function checkOut(){
   const ids = [...S.items.values()].filter(t => !t.pending && !t.out).map(t => t.id);
   const lines = [...S.lines.values()];
   if ((!ids.length && !lines.length) || !S.student) return;
-  const ret = $('retDate').value;
-  if (!ret) return status('Choose the return date first.', 'bad');
   const token = S.token;
   const removed = ids.map(id => S.items.get(id)).filter(Boolean);
   const total = ids.length + lines.reduce((n, l) => n + l.qty, 0);
   const parts = [
     'To: <b>' + esc(S.student.holder) + '</b>' + (S.student.year ? ' · ' + esc(S.student.year) : ''),
-    'Return by: <b>' + esc(fmtDate(ret)) + '</b>'
+    'Return by: <input id="retDate" type="date" value="' + todayStr() + '" style="margin-top:6px">',
+    '<span class="small">Set to today. Change it if the tool is due back on another day.</span>'
   ];
   if (removed.length) parts.push(toolLines(removed));
   if (lines.length) {
@@ -1270,6 +1262,9 @@ async function checkOut(){
   }
   const ok = await confirmSave('Check out ' + total + ' item' + (total > 1 ? 's' : '') + '?', parts, 'Check out');
   if (S.token !== token) return;
+  // The return date is picked in the sheet above, so read it now that the sheet has closed.
+  const ret = ok && $('retDate') ? $('retDate').value : '';
+  if (ok && !ret) return status('Choose the return date first.', 'bad');
   if (!ok) {
     // Cancel empties the check out, as the first screen does, and puts the cursor back in the tool box.
     ids.forEach(id => S.items.delete(id));
