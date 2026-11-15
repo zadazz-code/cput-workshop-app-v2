@@ -97,12 +97,12 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 .seg button.off{background:transparent;color:var(--mute);box-shadow:none}
 
 /* Tool rows (canvas): raised; overdue rows are inset with a red code and tag */
-.tool{position:relative;display:flex;align-items:center;gap:12px;width:100%;margin:10px 0 0;padding:12px 14px;border:0;border-radius:22px;background:var(--bg);box-shadow:var(--raise);color:var(--ink);text-align:left;font:inherit;cursor:pointer}
-/* Coral pink for due today, deeper coral for overdue; text stays dark, never white */
-.tool.dueToday{box-shadow:var(--inset-sm);background:#f9a8a0}
+.tool{position:relative;display:flex;align-items:center;gap:14px;width:100%;margin:12px 0 0;padding:14px 16px;border:0;border-radius:22px;background:var(--bg);box-shadow:var(--raise);color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+/* Light red for due today and a slightly deeper red for overdue. Tinted shadow, no white inset glow. */
+.tool.dueToday{box-shadow:3px 3px 8px rgba(70,25,15,.18),-2px -2px 6px rgba(255,255,255,.35);background:#f7b8b2}
 .tool.dueToday .code,.tool.dueToday .tag{color:#9c2a22}
-.tool.overdue{box-shadow:var(--inset-sm);background:#e8605a}
-.tool.overdue .code,.tool.overdue .tag{color:#5c110c}
+.tool.overdue{box-shadow:3px 3px 8px rgba(70,25,15,.18),-2px -2px 6px rgba(255,255,255,.35);background:#f08a82}
+.tool.overdue .code,.tool.overdue .tag{color:#6e1a14}
 .tool.dueToday .meta{color:var(--ink)}
 .tool.selected{outline:3px solid var(--teal);outline-offset:2px}
 .code{flex:0 0 52px;height:52px;border-radius:50%;background:var(--bg);box-shadow:var(--inset-xs);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green);text-align:center}
