@@ -170,6 +170,13 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 .sheet{background:rgba(255,255,255,.88);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);width:100%;max-width:390px;border-radius:28px 28px 0 0;padding:20px;max-height:85vh;overflow:auto;border:1px solid var(--glass-edge);box-shadow:0 -10px 40px rgba(0,71,63,.14)}
 .sheet h2{font-size:18px;color:var(--dark);margin:0 4px 6px;text-transform:none;letter-spacing:0}
 .sheet button{margin-top:12px}
+/* Wide screens: scanning on the left, lists and log on the right. Phones keep one column. */
+@media (min-width: 960px){
+  .phone:has(#app:not(.hidden)){max-width:1180px}
+  #app{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px;align-items:start}
+  #app > #who, #app > #overdueAlert{grid-column:1 / -1}
+  #app > .colL, #app > .colR{min-width:0}
+}
 /* Loading indicator: shows while the app waits for the storeroom server */
 @keyframes spin{to{transform:rotate(360deg)}}
 .loader{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;background:var(--bg);box-shadow:var(--raise-sm);color:var(--dark);font-size:13px;font-weight:700;pointer-events:none}
@@ -242,6 +249,7 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
     <div id="who" class="alert success"></div>
     <div id="overdueAlert" class="alert error hidden"></div>
 
+    <div class="colL">
     <div id="studentBox" style="margin-top:16px"></div>
     <div id="stuReader" class="hidden"></div>
 
@@ -268,8 +276,10 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
       <button id="manualBtn" type="button" onclick="addManual()">Add tool</button>
     </div>
     <div id="whoResult"></div>
+    </div>
 
 
+    <div class="colR">
     <button id="holdToggle" type="button" onclick="toggleHold()" aria-expanded="true">
       <span>Out to this student</span><span><b id="nHold">0</b> items · <span id="holdArrow">Hide ▲</span></span>
     </button>
@@ -313,6 +323,7 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
         <p id="logInfo" class="small"></p>
         <div id="logRows"></div>
       </div>
+    </div>
     </div>
   </section>
 </div>
