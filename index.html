@@ -178,7 +178,9 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
   #app > .colL, #app > .colR{min-width:0}
   #actionBar{position:static;left:auto;right:auto;bottom:auto;max-width:none;margin:12px 0 0;z-index:auto}
   /* Out to this student: four rows visible, scroll for the rest */
-  #listHold{max-height:372px;overflow-y:auto;padding-right:22px;scrollbar-width:none}
+  /* Room around the rows so their shadows are not cut off; the list then fades out softly at the bottom */
+  #listHold{max-height:372px;overflow-y:auto;padding:10px 22px 26px 10px;margin:-10px -22px -26px -10px;scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 30px),transparent 100%);mask-image:linear-gradient(to bottom,#000 calc(100% - 30px),transparent 100%)}
   #listHold::-webkit-scrollbar{display:none}
   .holdWrap{position:relative}
   /* Visible slider on the right: track plus a thumb that follows the list and can be dragged */
