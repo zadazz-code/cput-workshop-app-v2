@@ -176,6 +176,7 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
   #app{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px;align-items:start}
   #app > #who, #app > #overdueAlert{grid-column:1 / -1}
   #app > .colL, #app > .colR{min-width:0}
+  #actionBar{position:static;left:auto;right:auto;bottom:auto;max-width:none;margin:12px 0 0;z-index:auto}
 }
 /* Loading indicator: shows while the app waits for the storeroom server */
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -297,6 +298,12 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
     <button id="btnOut" class="hidden" type="button" onclick="checkOut()" disabled>Check out</button>
     </div>
 
+    <nav id="actionBar" class="bar hidden" aria-label="Actions">
+      <div id="barSum" class="hidden"></div>
+      <button id="barBtn" type="button" onclick="barAction()" disabled>Check out</button>
+      <button id="barCheckin" type="button" onclick="checkInHolding()" disabled>Check in</button>
+    </nav>
+
     <div id="blockIn">
     <div class="sec"><span>To check in</span><span class="cnt"><span id="nIn">0</span></span></div>
     <div id="listIn"></div>
@@ -335,11 +342,6 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
   </div>
 </div>
 
-<nav id="actionBar" class="bar hidden" aria-label="Actions">
-  <div id="barSum" class="hidden"></div>
-  <button id="barBtn" type="button" onclick="barAction()" disabled>Check out</button>
-  <button id="barCheckin" type="button" onclick="checkInHolding()" disabled>Check in</button>
-</nav>
 
 <div id="scanFlash" class="scanFlash">
   <div id="scanMark"></div>
@@ -416,6 +418,7 @@ function esc(s){
 function placeToast(){
   const t = $('toast'), bar = $('actionBar');
   if (!t || !bar) return;
+  if (getComputedStyle(bar).position !== 'fixed') { t.style.bottom = '24px'; return; }
   if (bar.classList.contains('hidden')) { t.style.bottom = '110px'; return; }
   t.style.bottom = ((parseInt(bar.style.bottom, 10) || 14) + bar.offsetHeight + 10) + 'px';
 }
