@@ -583,6 +583,8 @@ function showApp(){
   renderStudent();
   renderLists();
   loadHolding();
+  // Managers: load the Log quietly a few seconds later, so scanning starts first.
+  if (S.manager) setTimeout(() => fetchLogAll(S.token), 4000);
   // Keep the server responsive while staff are signed in: a tiny request every 2 minutes.
   clearInterval(keepAlive);
   keepAlive = setInterval(() => api({ api: 'ping' }).catch(() => {}), 2 * 60 * 1000);
@@ -594,6 +596,7 @@ async function lockOut(msg){
   await stopCamera();
   S = fresh();
   studentCache.clear();
+  logCache = null; logCacheToken = null;
   toolCache = new Map();
   scanTarget = 'tool';
   setMode('add');
@@ -1922,28 +1925,64 @@ function setLogDateText(el){
   t.textContent = el.value ? longDate(el.value) : 'Any';
   t.classList.toggle('empty', !el.value);
 }
+// The Log is kept ready in the background for managers, so opening it shows the rows at once.
+let logCache = null, logCacheAt = 0, logCacheToken = null, logFetching = false;
+const LOG_FRESH_MS = 3 * 60 * 1000;
+
+function logNoFilter(){ return !$('logStu').value.trim() && !$('logFrom').value && !$('logTo').value; }
+
+function renderLog(r){
+  $('logInfo').textContent = r.total + ' entries' + (r.capped ? ' (showing the latest 500)' : '');
+  $('logRows').innerHTML = r.rows.map(x => {
+    const what = x.name ? esc(x.name) + ' <span class="small">(' + esc(x.tool) + ')</span>' : esc(x.tool);
+    const to = x.student ? '<div class="logLine">' + esc(x.action === 'Out' ? 'Out to ' : x.action + ' by ') + esc(x.student) + (x.year ? ' · ' + esc(x.year) : '') + '</div>' : '';
+    const when = longDate(x.time.slice(0, 10)) + ' at ' + x.time.slice(11);
+    const pay = x.paid
+      ? '<div class="logLine"><span class="tag success">Paid</span> ' + esc(longDate(x.paid.slice(0, 10))) + ' at ' + esc(x.paid.slice(11)) + (x.paidBy ? ' by ' + esc(x.paidBy) : '') + '</div>'
+      : (x.total !== '' ? '<div class="logLine"><span class="tag error">Unpaid</span></div>' : '');
+    return '<div class="logRow">' +
+      '<div class="logLine"><b>' + what + '</b></div>' +
+      (to || '<div class="logLine">' + esc(x.action === 'In' ? 'Checked in' : x.action) + '</div>') +
+      '<div class="logLine small">' + esc(when) + ' · signed by ' + esc(x.staff) + (x.total !== '' ? ' · ' + money(x.total) : '') + '</div>' +
+      pay + '</div>';
+  }).join('') || '<p class="small">Nothing found.</p>';
+}
+
+function setLogCache(token, r){ logCache = r; logCacheAt = Date.now(); logCacheToken = token; }
+
+// Loads the whole Log in the background with no filters. It skips the loading indicator,
+// so scanning carries on as normal while it runs.
+async function fetchLogAll(token){
+  if (logFetching || !token) return;
+  logFetching = true;
+  try {
+    const r = await apiRaw({ api: 'log', token: token, no: '', from: '', to: '' });
+    if (S.token !== token) return;
+    setLogCache(token, r);
+    if (logNoFilter() && !$('logBody').classList.contains('hidden')) { renderLog(r); logLoaded = true; }
+  } catch (e) {
+    // Quiet on purpose: the Log still loads normally when it is opened.
+  } finally {
+    logFetching = false;
+  }
+}
+
 async function loadLog(){
   const token = S.token;
   if (!token || !S.manager) return;
+  if (logNoFilter() && logCache && logCacheToken === token) {
+    renderLog(logCache);
+    logLoaded = true;
+    if (Date.now() - logCacheAt > LOG_FRESH_MS) fetchLogAll(token);
+    return;
+  }
   $('logInfo').textContent = 'Loading...';
   try {
     const r = await api({ api: 'log', token: token, no: $('logStu').value.trim(), from: $('logFrom').value, to: $('logTo').value });
     if (S.token !== token) return;
     logLoaded = true;
-    $('logInfo').textContent = r.total + ' entries' + (r.capped ? ' (showing the latest 500)' : '');
-    $('logRows').innerHTML = r.rows.map(x => {
-      const what = x.name ? esc(x.name) + ' <span class="small">(' + esc(x.tool) + ')</span>' : esc(x.tool);
-      const to = x.student ? '<div class="logLine">' + esc(x.action === 'Out' ? 'Out to ' : x.action + ' by ') + esc(x.student) + (x.year ? ' · ' + esc(x.year) : '') + '</div>' : '';
-      const when = longDate(x.time.slice(0, 10)) + ' at ' + x.time.slice(11);
-      const pay = x.paid
-        ? '<div class="logLine"><span class="tag success">Paid</span> ' + esc(longDate(x.paid.slice(0, 10))) + ' at ' + esc(x.paid.slice(11)) + (x.paidBy ? ' by ' + esc(x.paidBy) : '') + '</div>'
-        : (x.total !== '' ? '<div class="logLine"><span class="tag error">Unpaid</span></div>' : '');
-      return '<div class="logRow">' +
-        '<div class="logLine"><b>' + what + '</b></div>' +
-        (to || '<div class="logLine">' + esc(x.action === 'In' ? 'Checked in' : x.action) + '</div>') +
-        '<div class="logLine small">' + esc(when) + ' · signed by ' + esc(x.staff) + (x.total !== '' ? ' · ' + money(x.total) : '') + '</div>' +
-        pay + '</div>';
-    }).join('') || '<p class="small">Nothing found.</p>';
+    renderLog(r);
+    if (logNoFilter()) setLogCache(token, r);
   } catch (e) {
     $('logInfo').textContent = e.message;
   }
