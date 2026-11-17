@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#00897b">
+<meta name="theme-color" content="#A6E3CB">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Workshop Tools">
 <link rel="manifest" href="manifest.json">
@@ -12,8 +12,8 @@
 <title>Workshop Tools</title>
 <style>
 :root{
-  --bg:#e0f2f1; --ink:#00302b; --dark:#00473f; --teal:#00897b; --teal-hover:#00796b; --mute:#2f5a55;
-  --red:#c62828; --green:#00695c; --sh-d:#b7d4d1; --sh-l:#ffffff;
+  --bg:#ECEAE6; --ink:#2E2E2C; --dark:#2F3D38; --teal:#A6E3CB; --teal-hover:#8ED6B7; --mute:#6F6C66;
+  --red:#B8473E; --green:#2F7A5F; --sh-d:#CBC7C0; --sh-l:#FFFFFF;
   --raise:9px 9px 18px var(--sh-d), -9px -9px 18px var(--sh-l);
   --raise-sm:5px 5px 10px var(--sh-d), -5px -5px 10px var(--sh-l);
   --raise-xs:4px 4px 8px var(--sh-d), -4px -4px 8px var(--sh-l);
@@ -23,17 +23,17 @@
   --glass:rgba(255,255,255,.5); --glass-edge:rgba(255,255,255,.85);
   --blur:blur(16px) saturate(140%);
   /* aliases used by a few inline styles */
-  --color-primary:#00897b; --color-primary-strong:#00473f; --color-muted:#2f5a55; --color-error:#c62828; --color-text:#00302b;
-  --color-success:#00695c; --color-error-soft:#e0f2f1; --color-surface:#e0f2f1; --color-surface-raised:#e0f2f1;
+  --color-primary:#A6E3CB; --color-primary-strong:#2F3D38; --color-muted:#6F6C66; --color-error:#B8473E; --color-text:#2E2E2C;
+  --color-success:#2F7A5F; --color-error-soft:#ECEAE6; --color-surface:#ECEAE6; --color-surface-raised:#ECEAE6;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background-color:#e0f2f1;background-image:radial-gradient(circle at 10% 6%,#b2dfdb 0,transparent 36%),radial-gradient(circle at 95% 40%,#80cbc4 0,transparent 30%),radial-gradient(circle at 30% 100%,#d7efec 0,transparent 42%);background-attachment:fixed;font-family:Ubuntu,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;color:var(--ink)}
+html,body{margin:0;min-height:100%;background-color:#ECEAE6;font-family:Ubuntu,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;color:var(--ink)}
 .hidden{display:none !important}
 .phone{max-width:390px;margin:0 auto;padding:12px 14px 210px}
 a{color:var(--dark);font-weight:700}
 
 /* Glass header with the staff logo */
-header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-edge);border-radius:22px;box-shadow:0 10px 26px rgba(0,71,63,.10)}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-edge);border-radius:22px;box-shadow:0 10px 26px rgba(47,61,56,.10)}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
 .logo{height:44px;width:auto;display:block}
 .left{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}
@@ -44,7 +44,7 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:10p
 .knob{position:absolute;top:4px;left:4px;width:72px;height:32px;border-radius:999px;background:var(--bg);box-shadow:var(--raise-sm);display:flex;align-items:center;justify-content:center;transition:left .35s cubic-bezier(.4,.1,.2,1);z-index:2}
 .knob svg{width:16px;height:16px}
 .track.on .knob{left:84px}
-.track:focus-visible{outline:2px solid rgba(0,207,204,.6);outline-offset:3px}
+.track:focus-visible{outline:2px solid rgba(142,214,183,.6);outline-offset:3px}
 .bt{font-size:16px;font-weight:700;color:var(--dark);line-height:1.2;white-space:nowrap}
 .bs{font-size:12px;color:var(--mute);margin-top:2px}
 #signout{width:auto;min-height:0;margin:0;padding:9px 14px;white-space:nowrap;border:0;border-radius:14px;background:var(--bg);color:var(--dark);font:inherit;font-size:13px;font-weight:700;box-shadow:var(--raise-sm);cursor:pointer}
@@ -67,7 +67,7 @@ label{display:block;font-size:12px;color:var(--mute);margin:14px 4px 8px;letter-
 .conf{font-size:12px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
 input{width:100%;min-width:0;height:52px;padding:0 18px;border:0;border-radius:18px;background:var(--bg);box-shadow:var(--inset);color:var(--ink);font:inherit;font-size:18px;outline:none;margin-top:4px}
 input:focus-visible{box-shadow:var(--inset)}
-.field:focus-within{box-shadow:var(--inset),0 0 0 3px rgba(0,207,204,.6)}
+.field:focus-within{box-shadow:var(--inset),0 0 0 3px rgba(142,214,183,.6)}
 .field input:focus-visible{box-shadow:none;outline:none}
 input[type=date]{-webkit-appearance:none;appearance:none;display:block;height:48px;text-align:left}
 .field input[type=date]{height:auto;line-height:1.2;text-align:left;display:block}
@@ -75,11 +75,11 @@ input[type=range]{height:auto;padding:0;background:transparent;box-shadow:none;a
 input[type=hidden]{display:none}
 
 /* Buttons (canvas: teal primary, raised secondary, flat-text ghost) */
-button{display:block;width:100%;min-height:48px;margin-top:12px;padding:12px 14px;border:0;border-radius:16px;background:var(--teal);color:#fff;font:inherit;font-size:15px;font-weight:700;box-shadow:var(--raise-sm);cursor:pointer}
+button{display:block;width:100%;min-height:48px;margin-top:12px;padding:12px 14px;border:0;border-radius:16px;background:var(--teal);color:var(--dark);font:inherit;font-size:15px;font-weight:700;box-shadow:var(--raise-sm);cursor:pointer}
 button:hover:not(:disabled){background:var(--teal-hover)}
 button:active:not(:disabled){box-shadow:var(--inset-sm)}
-button:focus-visible{outline:3px solid #00cfcc;outline-offset:3px}
-button:disabled{background:var(--bg);color:#8aa5a1;box-shadow:var(--inset-sm);cursor:not-allowed}
+button:focus-visible{outline:3px solid #8ED6B7;outline-offset:3px}
+button:disabled{background:var(--bg);color:#B5B1A9;box-shadow:var(--inset-sm);cursor:not-allowed}
 button.secondary,button.ghost{background:var(--bg);color:var(--dark);box-shadow:var(--raise-sm)}
 button.secondary:hover:not(:disabled),button.ghost:hover:not(:disabled){background:var(--bg)}
 button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;background:var(--bg);color:var(--red);box-shadow:var(--raise-xs)}
@@ -93,16 +93,16 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 
 /* Segmented mode switch inside the scan card */
 .seg{display:flex;gap:6px;padding:4px;margin:12px 0 0;border-radius:999px;background:var(--bg);box-shadow:var(--inset-sm)}
-.seg button{flex:1;margin:0;min-height:36px;padding:8px 6px;font-size:13px;border-radius:999px;background:var(--teal);color:#fff;box-shadow:var(--raise-xs)}
+.seg button{flex:1;margin:0;min-height:36px;padding:8px 6px;font-size:13px;border-radius:999px;background:var(--teal);color:var(--dark);box-shadow:var(--raise-xs)}
 .seg button.off{background:transparent;color:var(--mute);box-shadow:none}
 
 /* Tool rows (canvas): raised; overdue rows are inset with a red code and tag */
 .tool{position:relative;display:flex;align-items:center;gap:14px;width:100%;margin:12px 0 0;padding:14px 16px;border:0;border-radius:22px;background:var(--bg);box-shadow:var(--raise);color:var(--ink);text-align:left;font:inherit;cursor:pointer}
 /* Light red for due today and a slightly deeper red for overdue. Tinted shadow, no white inset glow. */
 .tool.dueToday{box-shadow:3px 3px 8px rgba(70,25,15,.18),-2px -2px 6px rgba(255,255,255,.35);background:#f7b8b2}
-.tool.dueToday .code,.tool.dueToday .tag{color:#9c2a22}
+.tool.dueToday .code,.tool.dueToday .tag{color:#8A3129}
 .tool.overdue{box-shadow:3px 3px 8px rgba(70,25,15,.18),-2px -2px 6px rgba(255,255,255,.35);background:#f08a82}
-.tool.overdue .code,.tool.overdue .tag{color:#6e1a14}
+.tool.overdue .code,.tool.overdue .tag{color:#5E2520}
 /* Status buttons sit pressed in, like the tool number circle */
 .tool.dueToday .tag,.tool.overdue .tag{box-shadow:inset 3px 3px 6px rgba(70,25,15,.22),inset -3px -3px 6px rgba(255,255,255,.6)}
 .tool.dueToday .meta{color:var(--ink)}
@@ -138,15 +138,15 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 #zoomBox{margin-top:10px}
 
 /* Glass bottom action bar (canvas) */
-.bar{position:fixed;left:12px;right:12px;bottom:14px;max-width:366px;margin:0 auto;padding:12px;display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.55);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(255,255,255,.9);border-radius:26px;box-shadow:0 12px 30px rgba(0,71,63,.14);z-index:6}
+.bar{position:fixed;left:12px;right:12px;bottom:14px;max-width:366px;margin:0 auto;padding:12px;display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.55);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(255,255,255,.9);border-radius:26px;box-shadow:0 12px 30px rgba(47,61,56,.14);z-index:6}
 #barSum{display:none}
-#barBtn{flex:1 1 0;min-width:0;width:auto;margin:0;min-height:0;padding:15px;font-size:16px;border-radius:18px;background:var(--teal);color:#fff;box-shadow:var(--raise-sm)}
-#barBtn:disabled{background:#cfe6e3;color:#7b9893;box-shadow:none}
+#barBtn{flex:1 1 0;min-width:0;width:auto;margin:0;min-height:0;padding:15px;font-size:16px;border-radius:18px;background:var(--teal);color:var(--dark);box-shadow:var(--raise-sm)}
+#barBtn:disabled{background:#DCE9E3;color:#8E8A82;box-shadow:none}
 #barCheckin{flex:0 0 auto;width:auto;margin:0;min-height:0;padding:15px 16px;font-size:15px;border-radius:18px;background:var(--bg);color:var(--dark);box-shadow:var(--raise-sm)}
-#barCheckin:disabled{color:#8aa5a1;box-shadow:var(--inset-sm);background:var(--bg)}
+#barCheckin:disabled{color:#B5B1A9;box-shadow:var(--inset-sm);background:var(--bg)}
 
 /* Visit strip above the bar */
-.visit{position:fixed;left:12px;right:12px;bottom:14px;max-width:366px;margin:0 auto;z-index:5;background:rgba(255,255,255,.6);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-edge);border-radius:22px;box-shadow:0 10px 30px rgba(0,71,63,.14);overflow:hidden}
+.visit{position:fixed;left:12px;right:12px;bottom:14px;max-width:366px;margin:0 auto;z-index:5;background:rgba(255,255,255,.6);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-edge);border-radius:22px;box-shadow:0 10px 30px rgba(47,61,56,.14);overflow:hidden}
 .visitIn{display:flex;flex-direction:column-reverse}
 .logFilters{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}
 .logFilters input{min-width:0}
@@ -156,18 +156,18 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 .dpill .dval.empty{color:var(--mute);font-weight:600}
 .dpill .dlab{color:var(--mute);font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
 .logFilters .dpill input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;padding:0;border:0}
-.logRow{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:12px 0;border-top:1px solid rgba(0,71,63,.12);font-size:14px}
+.logRow{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:12px 0;border-top:1px solid rgba(47,61,56,.12);font-size:14px}
 .logLine{display:flex;align-items:center;gap:8px;flex-wrap:wrap;text-align:left}
 .visitHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px;padding:14px 18px;background:var(--bg);color:var(--dark);font-weight:700;font-size:15px;border-radius:18px;box-shadow:var(--raise-sm);cursor:pointer;white-space:nowrap}
 .visitBody{max-height:45vh;overflow:auto;padding:2px 14px 10px}
-.visitLine{padding:8px 0;border-bottom:1px solid #b2dfdb;font-size:14px}
+.visitLine{padding:8px 0;border-bottom:1px solid #CDEFE0;font-size:14px}
 .visitLine .big{font-weight:700}
 .visitLine small{color:var(--mute);font-size:13px}
 
 /* Sheets, toast, steppers, picker items */
-.overlay{position:fixed;inset:0;background:rgba(0,48,43,.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.overlay{position:fixed;inset:0;background:rgba(46,46,44,.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;z-index:20}
 .overlay.hidden{display:none !important}
-.sheet{background:rgba(255,255,255,.88);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);width:100%;max-width:390px;border-radius:28px 28px 0 0;padding:20px;max-height:85vh;overflow:auto;border:1px solid var(--glass-edge);box-shadow:0 -10px 40px rgba(0,71,63,.14)}
+.sheet{background:rgba(255,255,255,.88);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);width:100%;max-width:390px;border-radius:28px 28px 0 0;padding:20px;max-height:85vh;overflow:auto;border:1px solid var(--glass-edge);box-shadow:0 -10px 40px rgba(47,61,56,.14)}
 .sheet h2{font-size:18px;color:var(--dark);margin:0 4px 6px;text-transform:none;letter-spacing:0}
 .sheet button{margin-top:12px}
 /* Wide screens: scanning on the left, lists and log on the right. Phones keep one column. */
@@ -191,15 +191,15 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 /* Loading indicator: shows while the app waits for the storeroom server */
 @keyframes spin{to{transform:rotate(360deg)}}
 .loader{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;background:var(--bg);box-shadow:var(--raise-sm);color:var(--dark);font-size:13px;font-weight:700;pointer-events:none}
-.loader .ring{width:16px;height:16px;border-radius:50%;border:3px solid rgba(0,137,123,.22);border-top-color:var(--teal);animation:spin .8s linear infinite}
+.loader .ring{width:16px;height:16px;border-radius:50%;border:3px solid rgba(166,227,203,.22);border-top-color:var(--teal);animation:spin .8s linear infinite}
 .loader.hidden{display:none}
-.toast{position:fixed;left:12px;right:12px;bottom:110px;max-width:366px;margin:0 auto;padding:12px 14px;border-radius:16px;background:var(--dark);color:#fff;font-size:14px;font-weight:600;text-align:center;box-shadow:0 10px 30px rgba(0,48,43,.25);z-index:9}
+.toast{position:fixed;left:12px;right:12px;bottom:110px;max-width:366px;margin:0 auto;padding:12px 14px;border-radius:16px;background:var(--dark);color:#fff;font-size:14px;font-weight:600;text-align:center;box-shadow:0 10px 30px rgba(46,46,44,.25);z-index:9}
 .toast.bad{background:var(--red)}
 .toast button{display:inline-block;width:auto;min-height:0;margin:8px 0 0 12px;padding:6px 12px;font-size:14px;background:#fff;color:var(--dark);border-radius:12px;box-shadow:none}
 .scanFlash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none;opacity:0;z-index:30;transition:opacity .15s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .scanFlash.show{opacity:1}
-.scanFlash.good{background:rgba(0,137,123,.9);color:#fff}
-.scanFlash.bad{background:rgba(198,40,40,.92);color:#fff}
+.scanFlash.good{background:rgba(166,227,203,.9);color:#fff}
+.scanFlash.bad{background:rgba(184,71,62,.92);color:#fff}
 #scanMark{font-size:120px;line-height:1;font-weight:700}
 #scanLabel{font-size:26px;font-weight:700;text-align:center;padding:0 20px;word-break:break-all}
 .stepper{display:flex;align-items:center;gap:10px;margin-top:6px}
@@ -209,9 +209,9 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
 .famItem{display:block;width:100%;text-align:left;touch-action:manipulation;user-select:none;padding:12px 14px;margin:10px 0 0;border:0;border-radius:22px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px;cursor:pointer;box-shadow:var(--raise);min-height:0}
 .famItem .fName{font-weight:700}
 .famItem .fSub{font-size:13px;margin-top:3px;color:var(--mute)}
-.famItem.sel{box-shadow:var(--inset-sm),0 0 0 3px #00cfcc}
+.famItem.sel{box-shadow:var(--inset-sm),0 0 0 3px #8ED6B7}
 .famItem.low{box-shadow:var(--inset-sm)}
-.famItem.none{box-shadow:var(--inset-sm);color:#8aa5a1;cursor:not-allowed}
+.famItem.none{box-shadow:var(--inset-sm);color:#B5B1A9;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -222,7 +222,7 @@ button.x{width:auto;min-height:0;margin:0;padding:6px 12px;font-size:13px;backgr
       <div class="bt">Workshop Tools</div>
       <div id="staffBtn" class="track" role="switch" aria-checked="false" aria-label="Staff sign in" tabindex="0" onclick="toggleStaffView()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleStaffView();}">
         <span class="opt staff">Staff</span><span class="opt student">Student</span>
-        <span class="knob"><svg viewBox="0 0 24 24" fill="none" stroke="#00473f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span>
+        <span class="knob"><svg viewBox="0 0 24 24" fill="none" stroke="#2F3D38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span>
       </div>
       <button id="signout" class="hidden" type="button" onclick="lockOut('Signed out.')">Sign out</button>
     </div>
@@ -1259,7 +1259,7 @@ async function lookupTool(id){
         '</div>'
       : t.repair
         ? '<div class="who"><div class="big">' + esc(t.name) + '</div>' +
-          '<p style="margin:10px 0 0;color:#b71c1c;font-weight:bold">Currently unavailable due to repairs.</p></div>'
+          '<p style="margin:10px 0 0;color:#9C3A33;font-weight:bold">Currently unavailable due to repairs.</p></div>'
         : '<div class="who"><div class="big">' + esc(t.name) + '</div>' +
           '<p style="margin:10px 0 0">Available. Not out to anyone.</p></div>';
   } catch (e) {
@@ -2039,7 +2039,7 @@ function renderVisit(){
     if (paid) return '<span class="tag success">Paid</span>';
     const on = paySelected.has(row);
     return '<button type="button" class="ghost" onclick="togglePay(' + row + ')"' +
-      (on ? ' style="background:var(--teal);color:#fff"' : '') + '>' + (on ? 'Selected' : 'Pay') + '</button>';
+      (on ? ' style="background:var(--teal);color:var(--dark)"' : '') + '>' + (on ? 'Selected' : 'Pay') + '</button>';
   };
   // One line per take: details on the left, the Pay / Paid button on the right, like the student's tool list.
   // Unpaid rows sit pressed in; paid rows stay flat.
@@ -2070,7 +2070,7 @@ function renderVisit(){
   const picked = owing.items.filter(t => paySelected.has(t.row));
   const pickedTotal = Math.round(picked.reduce((n, t) => n + t.total, 0) * 100) / 100;
   const selBar = owing.items.length
-    ? '<div class="visitLine" style="display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-2px;z-index:2;background:#f3fbfa;margin:0 -14px;padding:8px 14px;border-bottom:1px solid #b2dfdb">' +
+    ? '<div class="visitLine" style="display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-2px;z-index:2;background:#F6F5F2;margin:0 -14px;padding:8px 14px;border-bottom:1px solid #CDEFE0">' +
       '<div><b>' + picked.length + ' selected · ' + money(pickedTotal) + '</b></div>' +
       '<button type="button" onclick="payNow()"' + (picked.length ? '' : ' disabled') + '>Pay ' + money(pickedTotal) + '</button></div>'
     : '';
