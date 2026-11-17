@@ -577,6 +577,8 @@ function showApp(){
   who.textContent = 'Welcome back, ';
   const name = document.createElement('strong');
   name.textContent = S.name;
+  name.style.fontWeight = '700';
+  name.style.fontSize = '1.2em';
   who.appendChild(name);
   // The Log card is only for managers (Manager = YES on the Staff sheet).
   $('logCard').classList.toggle('hidden', !S.manager);
