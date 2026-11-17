@@ -573,7 +573,11 @@ function showApp(){
   $('app').classList.remove('hidden');
   updateBar();
   $('signout').classList.remove('hidden');
-  $('who').textContent = 'Signed in as ' + S.name + '. Signs out after 10 minutes without activity.';
+  const who = $('who');
+  who.textContent = 'Welcome back, ';
+  const name = document.createElement('strong');
+  name.textContent = S.name;
+  who.appendChild(name);
   // The Log card is only for managers (Manager = YES on the Staff sheet).
   $('logCard').classList.toggle('hidden', !S.manager);
   $('logBody').classList.add('hidden');
