@@ -1410,7 +1410,7 @@ async function checkOut(){
   const needsReturn = ids.length > 0 || lines.some(l => !isConsumable(l.group));
   if (needsReturn) parts.push(
     'Return by' +
-      '<div style="position:relative;margin-top:8px;padding:14px 18px;border-radius:18px;background:var(--bg);box-shadow:var(--inset);text-align:center;font-weight:700;color:var(--dark)">' +
+      '<div onclick="openDate(this)" style="position:relative;margin-top:8px;padding:14px 18px;border-radius:18px;background:var(--bg);box-shadow:var(--inset);text-align:center;font-weight:700;color:var(--dark);cursor:pointer">' +
         '<span id="retShow">' + longDate(todayStr()) + '</span>' +
         '<input id="retDate" type="date" value="' + todayStr() + '" aria-label="Return by" ' +
           'onchange="document.getElementById(\'retShow\').textContent = longDate(this.value)" ' +
